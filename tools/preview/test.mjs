@@ -1,4 +1,5 @@
 // Browser checks for the EDEN theme preview (start `npm run preview` first).
+// Ignored console noise: /favicon.ico (Shopify serves it) and /nope (the 404 page's intentional 404).
 // Usage: node tools/preview/test.mjs [all|home|mobile|reduced|product|other]
 // Set CHROMIUM_PATH if Chromium is not at the default location. Screenshots go to tools/preview/shots/.
 import { chromium } from 'playwright-core';
@@ -22,7 +23,7 @@ async function newPage(opts = {}) {
   const page = await ctx.newPage();
   page._errors = [];
   page.on('pageerror', (e) => page._errors.push(String(e)));
-  page.on('console', (m) => { if (m.type() === 'error' && !(m.location().url || '').includes('favicon')) page._errors.push(m.text() + ' @ ' + (m.location().url || '')); });
+  page.on('console', (m) => { if (m.type() === 'error' && !/favicon|\/nope$/.test(m.location().url || '')) page._errors.push(m.text() + ' @ ' + (m.location().url || '')); });
   await fetch(BASE + '/__reset');
   return page;
 }
