@@ -1,0 +1,172 @@
+{%- liquid
+  assign s = section.settings
+  assign lines = s.title | newline_to_br | split: '<br />'
+  assign heading_tag = 'h2'
+  if section.index == 1
+    assign heading_tag = 'h1'
+  endif
+  case s.height
+    when 'small'
+      assign banner_h = '56svh'
+    when 'medium'
+      assign banner_h = '76svh'
+    else
+      assign banner_h = '100svh'
+  endcase
+-%}
+<section
+  class="banner{% if s.grain %} section-grain{% endif %}"
+  data-parallax-scope
+  {% if s.header_overlay %}
+    data-header-overlay
+  {% endif %}
+  style="--banner-h: {{ banner_h }}; --shade: {{ s.overlay | divided_by: 100.0 }};"
+>
+  <div class="banner__media media-lit">
+    <div class="banner__img"{% if s.parallax %} data-parallax="0.2"{% endif %}>
+      {%- if s.image != blank -%}
+        {%- liquid
+          assign alt = s.image.alt | default: ''
+          if section.index == 1
+            assign loading = 'eager'
+            assign priority = 'high'
+          else
+            assign loading = 'lazy'
+            assign priority = 'auto'
+          endif
+        -%}
+        {{
+          s.image
+          | image_url: width: 2800
+          | image_tag:
+            loading: loading,
+            fetchpriority: priority,
+            widths: '480, 750, 1100, 1500, 1920, 2400, 2800',
+            sizes: '100vw',
+            alt: alt
+        }}
+      {%- else -%}
+        {%- render 'media-placeholder', type: 'lifestyle' -%}
+      {%- endif -%}
+    </div>
+  </div>
+  <div class="banner__shade"></div>
+  <div class="banner__content{% if s.align == 'center' %} banner__content--center{% endif %}">
+    {%- if s.eyebrow != blank -%}
+      <p class="label">{{ s.eyebrow }}</p>
+    {%- endif -%}
+    <{{ heading_tag }} class="banner__title"{% if section.index != 1 %} data-split="chars"{% endif %}>
+      {%- for line in lines -%}
+        {{ line | strip }}
+        {%- unless forloop.last %}<br>{% endunless -%}
+      {%- endfor -%}
+    </{{ heading_tag }}>
+    {%- if s.text != blank -%}
+      <p class="body-lg" style="max-width: 44ch">{{ s.text }}</p>
+    {%- endif -%}
+    {%- if s.button_label != blank -%}
+      <div>
+        <span class="magnetic" data-magnetic>
+          <a class="btn btn--bone btn--lg" href="{{ s.button_link }}"><span class="btn__label">{{ s.button_label }} {% render 'icon', icon: 'arrow' %}</span></a>
+        </span>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Image banner",
+  "tag": "div",
+  "class": "section-banner",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Our story"
+    },
+    {
+      "type": "textarea",
+      "id": "title",
+      "label": "Title",
+      "default": "Worn,\nnot preached."
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "height",
+      "label": "Height",
+      "options": [
+        { "value": "small", "label": "Small" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "full", "label": "Full screen" }
+      ],
+      "default": "medium"
+    },
+    {
+      "type": "select",
+      "id": "align",
+      "label": "Content position",
+      "options": [
+        { "value": "bottom", "label": "Bottom left" },
+        { "value": "center", "label": "Centered" }
+      ],
+      "default": "bottom"
+    },
+    {
+      "type": "range",
+      "id": "overlay",
+      "label": "Shade",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "default": 55
+    },
+    {
+      "type": "checkbox",
+      "id": "header_overlay",
+      "label": "Transparent header over this banner",
+      "info": "Only when the banner is the first section.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "parallax",
+      "label": "Parallax",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "grain",
+      "label": "Grain texture",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image banner"
+    }
+  ]
+}
+{% endschema %}

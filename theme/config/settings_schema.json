@@ -1,0 +1,396 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "EDEN",
+    "theme_version": "1.0.0",
+    "theme_author": "EDEN",
+    "theme_documentation_url": "https://github.com/vbelgrano09-lgtm/Eden#readme",
+    "theme_support_url": "https://github.com/vbelgrano09-lgtm/Eden/issues"
+  },
+  {
+    "name": "Identity",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo (eden-logo-white.png)",
+        "info": "White, transparent PNG or SVG. Leave empty to use the built-in EDEN wordmark with the crossed nails."
+      },
+      {
+        "type": "range",
+        "id": "logo_width",
+        "label": "Logo width (desktop)",
+        "min": 60,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "default": 104
+      },
+      {
+        "type": "range",
+        "id": "logo_width_mobile",
+        "label": "Logo width (mobile)",
+        "min": 50,
+        "max": 160,
+        "step": 2,
+        "unit": "px",
+        "default": 84
+      },
+      {
+        "type": "image_picker",
+        "id": "wordmark",
+        "label": "FAITH OVER FEAR wordmark (faith-over-fear.png)",
+        "info": "Used in the footer and at the end of the FAITH OVER FEAR scene. Leave empty to use live type."
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon",
+        "info": "Square, at least 64 × 64px."
+      },
+      {
+        "type": "text",
+        "id": "current_chapter",
+        "label": "Current chapter label",
+        "default": "Chapter 001"
+      }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "EDEN runs on four neutrals and one accent. Keep the accent rare: hover states and the drop countdown."
+      },
+      {
+        "type": "color",
+        "id": "color_black",
+        "label": "Black (main background)",
+        "default": "#0A0A0A"
+      },
+      {
+        "type": "color",
+        "id": "color_bone",
+        "label": "Bone white",
+        "default": "#F4F1EA"
+      },
+      {
+        "type": "color",
+        "id": "color_white",
+        "label": "Text on black",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "color_grey",
+        "label": "Grey",
+        "default": "#8C8C88"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Accent (blood red)",
+        "default": "#5C121A"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Fonts are self-hosted Archivo Black (headlines) and Archivo (text). No external font requests."
+      },
+      {
+        "type": "range",
+        "id": "heading_scale",
+        "label": "Headline size",
+        "min": 70,
+        "max": 130,
+        "step": 5,
+        "unit": "%",
+        "default": 100
+      },
+      {
+        "type": "range",
+        "id": "heading_tracking",
+        "label": "Headline tracking",
+        "min": -8,
+        "max": 2,
+        "step": 1,
+        "unit": "%",
+        "default": -3
+      }
+    ]
+  },
+  {
+    "name": "Motion & effects",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Visitors who ask their device for reduced motion always get a calm, static site: no loader, parallax, scroll scenes or WebGL."
+      },
+      {
+        "type": "checkbox",
+        "id": "motion_enable",
+        "label": "Enable motion (master switch)",
+        "default": true,
+        "info": "Turning this off disables every effect below and ships a static site."
+      },
+      {
+        "type": "header",
+        "content": "Intro loader"
+      },
+      {
+        "type": "checkbox",
+        "id": "loader_enable",
+        "label": "Show intro loader",
+        "info": "Nails draw and cross over the D, EDEN fades in, the screen splits open. Max 1.8s, skippable, once per session.",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "loader_scope",
+        "label": "Show loader on",
+        "options": [
+          { "value": "all", "label": "Any first page of a visit" },
+          { "value": "index", "label": "Home page only" }
+        ],
+        "default": "all"
+      },
+      {
+        "type": "header",
+        "content": "Scroll & navigation"
+      },
+      {
+        "type": "checkbox",
+        "id": "smooth_scroll",
+        "label": "Smooth scroll (Lenis)",
+        "info": "Desktop wheel and trackpad only. Touch keeps native scrolling.",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "smooth_scroll_duration",
+        "label": "Smooth scroll weight",
+        "min": 6,
+        "max": 20,
+        "step": 1,
+        "default": 11,
+        "info": "Higher feels heavier."
+      },
+      {
+        "type": "checkbox",
+        "id": "page_transitions",
+        "label": "Page transitions",
+        "info": "Uses the View Transitions API with a curtain fallback for older browsers.",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "split_text",
+        "label": "Split-text headline reveals",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Pointer"
+      },
+      {
+        "type": "checkbox",
+        "id": "cursor_enable",
+        "label": "Custom cursor",
+        "info": "A dot that becomes VIEW over products and DRAG over sliders. Never shown on touch devices.",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "cursor_hide_native",
+        "label": "Hide the system cursor while the custom cursor is active",
+        "info": "Text fields always keep the system cursor.",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "magnetic_enable",
+        "label": "Magnetic buttons",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Product cards"
+      },
+      {
+        "type": "checkbox",
+        "id": "webgl_enable",
+        "label": "WebGL liquid hover",
+        "info": "Desktop only, loaded when the first card scrolls into view. Mobile gets a crossfade.",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "card_tilt",
+        "label": "3D tilt on hover",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Texture & light"
+      },
+      {
+        "type": "checkbox",
+        "id": "grain_enable",
+        "label": "Film grain overlay",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "grain_opacity",
+        "label": "Grain strength",
+        "min": 2,
+        "max": 20,
+        "step": 1,
+        "unit": "%",
+        "default": 7
+      },
+      {
+        "type": "checkbox",
+        "id": "image_lighting",
+        "label": "Slow dramatic lighting on images",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Products",
+    "settings": [
+      {
+        "type": "text",
+        "id": "ships_in_days",
+        "label": "Made to order: ships in",
+        "info": "Shown as “Made to order · ships in X days”. Override per product with the metafield custom.ships_in_days.",
+        "default": "7–10"
+      },
+      {
+        "type": "select",
+        "id": "card_ratio",
+        "label": "Product image ratio",
+        "options": [
+          { "value": "portrait", "label": "Portrait 4:5" },
+          { "value": "tall", "label": "Tall 3:4" },
+          { "value": "square", "label": "Square 1:1" }
+        ],
+        "default": "portrait"
+      },
+      {
+        "type": "checkbox",
+        "id": "card_second_image",
+        "label": "Show second image on hover",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "card_color_count",
+        "label": "Show color count (e.g. 5 COLORS)",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "quick_add",
+        "label": "Quick add from product cards",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "coming_soon_tag",
+        "label": "Coming soon tag",
+        "info": "Products with this tag show a COMING SOON badge and cannot be added to the bag.",
+        "default": "coming-soon"
+      },
+      {
+        "type": "textarea",
+        "id": "swatch_map",
+        "label": "Color swatches",
+        "info": "One per line: Name: #hex. Used when a color has no native Shopify swatch.",
+        "default": "Black: #0A0A0A\nBone: #F4F1EA\nWashed Black: #2A2826\nStone: #B9B2A5\nBlood: #5C121A\nOlive: #4B4A36\nGrey: #8C8C88\nWhite: #FFFFFF"
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "After adding to bag",
+        "options": [
+          { "value": "drawer", "label": "Open slide-out bag" },
+          { "value": "page", "label": "Go to the cart page" }
+        ],
+        "default": "drawer"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_note",
+        "label": "Enable order notes",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "cart_message",
+        "label": "Bag message",
+        "default": "Every piece is made to order for you. Shipped worldwide."
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "text",
+        "id": "social_instagram",
+        "label": "Instagram",
+        "info": "https://instagram.com/…"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok",
+        "label": "TikTok",
+        "info": "https://tiktok.com/@…"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube",
+        "label": "YouTube"
+      },
+      {
+        "type": "text",
+        "id": "social_x",
+        "label": "X"
+      },
+      {
+        "type": "text",
+        "id": "social_pinterest",
+        "label": "Pinterest"
+      }
+    ]
+  },
+  {
+    "name": "Search & sharing",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "predictive_search",
+        "label": "Predictive search",
+        "default": true
+      },
+      {
+        "type": "image_picker",
+        "id": "share_image",
+        "label": "Default social sharing image",
+        "info": "Used by pages without their own image. 1200 × 628px recommended."
+      }
+    ]
+  }
+]

@@ -1,0 +1,28 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-collection",
+      "settings": {
+        "eyebrow": "EDEN — Made to order",
+        "show_description": true,
+        "show_image": false,
+        "per_page": 24,
+        "columns_desktop": 3,
+        "columns_mobile": 2,
+        "enable_filtering": true,
+        "enable_sorting": true
+      }
+    },
+    "marquee": {
+      "type": "marquee",
+      "blocks": {
+        "m1": { "type": "text", "settings": { "text": "Faith over fear", "outline": false } },
+        "m2": { "type": "text", "settings": { "text": "He is risen", "outline": true } },
+        "m3": { "type": "text", "settings": { "text": "Be still", "outline": false } }
+      },
+      "block_order": ["m1", "m2", "m3"],
+      "settings": { "separator": "cross", "speed": 36, "size": 80, "direction": "left", "reactive": true, "boost": 4, "style": "default" }
+    }
+  },
+  "order": ["main", "marquee"]
+}

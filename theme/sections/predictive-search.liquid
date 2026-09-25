@@ -1,0 +1,52 @@
+{%- comment -%}
+  Rendered through the Section Rendering API by <predictive-search> (theme.js).
+{%- endcomment -%}
+{%- if predictive_search.performed -%}
+  {%- liquid
+    assign products = predictive_search.resources.products
+    assign queries = predictive_search.resources.queries
+    assign collections = predictive_search.resources.collections
+    assign terms_escaped = predictive_search.terms | escape
+  -%}
+  <div class="predictive">
+    <p class="visually-hidden" data-predictive-status>
+      {{- 'search.results_for' | t: count: products.size, terms: terms_escaped -}}
+    </p>
+    {%- if queries.size > 0 or collections.size > 0 -%}
+      <ul class="predictive__queries label" role="list">
+        {%- for query in queries -%}
+          <li><a class="link" href="{{ query.url }}">{{ query.styled_text }}</a></li>
+        {%- endfor -%}
+        {%- for collection in collections -%}
+          <li><a class="link" href="{{ collection.url }}">{{ collection.title }}</a></li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    {%- if products.size > 0 -%}
+      <ul class="predictive__grid" role="list">
+        {%- for product in products -%}
+          <li class="predictive__item">
+            <a href="{{ product.url }}">
+              {%- if product.featured_media -%}
+                {{
+                  product.featured_media
+                  | image_url: width: 600
+                  | image_tag: loading: 'lazy', widths: '200, 300, 400, 600', sizes: '(min-width: 750px) 22vw, 45vw', alt: ''
+                }}
+              {%- endif -%}
+              <span class="card__title">{{ product.title }}</span>
+              {%- render 'price', product: product -%}
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- else -%}
+      <p class="muted">{{ 'search.no_results' | t: terms: terms_escaped }}</p>
+    {%- endif -%}
+
+    <a class="btn predictive__all" href="{{ routes.search_url }}?q={{ predictive_search.terms | url_encode }}&options%5Bprefix%5D=last">
+      <span class="btn__label">{{ 'search.view_all' | t }} {% render 'icon', icon: 'arrow' %}</span>
+    </a>
+  </div>
+{%- endif -%}

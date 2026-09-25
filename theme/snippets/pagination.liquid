@@ -1,0 +1,44 @@
+{%- doc -%}
+  Accessible pagination.
+
+  @param {object} paginate - The paginate object.
+{%- enddoc -%}
+{%- if paginate.pages > 1 -%}
+  <nav class="pagination" aria-label="{{ 'general.pagination.label' | t }}">
+    <ul class="pagination__list label" role="list">
+      {%- if paginate.previous -%}
+        <li>
+          <a class="pagination__item" href="{{ paginate.previous.url }}" data-facet-link>
+            {%- render 'icon', icon: 'arrow-left' -%}
+            <span class="visually-hidden">{{ 'general.pagination.previous' | t }}</span>
+          </a>
+        </li>
+      {%- endif -%}
+      {%- for part in paginate.parts -%}
+        <li>
+          {%- if part.is_link -%}
+            <a class="pagination__item link" href="{{ part.url }}" data-facet-link>
+              <span class="visually-hidden">{{ 'general.pagination.page' | t }}</span>
+              {{- part.title -}}
+            </a>
+          {%- elsif part.title == paginate.current_page -%}
+            <span class="pagination__item" aria-current="page">
+              <span class="visually-hidden">{{ 'general.pagination.page' | t }}</span>
+              {{- part.title -}}
+            </span>
+          {%- else -%}
+            <span class="pagination__item">{{ part.title }}</span>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+      {%- if paginate.next -%}
+        <li>
+          <a class="pagination__item" href="{{ paginate.next.url }}" data-facet-link>
+            {%- render 'icon', icon: 'arrow' -%}
+            <span class="visually-hidden">{{ 'general.pagination.next' | t }}</span>
+          </a>
+        </li>
+      {%- endif -%}
+    </ul>
+  </nav>
+{%- endif -%}

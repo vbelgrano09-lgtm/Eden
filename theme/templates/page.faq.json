@@ -1,0 +1,29 @@
+{
+  "sections": {
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "g1": { "type": "group", "settings": { "heading": "Orders" } },
+        "q1": { "type": "question", "settings": { "question": "What does made to order mean?", "answer": "<p>Your piece is produced after you order it, just for you. That's why every product shows how many days it takes before it ships. No overstock, no waste.</p>" } },
+        "q2": { "type": "question", "settings": { "question": "Can I change or cancel my order?", "answer": "<p>Write to us as soon as possible. Once production has started we can't change it, because it's already being made for you.</p>" } },
+        "g2": { "type": "group", "settings": { "heading": "Shipping" } },
+        "q3": { "type": "question", "settings": { "question": "Where do you ship?", "answer": "<p>Worldwide, including the US, UK, Canada and Australia. Delivery times and any duties for your country are shown at checkout.</p>" } },
+        "q4": { "type": "question", "settings": { "question": "How do I track my order?", "answer": "<p>You'll get a tracking link by email as soon as your order ships.</p>" } },
+        "g3": { "type": "group", "settings": { "heading": "Fit & care" } },
+        "q5": { "type": "question", "settings": { "question": "How does it fit?", "answer": "<p>Oversized on purpose. Take your usual size for the intended fit, or size down for something closer. Every product has a size guide in cm and inches.</p>" } },
+        "q6": { "type": "question", "settings": { "question": "How do I wash it?", "answer": "<p>Cold, inside out, with similar colours. Lay flat to dry. No tumble dryer, and never iron the print.</p>" } },
+        "g4": { "type": "group", "settings": { "heading": "The brand" } },
+        "q7": { "type": "question", "settings": { "question": "What does FAITH OVER FEAR mean to you?", "answer": "<p>Fear is real. We feel it too. Faith is choosing to get up anyway. When we fall, we rise.</p>" } },
+        "q8": { "type": "question", "settings": { "question": "What is a Chapter?", "answer": "<p>Every release is a Chapter: a small, focused drop with its own story. Chapter 001 is live. Join the list to hear first when the next one opens.</p>" } }
+      },
+      "block_order": ["g1", "q1", "q2", "g2", "q3", "q4", "g3", "q5", "q6", "g4", "q7", "q8"],
+      "settings": {
+        "eyebrow": "Help",
+        "title": "Questions",
+        "text": "<p>Can't find it here? Write to us. Two founders read every message.</p>",
+        "scheme": "dark"
+      }
+    }
+  },
+  "order": ["faq"]
+}

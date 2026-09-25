@@ -1,0 +1,49 @@
+{%- doc -%}
+  Inline SVG icons. All decorative (aria-hidden); label the parent control instead.
+
+  @param {string} icon - bag | search | account | close | plus | minus | arrow | arrow-left | chevron | menu | cross | nails | zoom | filter | check | instagram | tiktok | youtube | x | pinterest
+  @param {string} [class] - Extra classes.
+{%- enddoc -%}
+{%- capture cls -%}icon icon--{{ icon }}{% if class != blank %} {{ class }}{% endif %}{%- endcapture -%}
+{%- case icon -%}
+  {%- when 'bag' -%}
+    <svg class="{{ cls }}" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 8.5h15l-1.2 12h-12.6z"/><path d="M8.5 8.5V7a3.5 3.5 0 0 1 7 0v1.5"/></svg>
+  {%- when 'search' -%}
+    <svg class="{{ cls }}" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg>
+  {%- when 'account' -%}
+    <svg class="{{ cls }}" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 4-6 8-6s7.2 2 8 6"/></svg>
+  {%- when 'close' -%}
+    <svg class="{{ cls }}" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 5 14 14M19 5 5 19"/></svg>
+  {%- when 'plus' -%}
+    <svg class="{{ cls }}" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 4v16M4 12h16"/></svg>
+  {%- when 'minus' -%}
+    <svg class="{{ cls }}" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 12h16"/></svg>
+  {%- when 'arrow' -%}
+    <svg class="{{ cls }}" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12h17M14 6l6 6-6 6"/></svg>
+  {%- when 'arrow-left' -%}
+    <svg class="{{ cls }}" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12H4M10 6l-6 6 6 6"/></svg>
+  {%- when 'chevron' -%}
+    <svg class="{{ cls }}" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 9 6 6 6-6"/></svg>
+  {%- when 'menu' -%}
+    <svg class="{{ cls }}" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h18M3 16h18"/></svg>
+  {%- when 'cross' -%}
+    <svg class="{{ cls }}" aria-hidden="true" focusable="false" viewBox="0 0 20 28" fill="currentColor"><path d="M8.6 0h2.8v7.6H20v2.8h-8.6V28H8.6V10.4H0V7.6h8.6z"/></svg>
+  {%- when 'nails' -%}
+    <svg class="{{ cls }}" aria-hidden="true" focusable="false" viewBox="-40 -40 80 80" fill="currentColor"><g transform="rotate(-28) scale(.5)"><path d="M-9 -69.5Q0 -76 9 -69.5L9 -66L3.4 -64L2.3 50L0 75L-2.3 50L-3.4 -64L-9 -66Z"/></g><g transform="rotate(28) scale(.5)"><path d="M-9 -69.5Q0 -76 9 -69.5L9 -66L3.4 -64L2.3 50L0 75L-2.3 50L-3.4 -64L-9 -66Z"/></g></svg>
+  {%- when 'zoom' -%}
+    <svg class="{{ cls }}" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5M10.5 7.5v6M7.5 10.5h6"/></svg>
+  {%- when 'filter' -%}
+    <svg class="{{ cls }}" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7h12M19 7h2M3 17h2M9 17h12"/><circle cx="17" cy="7" r="2"/><circle cx="7" cy="17" r="2"/></svg>
+  {%- when 'check' -%}
+    <svg class="{{ cls }}" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 12.5 5 5L20 6.5"/></svg>
+  {%- when 'instagram' -%}
+    <svg class="{{ cls }}" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg>
+  {%- when 'tiktok' -%}
+    <svg class="{{ cls }}" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 3c.4 2.2 1.8 3.8 4.1 4v3.1c-1.5.1-2.9-.3-4.1-1.1v6.6c0 3.6-2.7 5.9-5.9 5.9-3.3 0-5.9-2.6-5.9-5.9 0-3.5 3-6.1 6.6-5.8v3.2c-1.7-.4-3.4.8-3.4 2.6 0 1.5 1.2 2.7 2.7 2.7 1.6 0 2.7-1.1 2.7-3V3z"/></svg>
+  {%- when 'youtube' -%}
+    <svg class="{{ cls }}" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="currentColor"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.5 2.5 0 0 0 2.4 7.2C2 8.8 2 12 2 12s0 3.2.4 4.8a2.5 2.5 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8c.4-1.6.4-4.8.4-4.8s0-3.2-.4-4.8zM10 15V9l5.2 3z"/></svg>
+  {%- when 'x' -%}
+    <svg class="{{ cls }}" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="currentColor"><path d="M17.8 3h3.1l-6.8 7.7L22 21h-6.2l-4.9-6.4L5.3 21H2.2l7.2-8.3L1.8 3h6.4l4.4 5.8zm-1.1 16.2h1.7L7.3 4.7H5.5z"/></svg>
+  {%- when 'pinterest' -%}
+    <svg class="{{ cls }}" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.6 19.3c-.1-.8-.2-2 0-2.9l1.2-5s-.3-.6-.3-1.5c0-1.4.8-2.4 1.8-2.4.9 0 1.3.6 1.3 1.4 0 .9-.5 2.1-.8 3.3-.2 1 .5 1.8 1.5 1.8 1.8 0 3.1-1.9 3.1-4.6 0-2.4-1.7-4.1-4.2-4.1-2.9 0-4.5 2.1-4.5 4.4 0 .9.3 1.8.8 2.3.1.1.1.2.1.3l-.3 1.2c0 .2-.2.2-.4.1-1.3-.6-2.1-2.5-2.1-4 0-3.3 2.4-6.3 6.9-6.3 3.6 0 6.4 2.6 6.4 6 0 3.6-2.3 6.5-5.4 6.5-1 0-2-.5-2.4-1.2l-.6 2.5c-.2.9-.9 2.1-1.3 2.8A10 10 0 1 0 12 2z"/></svg>
+{%- endcase -%}

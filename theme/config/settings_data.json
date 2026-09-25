@@ -1,0 +1,43 @@
+{
+  "current": "Default",
+  "presets": {
+    "Default": {
+      "logo_width": 104,
+      "logo_width_mobile": 84,
+      "current_chapter": "Chapter 001",
+      "color_black": "#0A0A0A",
+      "color_bone": "#F4F1EA",
+      "color_white": "#FFFFFF",
+      "color_grey": "#8C8C88",
+      "color_accent": "#5C121A",
+      "heading_scale": 100,
+      "heading_tracking": -3,
+      "motion_enable": true,
+      "loader_enable": true,
+      "loader_scope": "all",
+      "smooth_scroll": true,
+      "smooth_scroll_duration": 11,
+      "page_transitions": true,
+      "split_text": true,
+      "cursor_enable": true,
+      "cursor_hide_native": true,
+      "magnetic_enable": true,
+      "webgl_enable": true,
+      "card_tilt": true,
+      "grain_enable": true,
+      "grain_opacity": 7,
+      "image_lighting": true,
+      "ships_in_days": "7–10",
+      "card_ratio": "portrait",
+      "card_second_image": true,
+      "card_color_count": true,
+      "quick_add": true,
+      "coming_soon_tag": "coming-soon",
+      "swatch_map": "Black: #0A0A0A\nBone: #F4F1EA\nWashed Black: #2A2826\nStone: #B9B2A5\nBlood: #5C121A\nOlive: #4B4A36\nGrey: #8C8C88\nWhite: #FFFFFF",
+      "cart_type": "drawer",
+      "cart_note": false,
+      "cart_message": "Every piece is made to order for you. Shipped worldwide.",
+      "predictive_search": true
+    }
+  }
+}

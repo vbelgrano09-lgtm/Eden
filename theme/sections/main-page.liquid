@@ -1,0 +1,46 @@
+<div class="section section--tight">
+  <div class="page-width {% if section.settings.width == 'narrow' %}page-width--narrow{% else %}page-width--text{% endif %}">
+    {%- if section.settings.show_title -%}
+      <header class="page-head">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="label muted">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        <h1 class="page-head__title">{{ page.title }}</h1>
+      </header>
+    {%- endif -%}
+    {%- if page.content != blank -%}
+      <div class="rte body-lg">{{ page.content }}</div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Page",
+  "tag": "section",
+  "class": "section-main-page",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "Show title",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow"
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "Width",
+      "options": [
+        { "value": "narrow", "label": "Narrow" },
+        { "value": "text", "label": "Wide" }
+      ],
+      "default": "narrow"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,97 @@
+{%- liquid
+  assign s = section.settings
+  assign lines = s.title | newline_to_br | split: '<br />'
+-%}
+<section class="section scheme-{{ s.scheme }}{% if s.grain %} section-grain{% endif %}" id="newsletter-{{ section.id }}">
+  <div class="page-width newsletter">
+    <div>
+      {%- if s.eyebrow != blank -%}
+        <p class="label muted section-head__eyebrow">{{ s.eyebrow }}</p>
+      {%- endif -%}
+      <h2 class="newsletter__title h1" data-split="chars">
+        {%- for line in lines -%}
+          {{ line | strip }}
+          {%- unless forloop.last %}<br>{% endunless -%}
+        {%- endfor -%}
+      </h2>
+    </div>
+    <div class="newsletter__side">
+      {%- if s.text != blank -%}
+        <p class="muted" data-split="lines">{{ s.text }}</p>
+      {%- endif -%}
+      {%- render 'newsletter-form',
+        form_id: section.id,
+        button: s.button,
+        placeholder: s.placeholder,
+        success: s.success
+      -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "tag": "div",
+  "class": "section-newsletter",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "The list"
+    },
+    {
+      "type": "textarea",
+      "id": "title",
+      "label": "Title",
+      "default": "No discounts.\nJust drops."
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "One email when a Chapter is about to open. Nothing else."
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Placeholder",
+      "default": "Your email"
+    },
+    {
+      "type": "text",
+      "id": "button",
+      "label": "Button",
+      "default": "Join"
+    },
+    {
+      "type": "text",
+      "id": "success",
+      "label": "Success message",
+      "default": "You're in. See you at the next drop."
+    },
+    {
+      "type": "select",
+      "id": "scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "dark", "label": "Black" },
+        { "value": "bone", "label": "Bone" }
+      ],
+      "default": "dark"
+    },
+    {
+      "type": "checkbox",
+      "id": "grain",
+      "label": "Grain texture",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,82 @@
+{
+  "sections": {
+    "banner": {
+      "type": "image-banner",
+      "settings": {
+        "eyebrow": "Our story",
+        "title": "Worn,\nnot preached.",
+        "text": "Two founders. One line we couldn't stop thinking about.",
+        "height": "full",
+        "align": "bottom",
+        "overlay": 55,
+        "header_overlay": true,
+        "parallax": true,
+        "grain": true
+      }
+    },
+    "intro": {
+      "type": "rich-text",
+      "settings": {
+        "eyebrow": "Where it started",
+        "heading": "When we fall,\nwe rise.",
+        "text": "<p>EDEN didn't start in a studio. It started with two of us, a lot of bad days and one line that kept us standing: <strong>faith over fear</strong>. Not as a slogan for other people. As a reminder for ourselves.</p><p>We wanted clothes that said it without shouting. No church clichés, no stock imagery. Just the words, the nails and the weight of a hoodie that feels like armour.</p>",
+        "align": "left",
+        "split": true,
+        "scheme": "dark",
+        "grain": false
+      }
+    },
+    "story": {
+      "type": "brand-story",
+      "settings": {
+        "image_position": "right",
+        "eyebrow": "The symbol",
+        "title": "Two nails.\nOne D.",
+        "text": "<p>The nails are the moment everything broke, and the reason nothing has to stay broken. We put them over the D because that's where the story turns.</p><p>Every Chapter we release carries that idea somewhere: in the print, in the label, in the weight of the fabric.</p>",
+        "signoff": "The founders",
+        "button_label": "",
+        "parallax": true,
+        "scheme": "bone",
+        "grain": false
+      }
+    },
+    "values": {
+      "type": "text-columns",
+      "blocks": {
+        "c1": { "type": "column", "settings": { "title": "Worn, not preached", "text": "<p>Faith you can live in. We'd rather you feel it than read it.</p>" } },
+        "c2": { "type": "column", "settings": { "title": "Made to order", "text": "<p>Every piece is produced after you order it. No overstock, no landfill, no shortcuts.</p>" } },
+        "c3": { "type": "column", "settings": { "title": "Built heavy", "text": "<p>Heavyweight fleece, oversized cuts, sold as sets. Made to outlast the moment.</p>" } }
+      },
+      "block_order": ["c1", "c2", "c3"],
+      "settings": { "eyebrow": "What we stand on", "title": "Three things", "columns": 3, "numbered": true, "scheme": "dark", "grain": false }
+    },
+    "verse": {
+      "type": "verse",
+      "settings": {
+        "label": "The line",
+        "text": "Be still,\nand know.",
+        "reference": "Psalm 46:10",
+        "note": "",
+        "split": "words",
+        "image_opacity": 35,
+        "parallax": true,
+        "scheme": "dark",
+        "grain": true
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "eyebrow": "The list",
+        "title": "No discounts.\nJust drops.",
+        "text": "One email when a Chapter is about to open. Nothing else.",
+        "placeholder": "Your email",
+        "button": "Join",
+        "success": "You're in. See you at the next drop.",
+        "scheme": "bone",
+        "grain": false
+      }
+    }
+  },
+  "order": ["banner", "intro", "story", "values", "verse", "newsletter"]
+}

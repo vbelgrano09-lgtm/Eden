@@ -1,0 +1,65 @@
+{%- doc -%}
+  Size guide modal built from the picker block's table (cm), with a cm / in switch.
+
+  @param {object} block - The variant picker block (holds the table settings).
+  @param {string} section_id - Section id for unique ids.
+  @param {product} product - The product.
+{%- enddoc -%}
+{%- liquid
+  assign rows = block.settings.size_table | newline_to_br | split: '<br />'
+  assign head = rows.first | split: '|'
+-%}
+<dialog class="modal size-guide" id="SizeGuide-{{ section_id }}" aria-labelledby="SizeGuideTitle-{{ section_id }}">
+  <div class="modal__head">
+    <h2 class="h3" id="SizeGuideTitle-{{ section_id }}">{{ block.settings.size_guide_title }}</h2>
+    <button class="icon-btn" type="button" data-modal-close>
+      <span class="visually-hidden">{{ 'general.close' | t }}</span>
+      {%- render 'icon', icon: 'close' -%}
+    </button>
+  </div>
+  <div class="modal__body stack" data-lenis-prevent style="--stack: 24px">
+    <p class="label muted">{{ product.title }}</p>
+    {%- if rows.size > 1 -%}
+      <div class="size-guide__units" role="group" aria-label="{{ 'products.size_guide.units' | t }}">
+        <button class="size-guide__unit" type="button" data-unit="cm" aria-pressed="true">{{ 'products.size_guide.cm' | t }}</button>
+        <button class="size-guide__unit" type="button" data-unit="in" aria-pressed="false">{{ 'products.size_guide.in' | t }}</button>
+      </div>
+      <div class="size-guide__table-wrap" tabindex="0" role="region" aria-label="{{ block.settings.size_guide_title | escape }}">
+        <table class="size-guide__table">
+          <thead>
+            <tr>
+              {%- for cell in head -%}
+                <th scope="col" class="label">{{ cell | strip }}</th>
+              {%- endfor -%}
+            </tr>
+          </thead>
+          <tbody>
+            {%- for row in rows offset: 1 -%}
+              {%- assign cells = row | split: '|' -%}
+              {%- if cells.size > 1 -%}
+                <tr>
+                  {%- for cell in cells -%}
+                    {%- if forloop.first -%}
+                      <th scope="row">{{ cell | strip }}</th>
+                    {%- else -%}
+                      <td data-cm="{{ cell | strip }}">{{ cell | strip }}</td>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </tr>
+              {%- endif -%}
+            {%- endfor -%}
+          </tbody>
+        </table>
+      </div>
+    {%- endif -%}
+    {%- if block.settings.size_note != blank -%}
+      <div class="rte muted">{{ block.settings.size_note }}</div>
+    {%- endif -%}
+    {%- if block.settings.model_note != blank -%}
+      <p class="label">{{ block.settings.model_note }}</p>
+    {%- endif -%}
+    {%- if block.settings.size_page != blank -%}
+      <div class="rte">{{ block.settings.size_page.content }}</div>
+    {%- endif -%}
+  </div>
+</dialog>

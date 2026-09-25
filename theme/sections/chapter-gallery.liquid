@@ -1,0 +1,200 @@
+{%- liquid
+  assign s = section.settings
+  assign products = s.collection.products
+  assign total = s.limit
+  if s.collection != blank and s.collection.products_count < total
+    assign total = s.collection.products_count
+  endif
+-%}
+<section
+  class="gallery scheme-{{ s.scheme }}{% if s.grain %} section-grain{% endif %}"
+  data-gallery
+  data-pin="{{ s.pin }}"
+  aria-labelledby="GalleryTitle-{{ section.id }}"
+>
+  <div class="gallery__sticky">
+  <div class="gallery__head">
+    <div>
+      {%- if s.eyebrow != blank -%}
+        <p class="label muted section-head__eyebrow">{{ s.eyebrow }}</p>
+      {%- endif -%}
+      <h2 class="gallery__title h1" id="GalleryTitle-{{ section.id }}" data-split="chars">{{ s.title }}</h2>
+    </div>
+    {%- if s.text != blank -%}
+      <p class="gallery__intro" data-split="lines">{{ s.text }}</p>
+    {%- endif -%}
+  </div>
+
+  <gallery-scroller class="gallery__viewport" data-cursor="drag" data-cursor-label="{{ 'general.cursor.drag' | t }}">
+    <ul
+      class="gallery__track"
+      role="list"
+      tabindex="0"
+      aria-label="{{ 'sections.gallery.list_label' | t: title: s.title | escape }}"
+    >
+      {%- if s.collection != blank and products.size > 0 -%}
+        {%- for product in products limit: s.limit -%}
+          <li class="gallery__item" data-product-handle="{{ product.handle }}">
+            <div class="gallery__item-media media-lit" data-vt-media>
+              <span class="gallery__index label" aria-hidden="true">
+                {{- forloop.index | prepend: '0' | slice: -2, 2 }} / {{ total | prepend: '0' | slice: -2, 2 -}}
+              </span>
+              {%- if product.featured_media -%}
+                {%- assign alt = product.featured_media.alt | default: product.title -%}
+                {{
+                  product.featured_media
+                  | image_url: width: 1200
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '360, 540, 720, 900, 1200',
+                    sizes: '(min-width: 990px) 30vw, 78vw',
+                    alt: alt,
+                    draggable: 'false'
+                }}
+              {%- else -%}
+                {%- render 'media-placeholder', type: 'product' -%}
+              {%- endif -%}
+            </div>
+            <div class="gallery__item-info">
+              <h3 class="gallery__item-title">
+                <a class="gallery__item-link" href="{{ product.url }}">{{ product.title }}</a>
+              </h3>
+              {%- render 'price', product: product -%}
+            </div>
+          </li>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..6) -%}
+          <li class="gallery__item">
+            <div class="gallery__item-media">
+              <span class="gallery__index label" aria-hidden="true">0{{ i }} / 06</span>
+              {%- render 'media-placeholder', type: 'product' -%}
+            </div>
+            <div class="gallery__item-info">
+              <h3 class="gallery__item-title">{{ 'sections.gallery.placeholder_title' | t }}</h3>
+              <span class="price">—</span>
+            </div>
+          </li>
+        {%- endfor -%}
+      {%- endif -%}
+      {%- if s.show_end -%}
+        <li class="gallery__end">
+          <p class="gallery__end-title h2">{{ s.end_title }}</p>
+          {%- if s.end_button != blank -%}
+            <span class="magnetic" data-magnetic>
+              <a class="btn btn--bone" href="{{ s.end_link | default: s.collection.url | default: routes.all_products_collection_url }}">
+                <span class="btn__label">{{ s.end_button }} {% render 'icon', icon: 'arrow' %}</span>
+              </a>
+            </span>
+          {%- endif -%}
+        </li>
+      {%- endif -%}
+    </ul>
+  </gallery-scroller>
+
+  <div class="gallery__foot">
+    <div class="gallery__progress" aria-hidden="true"><span class="gallery__progress-bar"></span></div>
+    <div class="gallery__nav">
+      <button class="icon-btn" type="button" data-gallery-prev aria-label="{{ 'general.previous' | t }}">
+        {%- render 'icon', icon: 'arrow-left' -%}
+      </button>
+      <button class="icon-btn" type="button" data-gallery-next aria-label="{{ 'general.next' | t }}">
+        {%- render 'icon', icon: 'arrow' -%}
+      </button>
+    </div>
+  </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Chapter gallery",
+  "tag": "div",
+  "class": "section-gallery",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "The drop"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Chapter 001"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Intro",
+      "default": "Heavyweight hoodies and joggers, built as sets. Cut oversized, made to order, shipped worldwide."
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "limit",
+      "label": "Products",
+      "min": 3,
+      "max": 16,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "checkbox",
+      "id": "pin",
+      "label": "Pin and move sideways while scrolling (desktop)",
+      "info": "Phones and reduced-motion visitors get a swipeable row instead.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_end",
+      "label": "Show end card",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "end_title",
+      "label": "End card title",
+      "default": "Every piece. Made for you."
+    },
+    {
+      "type": "text",
+      "id": "end_button",
+      "label": "End card button",
+      "default": "Shop the chapter"
+    },
+    {
+      "type": "url",
+      "id": "end_link",
+      "label": "End card link"
+    },
+    {
+      "type": "select",
+      "id": "scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "dark", "label": "Black" },
+        { "value": "bone", "label": "Bone" }
+      ],
+      "default": "dark"
+    },
+    {
+      "type": "checkbox",
+      "id": "grain",
+      "label": "Grain texture",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Chapter gallery"
+    }
+  ]
+}
+{% endschema %}

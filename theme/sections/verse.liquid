@@ -1,0 +1,128 @@
+{%- liquid
+  assign s = section.settings
+  assign lines = s.text | newline_to_br | split: '<br />'
+-%}
+<section
+  class="section verse scheme-{{ s.scheme }}{% if s.grain %} section-grain{% endif %}"
+  data-parallax-scope
+  style="--bg-opacity: {{ s.image_opacity | divided_by: 100.0 }};"
+>
+  {%- if s.image != blank -%}
+    <div class="verse__bg media-lit" aria-hidden="true">
+      <div class="verse__bg-inner"{% if s.parallax %} data-parallax="0.2"{% endif %}>
+        {{
+          s.image
+          | image_url: width: 2400
+          | image_tag: loading: 'lazy', widths: '750, 1100, 1500, 1920, 2400', sizes: '100vw', alt: ''
+        }}
+      </div>
+    </div>
+  {%- endif -%}
+  <div class="page-width verse__inner">
+    {%- if s.label != blank -%}
+      <p class="label muted">{{ s.label }}</p>
+    {%- endif -%}
+    <blockquote class="verse__quote">
+      <p class="verse__text h1" data-split="{{ s.split }}">
+        {%- for line in lines -%}
+          {{ line | strip }}
+          {%- unless forloop.last %}<br>{% endunless -%}
+        {%- endfor -%}
+      </p>
+    </blockquote>
+    {%- if s.reference != blank -%}
+      <p class="verse__ref label">{% render 'icon', icon: 'cross' %}<cite>{{ s.reference }}</cite></p>
+    {%- endif -%}
+    {%- if s.note != blank -%}
+      <p class="verse__note" data-split="lines">{{ s.note }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Verse",
+  "tag": "div",
+  "class": "section-verse",
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "Chapter 001 — The line"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Verse",
+      "info": "One line per row.",
+      "default": "Be still,\nand know."
+    },
+    {
+      "type": "text",
+      "id": "reference",
+      "label": "Reference",
+      "default": "Psalm 46:10"
+    },
+    {
+      "type": "text",
+      "id": "note",
+      "label": "Note",
+      "default": "Not a slogan. A reminder we wear when everything is loud."
+    },
+    {
+      "type": "select",
+      "id": "split",
+      "label": "Reveal",
+      "options": [
+        { "value": "chars", "label": "Letter by letter" },
+        { "value": "words", "label": "Word by word" },
+        { "value": "lines", "label": "Line by line" }
+      ],
+      "default": "chars"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image (optional)"
+    },
+    {
+      "type": "range",
+      "id": "image_opacity",
+      "label": "Background image strength",
+      "min": 10,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 35
+    },
+    {
+      "type": "checkbox",
+      "id": "parallax",
+      "label": "Background parallax",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "dark", "label": "Black" },
+        { "value": "bone", "label": "Bone" }
+      ],
+      "default": "dark"
+    },
+    {
+      "type": "checkbox",
+      "id": "grain",
+      "label": "Grain texture",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Verse"
+    }
+  ]
+}
+{% endschema %}

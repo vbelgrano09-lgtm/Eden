@@ -1,0 +1,109 @@
+{%- liquid
+  assign empty_link = section.settings.empty_link | default: routes.all_products_collection_url
+-%}
+<eden-drawer id="CartDrawer">
+  <div
+    class="cart-drawer"
+    data-drawer-panel
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="CartDrawerTitle"
+    tabindex="-1"
+  >
+    <span hidden data-cart-count-source="{{ cart.item_count }}"></span>
+    <div class="cart-drawer__head">
+      <h2 class="h3 cart-drawer__title" id="CartDrawerTitle">
+        {{ 'cart.title' | t }}
+        <span class="label muted">({{ cart.item_count }})</span>
+      </h2>
+      <button class="icon-btn" type="button" data-drawer-close data-autofocus>
+        <span class="visually-hidden">{{ 'general.close' | t }}</span>
+        {%- render 'icon', icon: 'close' -%}
+      </button>
+    </div>
+
+    {%- if cart.item_count > 0 -%}
+      <cart-items class="cart-drawer__inner">
+        <div class="cart-drawer__body" data-drawer-scroll data-lenis-prevent>
+          {%- for item in cart.items -%}
+            {%- render 'cart-line-item', item: item, id_prefix: 'Drawer' -%}
+          {%- endfor -%}
+        </div>
+        <div class="cart-drawer__foot">
+          {%- if settings.cart_note -%}
+            <details class="cart-note">
+              <summary class="label">{{ 'cart.note' | t }}</summary>
+              <label class="visually-hidden" for="CartDrawerNote">{{ 'cart.note' | t }}</label>
+              <textarea class="textarea" id="CartDrawerNote" name="note" data-cart-note>{{ cart.note }}</textarea>
+            </details>
+          {%- endif -%}
+          {%- for discount in cart.cart_level_discount_applications -%}
+            <div class="cart-drawer__row">
+              <span class="label">{{ discount.title }}</span>
+              <span>−{{ discount.total_allocated_amount | money }}</span>
+            </div>
+          {%- endfor -%}
+          <div class="cart-drawer__row">
+            <span class="label">{{ 'cart.subtotal' | t }}</span>
+            <span class="cart-drawer__subtotal">{{ cart.total_price | money_with_currency }}</span>
+          </div>
+          <p class="label muted">{{ 'cart.taxes' | t }}</p>
+          <form action="{{ routes.cart_url }}" method="post" id="CartDrawerCheckout">
+            <button class="btn btn--bone btn--full btn--lg" type="submit" name="checkout">
+              <span class="btn__label">{{ 'cart.checkout' | t }}</span>
+            </button>
+          </form>
+          <a class="label link link--static cart-drawer__view" href="{{ routes.cart_url }}">{{ 'cart.view' | t }}</a>
+          {%- if settings.cart_message != blank -%}
+            <p class="muted">{{ settings.cart_message }}</p>
+          {%- endif -%}
+        </div>
+      </cart-items>
+    {%- else -%}
+      <div class="cart-drawer__body">
+        <div class="cart-drawer__empty">
+          <p class="h2">{{ section.settings.empty_title }}</p>
+          <p class="muted">{{ section.settings.empty_text }}</p>
+          <a class="btn btn--bone" href="{{ empty_link }}">
+            <span class="btn__label">{{ section.settings.empty_button }}</span>
+          </a>
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+</eden-drawer>
+
+{% schema %}
+{
+  "name": "Cart drawer",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Opens after “Add to bag” and from the bag icon. Switch to the cart page under Theme settings → Cart."
+    },
+    {
+      "type": "text",
+      "id": "empty_title",
+      "label": "Empty heading",
+      "default": "Nothing here yet."
+    },
+    {
+      "type": "text",
+      "id": "empty_text",
+      "label": "Empty text",
+      "default": "Faith is worn, not preached. Start with Chapter 001."
+    },
+    {
+      "type": "text",
+      "id": "empty_button",
+      "label": "Empty button label",
+      "default": "Shop Chapter 001"
+    },
+    {
+      "type": "url",
+      "id": "empty_link",
+      "label": "Empty button link"
+    }
+  ]
+}
+{% endschema %}

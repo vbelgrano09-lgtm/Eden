@@ -1,0 +1,41 @@
+{
+  "type": "footer",
+  "name": "Footer group",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "shop": {
+          "type": "links",
+          "settings": { "heading": "Shop", "menu": "main-menu" }
+        },
+        "help": {
+          "type": "links",
+          "settings": { "heading": "Help", "menu": "footer" }
+        },
+        "made": {
+          "type": "text",
+          "settings": {
+            "heading": "Made to order",
+            "text": "<p>Every piece is cut and sewn for you after you order. Shipped worldwide to the US, UK, Canada, Australia and beyond.</p>"
+          }
+        }
+      },
+      "block_order": ["shop", "help", "made"],
+      "settings": {
+        "heading": "Get the next Chapter first.",
+        "text": "<p>Faith that is worn, not preached. Get the next Chapter before anyone else.</p>",
+        "show_newsletter": true,
+        "newsletter_button": "Join",
+        "show_wordmark": true,
+        "wordmark_text": "Faith over fear",
+        "copyright": "When we fall, we rise.",
+        "show_localization": true,
+        "show_social": true,
+        "show_payment": true,
+        "grain": true
+      }
+    }
+  },
+  "order": ["footer"]
+}

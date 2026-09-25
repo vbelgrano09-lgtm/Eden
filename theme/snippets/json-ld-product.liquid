@@ -1,0 +1,60 @@
+{%- doc -%}
+  Product structured data (schema.org Product with one Offer per variant).
+
+  @param {product} product - The product.
+{%- enddoc -%}
+{%- liquid
+  assign coming_soon = false
+  if settings.coming_soon_tag != blank and product.tags contains settings.coming_soon_tag
+    assign coming_soon = true
+  endif
+  assign first_variant = product.selected_or_first_available_variant
+-%}
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": {{ product.title | json }},
+    "url": {{ request.origin | append: product.url | json }},
+    {%- if product.media.size > 0 -%}
+      "image": [
+        {%- for media in product.media limit: 6 -%}
+          {{ media.preview_image | image_url: width: 1920 | prepend: 'https:' | json }}{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ],
+    {%- endif -%}
+    "description": {{ product.description | strip_html | strip_newlines | truncate: 5000 | json }},
+    {%- if first_variant.sku != blank -%}
+      "sku": {{ first_variant.sku | json }},
+    {%- endif -%}
+    {%- if first_variant.barcode != blank -%}
+      "gtin": {{ first_variant.barcode | json }},
+    {%- endif -%}
+    "productID": {{ product.id | json }},
+    "brand": {
+      "@type": "Brand",
+      "name": {{ product.vendor | default: shop.name | json }}
+    },
+    "category": {{ product.type | json }},
+    "offers": [
+      {%- for variant in product.variants -%}
+        {
+          "@type": "Offer",
+          "name": {{ variant.title | json }},
+          {%- if variant.sku != blank -%}
+            "sku": {{ variant.sku | json }},
+          {%- endif -%}
+          "availability": "https://schema.org/{% if variant.available %}InStock{% elsif coming_soon %}PreOrder{% else %}OutOfStock{% endif %}",
+          "itemCondition": "https://schema.org/NewCondition",
+          "price": {{ variant.price | divided_by: 100.0 | json }},
+          "priceCurrency": {{ cart.currency.iso_code | json }},
+          "url": {{ request.origin | append: variant.url | json }},
+          "seller": {
+            "@type": "Organization",
+            "name": {{ shop.name | json }}
+          }
+        }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ]
+  }
+</script>

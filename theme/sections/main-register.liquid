@@ -1,0 +1,67 @@
+{{ 'customer.css' | asset_url | stylesheet_tag }}
+<div class="customer page-width page-width--narrow">
+  <header class="page-head">
+    <p class="label muted">{{ 'customer.eyebrow' | t }}</p>
+    <h1 class="page-head__title">{{ 'customer.register.title' | t }}</h1>
+  </header>
+  {%- form 'create_customer', novalidate: 'novalidate', class: 'customer__form' -%}
+    {%- if form.errors -%}
+      <div class="form-message form-message--error" role="alert">{{ form.errors | default_errors }}</div>
+    {%- endif -%}
+    <div class="contact__row">
+      <div class="field">
+        <label class="field__label label" for="RegisterFirstName">{{ 'customer.fields.first_name' | t }}</label>
+        <input class="input" id="RegisterFirstName" type="text" name="customer[first_name]" value="{{ form.first_name }}" autocomplete="given-name">
+      </div>
+      <div class="field">
+        <label class="field__label label" for="RegisterLastName">{{ 'customer.fields.last_name' | t }}</label>
+        <input class="input" id="RegisterLastName" type="text" name="customer[last_name]" value="{{ form.last_name }}" autocomplete="family-name">
+      </div>
+    </div>
+    <div class="field">
+      <label class="field__label label" for="RegisterEmail">{{ 'customer.fields.email' | t }}</label>
+      <input
+        class="input"
+        id="RegisterEmail"
+        type="email"
+        name="customer[email]"
+        value="{{ form.email }}"
+        autocomplete="email"
+        autocapitalize="off"
+        spellcheck="false"
+        required
+        {% if form.errors contains 'email' %}
+          aria-invalid="true"
+        {% endif %}
+      >
+    </div>
+    <div class="field">
+      <label class="field__label label" for="RegisterPassword">{{ 'customer.fields.password' | t }}</label>
+      <input
+        class="input"
+        id="RegisterPassword"
+        type="password"
+        name="customer[password]"
+        autocomplete="new-password"
+        required
+        {% if form.errors contains 'password' %}
+          aria-invalid="true"
+        {% endif %}
+      >
+    </div>
+    <label class="checkbox" for="RegisterMarketing">
+      <input type="checkbox" id="RegisterMarketing" name="customer[accepts_marketing]" value="true">
+      <span>{{ 'customer.register.marketing' | t }}</span>
+    </label>
+    <button class="btn btn--bone btn--full btn--lg" type="submit">{{ 'customer.register.submit' | t }}</button>
+    <a class="label link link--static customer__aside-link" href="{{ routes.account_login_url }}">{{ 'customer.register.login' | t }}</a>
+  {%- endform -%}
+</div>
+
+{% schema %}
+{
+  "name": "Customer register",
+  "tag": "section",
+  "class": "section-customer"
+}
+{% endschema %}

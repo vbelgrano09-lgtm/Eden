@@ -1,0 +1,143 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "eyebrow": "EDEN — Faith over fear",
+        "heading": "Chapter 001\nIs live",
+        "subheading": "Oversized heavyweight sets. Made to order. Shipped worldwide.",
+        "button_label": "Shop now",
+        "button_link": "shopify://collections/chapter-001",
+        "button2_label": "The meaning",
+        "button2_link": "shopify://pages/our-story",
+        "layout": "bottom",
+        "height": "full",
+        "header_overlay": true,
+        "overlay": 60,
+        "zoom": true,
+        "zoom_duration": 14,
+        "parallax": true,
+        "magnetic": true,
+        "scroll_hint": true,
+        "video_mobile": false
+      }
+    },
+    "marquee": {
+      "type": "marquee",
+      "blocks": {
+        "m1": { "type": "text", "settings": { "text": "Faith over fear", "outline": false } },
+        "m2": { "type": "text", "settings": { "text": "He is risen", "outline": true } },
+        "m3": { "type": "text", "settings": { "text": "Be still", "outline": false } }
+      },
+      "block_order": ["m1", "m2", "m3"],
+      "settings": {
+        "separator": "cross",
+        "speed": 36,
+        "size": 100,
+        "direction": "left",
+        "reactive": true,
+        "boost": 4,
+        "style": "default"
+      }
+    },
+    "gallery": {
+      "type": "chapter-gallery",
+      "settings": {
+        "eyebrow": "The drop",
+        "title": "Chapter 001",
+        "text": "Heavyweight hoodies and joggers, built as sets. Cut oversized, made to order, shipped worldwide.",
+        "collection": "chapter-001",
+        "limit": 8,
+        "pin": true,
+        "show_end": true,
+        "end_title": "Every piece. Made for you.",
+        "end_button": "Shop the chapter",
+        "scheme": "dark",
+        "grain": false
+      }
+    },
+    "fof": {
+      "type": "faith-over-fear",
+      "settings": {
+        "word_1": "Faith",
+        "word_2": "over",
+        "word_3": "Fear",
+        "subline": "When we fall, we rise.",
+        "subline_label": "EDEN — Chapter 001",
+        "scene": true,
+        "show_wordmark": false,
+        "grain": true
+      }
+    },
+    "grid": {
+      "type": "product-grid",
+      "settings": {
+        "eyebrow": "Made to order",
+        "title": "The full chapter",
+        "collection": "chapter-001",
+        "limit": 9,
+        "columns_desktop": 3,
+        "columns_mobile": 2,
+        "show_view_all": true,
+        "view_all_label": "View all",
+        "scheme": "dark",
+        "grain": false
+      }
+    },
+    "story": {
+      "type": "brand-story",
+      "settings": {
+        "image_position": "left",
+        "eyebrow": "Our story",
+        "title": "We fall.\nWe rise.",
+        "signoff": "The founders",
+        "button_label": "Read our story",
+        "button_link": "shopify://pages/our-story",
+        "parallax": true,
+        "scheme": "bone",
+        "grain": false
+      }
+    },
+    "verse": {
+      "type": "verse",
+      "settings": {
+        "label": "Chapter 001 — The line",
+        "text": "Be still,\nand know.",
+        "reference": "Psalm 46:10",
+        "note": "Not a slogan. A reminder we wear when everything is loud.",
+        "split": "chars",
+        "image_opacity": 35,
+        "parallax": true,
+        "scheme": "dark",
+        "grain": true
+      }
+    },
+    "countdown": {
+      "type": "drop-countdown",
+      "settings": {
+        "label": "Chapter 002 — Drops in",
+        "date": "2026-11-13 18:00",
+        "start_date": "2026-09-01 00:00",
+        "offset": "-05:00",
+        "live_title": "Live now",
+        "live_button": "Shop Chapter 002",
+        "scheme": "dark",
+        "grain": true
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "eyebrow": "The list",
+        "title": "No discounts.\nJust drops.",
+        "text": "One email when a Chapter is about to open. Nothing else.",
+        "placeholder": "Your email",
+        "button": "Join",
+        "success": "You're in. See you at the next drop.",
+        "scheme": "bone",
+        "grain": false
+      }
+    }
+  },
+  "order": ["hero", "marquee", "gallery", "fof", "grid", "story", "verse", "countdown", "newsletter"]
+}

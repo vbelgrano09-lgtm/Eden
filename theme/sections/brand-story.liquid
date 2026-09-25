@@ -1,0 +1,140 @@
+{%- liquid
+  assign s = section.settings
+  assign lines = s.title | newline_to_br | split: '<br />'
+-%}
+<section class="section scheme-{{ s.scheme }}{% if s.grain %} section-grain{% endif %}">
+  <div class="page-width">
+    <div class="story{% if s.image_position == 'right' %} story--reverse{% endif %}">
+      <div class="story__media media-lit" data-parallax-scope data-reveal>
+        {%- if s.image != blank -%}
+          {%- assign alt = s.image.alt | default: '' -%}
+          <div class="story__img"{% if s.parallax %} data-parallax="0.18"{% endif %}>
+            {{
+              s.image
+              | image_url: width: 1800
+              | image_tag:
+                loading: 'lazy',
+                widths: '480, 720, 960, 1200, 1500, 1800',
+                sizes: '(min-width: 990px) 46vw, 92vw',
+                alt: alt
+            }}
+          </div>
+        {%- else -%}
+          {%- render 'media-placeholder', type: 'lifestyle' -%}
+        {%- endif -%}
+      </div>
+      <div class="story__text">
+        {%- if s.eyebrow != blank -%}
+          <p class="label muted">{{ s.eyebrow }}</p>
+        {%- endif -%}
+        <h2 class="story__title h2" data-split="chars">
+          {%- for line in lines -%}
+            {{ line | strip }}
+            {%- unless forloop.last %}<br>{% endunless -%}
+          {%- endfor -%}
+        </h2>
+        {%- if s.text != blank -%}
+          <div class="story__body body-lg rte" data-reveal>{{ s.text }}</div>
+        {%- endif -%}
+        {%- if s.signoff != blank -%}
+          <p class="story__signoff label">{{ s.signoff }}</p>
+        {%- endif -%}
+        {%- if s.button_label != blank -%}
+          <div>
+            <span class="magnetic" data-magnetic>
+              <a class="btn" href="{{ s.button_link }}"><span class="btn__label">{{ s.button_label }} {% render 'icon', icon: 'arrow' %}</span></a>
+            </span>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Brand story",
+  "tag": "div",
+  "class": "section-story",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position (desktop)",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Our story"
+    },
+    {
+      "type": "textarea",
+      "id": "title",
+      "label": "Title",
+      "info": "One line per row.",
+      "default": "We fall.\nWe rise."
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>EDEN started with two of us and a question we couldn't shake: what does faith look like when nobody's watching? Not a sermon. Not a slogan. Something you put on when the day is heavy and you choose to get up anyway.</p><p>We make it heavy on purpose. Thick fleece, oversized cuts, built to last longer than the moment. Every piece is made to order, for you, then shipped wherever you are.</p>"
+    },
+    {
+      "type": "text",
+      "id": "signoff",
+      "label": "Sign-off",
+      "default": "The founders"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Read our story"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "checkbox",
+      "id": "parallax",
+      "label": "Image parallax",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "dark", "label": "Black" },
+        { "value": "bone", "label": "Bone" }
+      ],
+      "default": "bone"
+    },
+    {
+      "type": "checkbox",
+      "id": "grain",
+      "label": "Grain texture",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand story"
+    }
+  ]
+}
+{% endschema %}

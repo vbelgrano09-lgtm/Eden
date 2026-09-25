@@ -1,0 +1,132 @@
+{%- layout none -%}
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="{{ settings.color_black }}">
+    <meta name="robots" content="noindex">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <title>{{ 'gift_card.title' | t: shop: shop.name }}</title>
+    {%- render 'css-variables' -%}
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+    <script src="{{ 'vendor/qrcode.js' | shopify_asset_url }}" defer></script>
+    <style>
+      .gift {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 40px var(--gutter);
+      }
+      .gift__card {
+        width: min(560px, 100%);
+        display: grid;
+        gap: 24px;
+        padding: clamp(24px, 5vw, 48px);
+        border: 1px solid var(--line);
+        text-align: center;
+      }
+      .gift__logo {
+        width: 120px;
+        margin-inline: auto;
+      }
+      .gift__amount {
+        font-family: var(--font-display);
+        font-size: clamp(3rem, 12vw, 5.5rem);
+        line-height: 0.9;
+      }
+      .gift__code {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 14px;
+        border: 1px dashed var(--line-strong);
+        font-size: 18px;
+        letter-spacing: 0.12em;
+        font-variant-numeric: tabular-nums;
+      }
+      .gift__qr {
+        display: flex;
+        justify-content: center;
+        background: #fff;
+        padding: 12px;
+        width: max-content;
+        margin-inline: auto;
+      }
+      .gift__actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+      }
+      @media print {
+        .gift__actions,
+        .grain {
+          display: none;
+        }
+      }
+    </style>
+    {{ content_for_header }}
+  </head>
+  <body>
+    <main class="gift">
+      <div class="gift__card">
+        <div class="gift__logo">
+          {%- if settings.logo != blank -%}
+            {{ settings.logo | image_url: width: 400 | image_tag: widths: '200, 400', sizes: '120px', alt: shop.name }}
+          {%- else -%}
+            {%- render 'logo-eden' -%}
+          {%- endif -%}
+        </div>
+        <p class="label muted">{{ 'gift_card.label' | t }}</p>
+        <h1 class="gift__amount">{{ gift_card.balance | money }}</h1>
+        {%- if gift_card.balance != gift_card.initial_value -%}
+          {%- assign initial_value = gift_card.initial_value | money -%}
+          <p class="muted">{{ 'gift_card.initial_html' | t: value: initial_value }}</p>
+        {%- endif -%}
+        {%- if gift_card.expired -%}
+          <p class="form-message form-message--error">{{ 'gift_card.expired' | t }}</p>
+        {%- elsif gift_card.enabled == false -%}
+          <p class="form-message form-message--error">{{ 'gift_card.disabled' | t }}</p>
+        {%- elsif gift_card.expires_on -%}
+          {%- assign expiry = gift_card.expires_on | date: '%B %-d, %Y' -%}
+          <p class="label muted">{{ 'gift_card.expires' | t: date: expiry }}</p>
+        {%- endif -%}
+
+        <p class="gift__code">
+          <span id="GiftCardCode">{{ gift_card.code | format_code }}</span>
+          <button class="btn btn--small" type="button" data-copy="{{ gift_card.code }}">{{ 'gift_card.copy' | t }}</button>
+        </p>
+        <p class="visually-hidden" role="status" data-copy-status></p>
+
+        <div class="gift__qr" id="GiftCardQR" data-identifier="{{ gift_card.qr_identifier }}" aria-hidden="true"></div>
+
+        <div class="gift__actions">
+          <a class="btn btn--bone" href="{{ shop.url }}">{{ 'gift_card.shop' | t }}</a>
+          {%- if gift_card.pass_url -%}
+            <a class="btn" href="{{ gift_card.pass_url }}">{{ 'gift_card.wallet' | t }}</a>
+          {%- endif -%}
+          <button class="btn" type="button" onclick="window.print()">{{ 'gift_card.print' | t }}</button>
+        </div>
+      </div>
+    </main>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        var qr = document.getElementById('GiftCardQR');
+        if (qr && window.QRCode) {
+          new QRCode(qr, { text: qr.dataset.identifier, width: 120, height: 120 });
+        }
+        var btn = document.querySelector('[data-copy]');
+        if (btn && navigator.clipboard) {
+          btn.addEventListener('click', function () {
+            navigator.clipboard.writeText(btn.dataset.copy).then(function () {
+              document.querySelector('[data-copy-status]').textContent = {{ 'gift_card.copied' | t | json }};
+              btn.textContent = {{ 'gift_card.copied' | t | json }};
+            });
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

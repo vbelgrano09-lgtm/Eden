@@ -1,0 +1,207 @@
+{%- liquid
+  assign link_blocks = section.blocks | where: 'type', 'links'
+  assign cols = link_blocks.size
+  if cols < 1
+    assign cols = 1
+  endif
+-%}
+<footer class="footer scheme-dark{% if section.settings.grain %} section-grain{% endif %}" style="--footer-cols: {{ cols }}">
+  <div class="page-width">
+    <div class="footer__grid">
+      <div class="stack" style="--stack: 24px">
+        {%- if section.settings.heading != blank -%}
+          <p class="h3">{{ section.settings.heading }}</p>
+        {%- endif -%}
+        {%- if section.settings.text != blank -%}
+          <div class="footer__text">{{ section.settings.text }}</div>
+        {%- endif -%}
+        {%- if section.settings.show_newsletter -%}
+          {%- render 'newsletter-form',
+            form_id: 'FooterNewsletter',
+            button: section.settings.newsletter_button
+          -%}
+        {%- endif -%}
+      </div>
+
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'links' -%}
+            <nav class="footer__block" aria-label="{{ block.settings.heading | escape }}" {{ block.shopify_attributes }}>
+              <p class="footer__block-title label">{{ block.settings.heading }}</p>
+              {%- if block.settings.menu.links.size > 0 -%}
+                <ul class="footer__links" role="list">
+                  {%- for link in block.settings.menu.links -%}
+                    <li><a class="link" href="{{ link.url }}">{{ link.title }}</a></li>
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            </nav>
+          {%- when 'text' -%}
+            <div class="footer__block" {{ block.shopify_attributes }}>
+              <p class="footer__block-title label">{{ block.settings.heading }}</p>
+              <div class="footer__text rte">{{ block.settings.text }}</div>
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.show_wordmark -%}
+      <div class="footer__wordmark" aria-hidden="true">
+        {%- if settings.wordmark != blank -%}
+          {{
+            settings.wordmark
+            | image_url: width: 2400
+            | image_tag: loading: 'lazy', widths: '600, 900, 1200, 1800, 2400', sizes: '92vw', alt: ''
+          }}
+        {%- else -%}
+          <span class="footer__wordmark-text">{{ section.settings.wordmark_text }}</span>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="footer__bottom label">
+      <p>
+        &copy; {{ 'now' | date: '%Y' }}
+        {{ shop.name | link_to: routes.root_url }}.
+        {{ section.settings.copyright }}
+      </p>
+      {%- if section.settings.show_localization -%}
+        {%- render 'localization-form', form_id: 'FooterLocalization' -%}
+      {%- endif -%}
+      {%- if section.settings.show_social -%}
+        {%- render 'social-icons' -%}
+      {%- endif -%}
+      {%- if section.settings.show_payment and shop.enabled_payment_types.size > 0 -%}
+        <ul class="footer__payments" role="list" aria-label="{{ 'footer.payments' | t }}">
+          {%- for type in shop.enabled_payment_types -%}
+            <li>{{ type | payment_type_svg_tag }}</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "class": "section-footer",
+  "enabled_on": { "groups": ["footer"] },
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Get the next Chapter first."
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Faith that is worn, not preached. Every piece is made to order and shipped worldwide.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_newsletter",
+      "label": "Show newsletter signup",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "newsletter_button",
+      "label": "Newsletter button",
+      "default": "Join"
+    },
+    {
+      "type": "header",
+      "content": "Wordmark"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_wordmark",
+      "label": "Show giant wordmark",
+      "info": "Uses the FAITH OVER FEAR image from Theme settings → Identity when set.",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "wordmark_text",
+      "label": "Wordmark text (no image)",
+      "default": "Faith over fear"
+    },
+    {
+      "type": "header",
+      "content": "Bottom row"
+    },
+    {
+      "type": "text",
+      "id": "copyright",
+      "label": "Copyright line",
+      "default": "When we fall, we rise."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_localization",
+      "label": "Show country / currency selector",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social",
+      "label": "Show social icons",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment",
+      "label": "Show payment icons",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "grain",
+      "label": "Grain texture",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "links",
+      "name": "Menu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Shop"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu",
+          "default": "footer"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Made to order"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Every piece is cut and sewn for you after you order. Shipped worldwide.</p>"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

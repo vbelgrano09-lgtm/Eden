@@ -1,0 +1,134 @@
+{%- assign s = section.settings -%}
+<section class="section section--tight scheme-{{ s.scheme }}" id="contact-{{ section.id }}">
+  <div class="page-width contact">
+    <div class="contact__details">
+      {%- if s.title != blank -%}
+        <h2 class="h2" data-split="chars">{{ s.title }}</h2>
+      {%- endif -%}
+      {%- if s.text != blank -%}
+        <div class="rte">{{ s.text }}</div>
+      {%- endif -%}
+      {%- for block in section.blocks -%}
+        <div {{ block.shopify_attributes }}>
+          <p class="label">{{ block.settings.heading }}</p>
+          <div class="rte">{{ block.settings.text }}</div>
+        </div>
+      {%- endfor -%}
+    </div>
+
+    {%- form 'contact', id: 'ContactForm', class: 'contact__form' -%}
+      {%- if form.posted_successfully? -%}
+        <p class="form-message form-message--success" role="status">
+          {%- render 'icon', icon: 'check' -%}
+          {{- s.success -}}
+        </p>
+      {%- elsif form.errors -%}
+        <div class="form-message form-message--error" role="alert">
+          <p>{{ 'contact.error' | t }}</p>
+          {{ form.errors | default_errors }}
+        </div>
+      {%- endif -%}
+      <div class="contact__row">
+        <div class="field">
+          <label class="field__label label" for="ContactName">{{ 'contact.name' | t }}</label>
+          <input class="input" id="ContactName" type="text" name="contact[name]" autocomplete="name" value="{{ form.name }}">
+        </div>
+        <div class="field">
+          <label class="field__label label" for="ContactEmail">{{ 'contact.email' | t }} <span aria-hidden="true">*</span></label>
+          <input
+            class="input"
+            id="ContactEmail"
+            type="email"
+            name="contact[email]"
+            autocomplete="email"
+            spellcheck="false"
+            autocapitalize="off"
+            value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+            required
+            aria-required="true"
+            {% if form.errors contains 'email' %}
+              aria-invalid="true" aria-describedby="ContactEmailError"
+            {% endif %}
+          >
+          {%- if form.errors contains 'email' -%}
+            <p class="form-error" id="ContactEmailError">{{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}</p>
+          {%- endif -%}
+        </div>
+      </div>
+      <div class="field">
+        <label class="field__label label" for="ContactOrder">{{ 'contact.order' | t }}</label>
+        <input class="input" id="ContactOrder" type="text" name="contact[order]" value="{{ form.order }}">
+      </div>
+      <div class="field">
+        <label class="field__label label" for="ContactBody">{{ 'contact.message' | t }} <span aria-hidden="true">*</span></label>
+        <textarea class="textarea" id="ContactBody" name="contact[body]" required aria-required="true">{{ form.body }}</textarea>
+      </div>
+      <div>
+        <button class="btn btn--bone btn--lg" type="submit"><span class="btn__label">{{ 'contact.send' | t }} {% render 'icon', icon: 'arrow' %}</span></button>
+      </div>
+    {%- endform -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Contact form",
+  "tag": "div",
+  "class": "section-contact",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Talk to us"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Sizing, orders, collabs or just to say hi. We answer within two working days.</p>"
+    },
+    {
+      "type": "text",
+      "id": "success",
+      "label": "Success message",
+      "default": "Got it. We'll be in touch soon."
+    },
+    {
+      "type": "select",
+      "id": "scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "dark", "label": "Black" },
+        { "value": "bone", "label": "Bone" }
+      ],
+      "default": "dark"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "detail",
+      "name": "Contact detail",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Email"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>hello@eden.com</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact form"
+    }
+  ]
+}
+{% endschema %}

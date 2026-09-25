@@ -1,0 +1,72 @@
+{{ 'customer.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer></script>
+
+<div class="customer page-width page-width--text">
+  <header class="page-head customer__head">
+    <div>
+      <a class="label link link--static" href="{{ routes.account_url }}">← {{ 'customer.account.back' | t }}</a>
+      <h1 class="page-head__title">{{ 'customer.addresses.title' | t }}</h1>
+    </div>
+  </header>
+
+  {%- paginate customer.addresses by 10 -%}
+    <details class="customer__card customer__new"{% if customer.addresses.size == 0 %} open{% endif %}>
+      <summary class="btn btn--bone">{{ 'customer.addresses.add' | t }}</summary>
+      {%- form 'customer_address', customer.new_address, class: 'customer__form' -%}
+        {%- render 'address-fields', form: form, prefix: 'New', countries: all_country_option_tags -%}
+        <button class="btn btn--bone" type="submit">{{ 'customer.addresses.save' | t }}</button>
+      {%- endform -%}
+    </details>
+
+    <ul class="customer__addresses" role="list">
+      {%- for address in customer.addresses -%}
+        <li class="customer__card">
+          {%- if address == customer.default_address -%}
+            <p class="label">{{ 'customer.addresses.default' | t }}</p>
+          {%- endif -%}
+          <address class="muted">{{ address | format_address }}</address>
+          <div class="customer__actions">
+            <details>
+              <summary class="btn btn--small">{{ 'customer.addresses.edit' | t }}</summary>
+              {%- form 'customer_address', address, class: 'customer__form' -%}
+                {%- render 'address-fields', form: form, prefix: address.id, countries: all_country_option_tags -%}
+                <button class="btn btn--bone" type="submit">{{ 'customer.addresses.save' | t }}</button>
+              {%- endform -%}
+            </details>
+            <form method="post" action="{{ address.url }}" data-confirm="{{ 'customer.addresses.confirm_delete' | t | escape }}">
+              <input type="hidden" name="_method" value="delete">
+              <button class="btn btn--small" type="submit">{{ 'customer.addresses.delete' | t }}</button>
+            </form>
+          </div>
+        </li>
+      {%- endfor -%}
+    </ul>
+    {%- render 'pagination', paginate: paginate -%}
+  {%- endpaginate -%}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('[data-address-country]').forEach(function (select) {
+      var id = select.dataset.addressCountry;
+      if (window.Shopify && Shopify.CountryProvinceSelector) {
+        new Shopify.CountryProvinceSelector('AddressCountry' + id, 'AddressProvince' + id, {
+          hideElement: 'AddressProvinceWrap' + id
+        });
+      }
+    });
+    document.querySelectorAll('form[data-confirm]').forEach(function (form) {
+      form.addEventListener('submit', function (e) {
+        if (!window.confirm(form.dataset.confirm)) e.preventDefault();
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Customer addresses",
+  "tag": "section",
+  "class": "section-customer"
+}
+{% endschema %}

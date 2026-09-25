@@ -1,0 +1,146 @@
+{%- liquid
+  assign s = section.settings
+  assign cols_d = s.columns_desktop
+  assign cols_m = s.columns_mobile
+  assign vw_d = 92 | divided_by: cols_d
+  assign vw_m = 92 | divided_by: cols_m
+  capture sizes
+    echo '(min-width: 990px) ' | append: vw_d | append: 'vw, (min-width: 750px) 46vw, ' | append: vw_m | append: 'vw'
+  endcapture
+-%}
+<section
+  class="section product-grid-section scheme-{{ s.scheme }}{% if s.grain %} section-grain{% endif %}"
+  aria-labelledby="GridTitle-{{ section.id }}"
+>
+  <div class="page-width">
+    <div class="section-head">
+      <div>
+        {%- if s.eyebrow != blank -%}
+          <p class="label muted section-head__eyebrow">{{ s.eyebrow }}</p>
+        {%- endif -%}
+        <h2 class="h2 section-head__title" id="GridTitle-{{ section.id }}" data-split="chars">{{ s.title }}</h2>
+      </div>
+      {%- if s.show_view_all and s.collection != blank -%}
+        <a class="label link link--static" href="{{ s.collection.url }}">
+          {{- s.view_all_label -}}
+          {%- if s.collection.products_count > 0 %} ({{ s.collection.products_count }}){% endif -%}
+        </a>
+      {%- endif -%}
+    </div>
+
+    <div class="product-grid" style="--cols-desktop: {{ cols_d }}; --cols-mobile: {{ cols_m }};">
+      {%- if s.collection != blank and s.collection.products.size > 0 -%}
+        {%- for product in s.collection.products limit: s.limit -%}
+          {%- render 'product-card',
+            product: product,
+            sizes: sizes,
+            id_prefix: section.id,
+            index: forloop.index0
+          -%}
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..6) -%}
+          <div class="card">
+            <div class="card__media">{% render 'media-placeholder', type: 'product' %}</div>
+            <div class="card__info">
+              <h3 class="card__title">{{ 'sections.gallery.placeholder_title' | t }}</h3>
+              <span class="card__price">—</span>
+              <p class="card__meta label">{{ 'products.card.colors' | t: count: 5 }}</p>
+            </div>
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Product grid",
+  "tag": "div",
+  "class": "section-product-grid",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Made to order"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "The full chapter"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "limit",
+      "label": "Products",
+      "min": 3,
+      "max": 24,
+      "step": 1,
+      "default": 9
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Columns on desktop",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "columns_mobile",
+      "label": "Columns on phones",
+      "min": 1,
+      "max": 2,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show “View all” link",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "view_all_label",
+      "label": "View all label",
+      "default": "View all"
+    },
+    {
+      "type": "select",
+      "id": "scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "dark", "label": "Black" },
+        { "value": "bone", "label": "Bone" }
+      ],
+      "default": "dark"
+    },
+    {
+      "type": "checkbox",
+      "id": "grain",
+      "label": "Grain texture",
+      "default": false
+    },
+    {
+      "type": "paragraph",
+      "content": "Badges: tag a product “coming-soon” for COMING SOON; SOLD OUT shows automatically. Hover effects and quick add are set under Theme settings → Motion & effects and Products."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product grid"
+    }
+  ]
+}
+{% endschema %}

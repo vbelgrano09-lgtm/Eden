@@ -1,0 +1,103 @@
+{%- liquid
+  assign s = section.settings
+  assign lines = s.heading | newline_to_br | split: '<br />'
+-%}
+<section class="section scheme-{{ s.scheme }}{% if s.grain %} section-grain{% endif %}">
+  <div class="page-width page-width--text rich-text{% if s.align == 'center' %} rich-text--center{% endif %}">
+    {%- if s.eyebrow != blank -%}
+      <p class="label muted">{{ s.eyebrow }}</p>
+    {%- endif -%}
+    {%- if s.heading != blank -%}
+      <h2 class="h2"{% if s.split %} data-split="chars"{% endif %}>
+        {%- for line in lines -%}
+          {{ line | strip }}
+          {%- unless forloop.last %}<br>{% endunless -%}
+        {%- endfor -%}
+      </h2>
+    {%- endif -%}
+    {%- if s.text != blank -%}
+      <div class="rich-text__body rte body-lg"{% if s.split %} data-reveal{% endif %}>{{ s.text }}</div>
+    {%- endif -%}
+    {%- if s.button_label != blank -%}
+      <div>
+        <span class="magnetic" data-magnetic>
+          <a class="btn" href="{{ s.button_link }}"><span class="btn__label">{{ s.button_label }}</span></a>
+        </span>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Rich text",
+  "tag": "div",
+  "class": "section-rich-text",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Faith that is worn,\nnot preached."
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>No sermons. No slogans for the sake of it. Just the reminder you need, stitched into something heavy enough to carry you through the day.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "align",
+      "label": "Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "checkbox",
+      "id": "split",
+      "label": "Split-text reveal",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "dark", "label": "Black" },
+        { "value": "bone", "label": "Bone" }
+      ],
+      "default": "dark"
+    },
+    {
+      "type": "checkbox",
+      "id": "grain",
+      "label": "Grain texture",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Rich text"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,20 @@
+{%- doc -%}
+  On-brand placeholder shown until real photography is uploaded: dark gradient, soft light,
+  the crossed nails. Stock religious imagery is never used.
+
+  @param {string} [type] - product | lifestyle | hero
+{%- enddoc -%}
+{%- liquid
+  case type
+    when 'hero'
+      assign svg_name = 'hero-apparel-1'
+    when 'lifestyle'
+      assign svg_name = 'lifestyle-1'
+    else
+      assign svg_name = 'product-apparel-1'
+  endcase
+-%}
+<div class="placeholder-art" aria-hidden="true">
+  {{ svg_name | placeholder_svg_tag: 'placeholder-svg' }}
+  {%- render 'icon', icon: 'nails' -%}
+</div>

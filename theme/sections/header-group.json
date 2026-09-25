@@ -1,0 +1,28 @@
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "announcement": {
+      "type": "announcement-bar",
+      "settings": {
+        "text": "Chapter 002 drops in",
+        "link": "",
+        "style": "black",
+        "show_countdown": true,
+        "countdown_date": "2026-11-13 18:00",
+        "countdown_offset": "-05:00",
+        "live_text": "Live now"
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "menu": "main-menu",
+        "behaviour": "smart",
+        "show_search": true,
+        "show_account": true
+      }
+    }
+  },
+  "order": ["announcement", "header"]
+}

@@ -1,0 +1,138 @@
+/* ==========================================================================
+   EDEN — customer.css (login, register, account, order, addresses)
+   ========================================================================== */
+
+.customer {
+  padding-bottom: var(--section-pad);
+}
+.customer__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+}
+.customer__head .page-head__title {
+  margin-block: 10px;
+}
+.customer__form {
+  display: grid;
+  gap: 16px;
+}
+.customer__aside-link {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.customer__recover {
+  display: none;
+  gap: 16px;
+  padding-top: 32px;
+}
+.customer__recover:target {
+  display: grid;
+}
+.customer:has(.customer__recover:target) .customer__login {
+  display: none;
+}
+.customer__guest {
+  display: grid;
+  gap: 16px;
+  margin-top: 56px;
+  padding-top: 32px;
+  border-top: 1px solid var(--line);
+}
+.customer__grid {
+  display: grid;
+  gap: 40px;
+}
+.customer__grid > section {
+  display: grid;
+  gap: 20px;
+  align-content: start;
+  min-width: 0;
+}
+.customer__card {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  padding: 24px;
+  border: 1px solid var(--line);
+}
+.customer__card address {
+  font-style: normal;
+  line-height: 1.6;
+}
+.customer__table-wrap {
+  overflow-x: auto;
+}
+.customer__table {
+  width: 100%;
+  min-width: 560px;
+  font-variant-numeric: tabular-nums;
+}
+.customer__table th,
+.customer__table td {
+  padding: 16px 12px 16px 0;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+.customer__table thead th {
+  color: var(--fg-muted);
+}
+.customer__table tbody th {
+  font-weight: 600;
+}
+.customer__table tfoot th {
+  font-weight: 400;
+  color: var(--fg-muted);
+  text-align: right;
+}
+.customer__table tfoot tr:last-child th,
+.customer__table tfoot tr:last-child td {
+  color: var(--fg);
+  font-weight: 700;
+}
+.customer__new {
+  margin-bottom: 32px;
+}
+.customer__new summary,
+.customer__actions summary {
+  list-style: none;
+  width: max-content;
+}
+.customer__new summary::-webkit-details-marker,
+.customer__actions summary::-webkit-details-marker {
+  display: none;
+}
+.customer__new[open] > .customer__form,
+.customer__actions details[open] > .customer__form {
+  margin-top: 24px;
+}
+.customer__addresses {
+  display: grid;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.customer__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 10px;
+}
+.customer__actions details {
+  flex-basis: 100%;
+}
+.customer__actions details:not([open]) {
+  flex-basis: auto;
+}
+@media (min-width: 990px) {
+  .customer__grid {
+    grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+    align-items: start;
+  }
+}

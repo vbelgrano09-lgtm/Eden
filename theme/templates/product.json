@@ -1,0 +1,124 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title": {
+          "type": "title",
+          "settings": { "eyebrow": "EDEN — Chapter 001" }
+        },
+        "price": { "type": "price", "settings": {} },
+        "mto": {
+          "type": "made_to_order",
+          "settings": { "text": "Made to order · ships in [days] days" }
+        },
+        "picker": {
+          "type": "variant_picker",
+          "settings": {
+            "size_guide": true,
+            "size_guide_title": "Size guide",
+            "size_table": "Size | Chest | Length | Sleeve\nXS | 124 | 70 | 58\nS | 128 | 72 | 59\nM | 132 | 74 | 60\nL | 136 | 76 | 61\nXL | 140 | 78 | 62\nXXL | 144 | 80 | 63",
+            "size_note": "<p>Cut oversized on purpose. Measurements are the garment laid flat (chest is doubled). Want it closer to the body? Size down.</p>",
+            "model_note": "Model is 185 cm / 6'1\" and wears L."
+          }
+        },
+        "buy": {
+          "type": "buy_buttons",
+          "settings": { "show_quantity": false, "show_dynamic_checkout": true, "notify_button": "Notify me" }
+        },
+        "set_line": {
+          "type": "text",
+          "settings": { "text": "<p>Sold as a set. Worn as one.</p>" }
+        },
+        "details": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Details",
+            "use_description": true,
+            "content": "",
+            "open": true
+          }
+        },
+        "fit": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Size & fit",
+            "use_description": false,
+            "content": "<p>Oversized: dropped shoulders, relaxed through the body, cropped a touch at the hem so it sits right over the joggers. Heavyweight fleece holds its shape.</p><p>True to size for the intended fit. Size down if you want it closer to the body. Full measurements are in the size guide.</p>",
+            "open": false
+          }
+        },
+        "meaning": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "The meaning",
+            "use_description": false,
+            "content": "<p>Two nails. That's the whole symbol. They mark the moment everything broke, and the reason nothing has to stay broken.</p><p>We put them over the D because that's where the story turns. <strong>When we fall, we rise.</strong> Faith isn't the absence of fear. It's what you do with it.</p>",
+            "open": false
+          }
+        },
+        "care": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Care",
+            "use_description": false,
+            "content": "<p>Wash cold, inside out, with similar colours. Don't tumble dry: lay flat to dry. Cool iron, never on the print.</p><p>It's built heavy. Treat it right and it outlasts the season.</p>",
+            "open": false
+          }
+        },
+        "shipping": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Shipping",
+            "use_description": false,
+            "content": "<p>Every piece is made to order after you check out. Production takes the time shown above, then your order ships with tracking to the US, UK, Canada, Australia and worldwide.</p><p>Delivery times and any duties for your country are shown at checkout.</p>",
+            "open": false
+          }
+        }
+      },
+      "block_order": ["title", "price", "mto", "picker", "buy", "set_line", "details", "fit", "meaning", "care", "shipping"],
+      "settings": {
+        "gallery_layout": "stack",
+        "require_size": true
+      }
+    },
+    "set": {
+      "type": "complete-the-set",
+      "settings": {
+        "eyebrow": "The set",
+        "title": "Complete\nthe set",
+        "text": "Sold as a set. Worn as one. Same fleece, same weight, same colour.",
+        "scheme": "dark",
+        "grain": false
+      }
+    },
+    "related": {
+      "type": "product-recommendations",
+      "settings": {
+        "title": "Also in the chapter",
+        "limit": 4,
+        "columns": 4,
+        "scheme": "dark"
+      }
+    },
+    "marquee": {
+      "type": "marquee",
+      "blocks": {
+        "m1": { "type": "text", "settings": { "text": "Faith over fear", "outline": false } },
+        "m2": { "type": "text", "settings": { "text": "Made to order", "outline": true } },
+        "m3": { "type": "text", "settings": { "text": "Shipped worldwide", "outline": false } }
+      },
+      "block_order": ["m1", "m2", "m3"],
+      "settings": {
+        "separator": "nails",
+        "speed": 40,
+        "size": 70,
+        "direction": "left",
+        "reactive": true,
+        "boost": 4,
+        "style": "default"
+      }
+    }
+  },
+  "order": ["main", "set", "related", "marquee"]
+}

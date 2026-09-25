@@ -1,0 +1,16 @@
+{%- doc -%}
+  Turns the theme-editor date text ("2026-11-13 18:00" or "2026-11-13T18:00") and a
+  UTC offset ("-05:00") into an ISO 8601 string the browser can parse.
+
+  @param {string} date - Date text from a section setting.
+  @param {string} offset - UTC offset like -05:00.
+{%- enddoc -%}
+{%- liquid
+  assign iso = date | strip | replace: ' ', 'T'
+  if iso.size == 10
+    assign iso = iso | append: 'T00:00:00'
+  elsif iso.size == 16
+    assign iso = iso | append: ':00'
+  endif
+  echo iso | append: offset
+-%}

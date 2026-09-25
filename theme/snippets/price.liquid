@@ -1,0 +1,46 @@
+{%- doc -%}
+  Price with compare-at and unit price. Pass a product (shows "From" when prices vary) or a variant.
+
+  @param {product} [product] - Product to price.
+  @param {variant} [variant] - Specific variant to price.
+  @param {boolean} [show_unit] - Show unit price when set.
+{%- enddoc -%}
+{%- liquid
+  if variant
+    assign target = variant
+    assign price = variant.price
+    assign compare = variant.compare_at_price
+    assign varies = false
+  else
+    assign target = product.selected_or_first_available_variant
+    assign price = product.price
+    assign compare = product.compare_at_price
+    assign varies = product.price_varies
+  endif
+-%}
+<span class="price" data-price>
+  {%- if compare > price -%}
+    <span class="visually-hidden">{{ 'products.price.sale' | t }}</span>
+  {%- endif -%}
+  <span class="price__regular">
+    {%- if varies -%}
+      {%- assign price_money = price | money -%}
+      {{- 'products.price.from_html' | t: price: price_money -}}
+    {%- else -%}
+      {{- price | money -}}
+    {%- endif -%}
+  </span>
+  {%- if compare > price -%}
+    <span class="visually-hidden">{{ 'products.price.regular' | t }}</span>
+    <s class="price__compare">{{ compare | money }}</s>
+  {%- endif -%}
+  {%- if show_unit and target.unit_price_measurement -%}
+    <span class="price__unit">
+      {{- target.unit_price | money -}}/
+      {%- if target.unit_price_measurement.reference_value != 1 -%}
+        {{- target.unit_price_measurement.reference_value -}}
+      {%- endif -%}
+      {{- target.unit_price_measurement.reference_unit -}}
+    </span>
+  {%- endif -%}
+</span>

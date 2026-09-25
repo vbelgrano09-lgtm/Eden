@@ -1,0 +1,194 @@
+{%- doc -%}
+  Product card: 4:5 media with second-image hover (WebGL on desktop, crossfade on phones),
+  3D tilt, COMING SOON / SOLD OUT badges, "5 COLORS" count and quick add by size.
+
+  @param {product} product - The product to show.
+  @param {string} [sizes] - `sizes` attribute for the images.
+  @param {boolean} [eager] - Load eagerly (first row above the fold).
+  @param {boolean} [hide_quick_add] - Hide quick add for this card.
+  @param {string} [id_prefix] - Unique prefix for ids (section id).
+  @param {number} [index] - Position in the grid (stagger).
+{%- enddoc -%}
+{%- liquid
+  assign coming_soon = false
+  if settings.coming_soon_tag != blank and product.tags contains settings.coming_soon_tag
+    assign coming_soon = true
+  endif
+  assign sold_out = false
+  unless product.available or coming_soon
+    assign sold_out = true
+  endunless
+
+  assign color_option = product.options_by_name['Color'] | default: product.options_by_name['Colour']
+  assign size_option = product.options_by_name['Size']
+  assign first_variant = product.selected_or_first_available_variant
+  assign current_color = blank
+  if color_option
+    assign color_index = color_option.position | minus: 1
+    assign current_color = first_variant.options[color_index]
+  endif
+  if size_option
+    assign size_index = size_option.position | minus: 1
+  endif
+
+  assign img_sizes = sizes | default: '(min-width: 990px) 31vw, (min-width: 750px) 48vw, 92vw'
+  assign loading = 'lazy'
+  if eager
+    assign loading = 'eager'
+  endif
+
+  assign secondary = null
+  if settings.card_second_image and product.media.size > 1
+    for media in product.media offset: 1
+      if media.media_type == 'image'
+        assign secondary = media
+        break
+      endif
+    endfor
+  endif
+
+  assign uid = id_prefix | append: '-' | append: product.id
+  assign title_escaped = product.title | escape
+-%}
+<div
+  class="card{% if sold_out %} card--soldout{% endif %}"
+  data-product-handle="{{ product.handle }}"
+  data-reveal
+  {% if index %}
+    style="--reveal-delay: {{ index | modulo: 3 | times: 0.08 }}s"
+  {% endif %}
+>
+  <div class="card__tilt"{% if settings.card_tilt %} data-tilt{% endif %}>
+    <a
+      href="{{ product.url }}"
+      class="card__media media-lit"
+      tabindex="-1"
+      aria-hidden="true"
+      data-vt-media
+      data-cursor="view"
+      data-cursor-label="{{ 'general.cursor.view' | t }}"
+      {% if secondary and settings.webgl_enable %}
+        data-webgl-media
+      {% endif %}
+    >
+      {%- if product.featured_media -%}
+        {%- assign alt = product.featured_media.alt | default: product.title -%}
+        {{
+          product.featured_media
+          | image_url: width: 1400
+          | image_tag:
+            loading: loading,
+            widths: '360, 540, 720, 900, 1100, 1400',
+            sizes: img_sizes,
+            alt: alt,
+            class: 'card__img card__img--primary'
+        }}
+        {%- if secondary -%}
+          {{
+            secondary
+            | image_url: width: 1400
+            | image_tag:
+              loading: 'lazy',
+              widths: '360, 540, 720, 900, 1100, 1400',
+              sizes: img_sizes,
+              alt: '',
+              class: 'card__img card__img--secondary'
+          }}
+        {%- endif -%}
+      {%- else -%}
+        {%- render 'media-placeholder', type: 'product' -%}
+      {%- endif -%}
+    </a>
+
+    <div class="card__badges">
+      {%- if coming_soon -%}
+        <span class="badge badge--soon">{{ 'products.card.coming_soon' | t }}</span>
+      {%- elsif sold_out -%}
+        <span class="badge badge--outline">{{ 'products.product.sold_out' | t }}</span>
+      {%- elsif product.compare_at_price > product.price -%}
+        <span class="badge">{{ 'products.card.sale' | t }}</span>
+      {%- endif -%}
+    </div>
+
+    {%- if settings.quick_add and hide_quick_add != true and product.available and coming_soon == false -%}
+      <quick-add class="card__quick">
+        {%- if product.has_only_default_variant -%}
+          <div class="card__sizes card__sizes--single">
+            <button
+              class="card__size"
+              type="button"
+              data-variant-id="{{ first_variant.id }}"
+              aria-label="{{ 'products.card.quick_add_single' | t: title: title_escaped }}"
+            >
+              {{- 'products.product.add_to_bag' | t -}}
+            </button>
+          </div>
+        {%- else -%}
+          <button
+            class="card__quick-toggle"
+            type="button"
+            data-quick-toggle
+            aria-expanded="false"
+            aria-controls="QuickAdd-{{ uid }}"
+          >
+            <span class="visually-hidden">{{ 'products.card.quick_add_for' | t: title: title_escaped }}</span>
+            {%- render 'icon', icon: 'plus' -%}
+          </button>
+          <div
+            class="card__sizes"
+            id="QuickAdd-{{ uid }}"
+            role="group"
+            aria-label="{{ 'products.card.quick_add_for' | t: title: title_escaped }}"
+          >
+            <span class="card__sizes-label label" aria-hidden="true">
+              {{- 'products.card.quick_add' | t -}}
+              {%- if current_color != blank %} · {{ current_color }}{% endif -%}
+            </span>
+            {%- for variant in product.variants -%}
+              {%- liquid
+                assign show = true
+                if color_option and variant.options[color_index] != current_color
+                  assign show = false
+                endif
+                if size_option
+                  assign size_label = variant.options[size_index]
+                else
+                  assign size_label = variant.title
+                endif
+              -%}
+              {%- if show -%}
+                <button
+                  class="card__size"
+                  type="button"
+                  data-variant-id="{{ variant.id }}"
+                  aria-label="{{ 'products.card.quick_add_size' | t: title: title_escaped, size: size_label }}{% unless variant.available %} — {{ 'products.product.sold_out' | t }}{% endunless %}"
+                  {% unless variant.available %}
+                    disabled
+                  {% endunless %}
+                >
+                  {{- size_label -}}
+                </button>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </quick-add>
+    {%- endif -%}
+  </div>
+
+  <div class="card__info">
+    <h3 class="card__title">
+      <a href="{{ product.url }}" class="card__title-link">{{ product.title }}</a>
+    </h3>
+    <div class="card__price">
+      {%- if coming_soon -%}
+        <span class="label muted">{{ 'products.card.soon' | t }}</span>
+      {%- else -%}
+        {%- render 'price', product: product -%}
+      {%- endif -%}
+    </div>
+    {%- if settings.card_color_count and color_option and color_option.values.size > 1 -%}
+      <p class="card__meta label">{{ 'products.card.colors' | t: count: color_option.values.size }}</p>
+    {%- endif -%}
+  </div>
+</div>

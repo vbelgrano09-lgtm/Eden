@@ -1,0 +1,59 @@
+{%- doc -%}
+  Newsletter signup (Shopify customer form, tagged "newsletter").
+
+  @param {string} form_id - Unique form id.
+  @param {string} [placeholder] - Input placeholder.
+  @param {string} [button] - Submit label.
+  @param {string} [success] - Success message.
+{%- enddoc -%}
+{%- liquid
+  assign nl_placeholder = 'newsletter.placeholder' | t
+  if placeholder != blank
+    assign nl_placeholder = placeholder
+  endif
+  assign nl_button = 'newsletter.submit' | t
+  if button != blank
+    assign nl_button = button
+  endif
+  assign nl_success = 'newsletter.success' | t
+  if success != blank
+    assign nl_success = success
+  endif
+-%}
+{%- form 'customer', id: form_id, class: 'newsletter-form' -%}
+  <input type="hidden" name="contact[tags]" value="newsletter">
+  <div class="newsletter-form__row">
+    <label class="visually-hidden" for="{{ form_id }}-email">{{ 'newsletter.email_label' | t }}</label>
+    <input
+      class="newsletter-form__input"
+      id="{{ form_id }}-email"
+      type="email"
+      name="contact[email]"
+      autocomplete="email"
+      autocapitalize="off"
+      spellcheck="false"
+      required
+      placeholder="{{ nl_placeholder | escape }}"
+      {% if form.errors %}
+        aria-invalid="true" aria-describedby="{{ form_id }}-error"
+      {% elsif form.posted_successfully? %}
+        aria-describedby="{{ form_id }}-success"
+      {% endif %}
+    >
+    <button class="newsletter-form__submit label" type="submit">
+      <span>{{ nl_button }}</span>
+      {%- render 'icon', icon: 'arrow' -%}
+    </button>
+  </div>
+  {%- if form.errors -%}
+    <p class="newsletter-form__message form-error" id="{{ form_id }}-error" role="alert">
+      {{- form.errors.translated_fields.email | capitalize }}
+      {{ form.errors.messages.email -}}
+    </p>
+  {%- elsif form.posted_successfully? -%}
+    <p class="newsletter-form__message label" id="{{ form_id }}-success" role="status">
+      {%- render 'icon', icon: 'check' -%}
+      {{- nl_success -}}
+    </p>
+  {%- endif -%}
+{%- endform -%}

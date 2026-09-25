@@ -1,0 +1,14 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-404",
+      "settings": {
+        "title": "Lost?\nSo were we.",
+        "text": "Come home.",
+        "button": "Come home",
+        "button_2": "Shop the chapter"
+      }
+    }
+  },
+  "order": ["main"]
+}

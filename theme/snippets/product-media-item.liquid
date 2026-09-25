@@ -1,0 +1,62 @@
+{%- doc -%}
+  One product gallery item. The first image is the LCP: eager + fetchpriority high,
+  and it is the View Transition target when arriving from a product card.
+
+  @param {object} media - Product media.
+  @param {product} product - The product.
+  @param {number} position - 0-based position in the gallery.
+  @param {boolean} first - Is this the first (LCP) item.
+{%- enddoc -%}
+{%- liquid
+  assign loading = 'lazy'
+  assign priority = 'auto'
+  if first
+    assign loading = 'eager'
+    assign priority = 'high'
+  endif
+  assign alt = media.alt | default: product.title
+  assign number = position | plus: 1
+-%}
+<li
+  class="pdp__media-item pdp__media-item--{{ media.media_type }}"
+  data-media-id="{{ media.id }}"
+  {% if first %}
+    data-vt-product-media data-handle="{{ product.handle }}"
+  {% endif %}
+>
+  {%- case media.media_type -%}
+    {%- when 'image' -%}
+      <button
+        class="pdp__media-frame pdp__zoom-btn media-lit"
+        type="button"
+        data-zoom-open="{{ media.id }}"
+        data-cursor="view"
+        data-cursor-label="{{ 'general.cursor.zoom' | t }}"
+        aria-label="{{ 'products.product.zoom_open' | t: number: number, total: product.media.size }}"
+        style="--ratio: {{ media.aspect_ratio | default: 0.8 }}"
+      >
+        {{
+          media
+          | image_url: width: 2400
+          | image_tag:
+            loading: loading,
+            fetchpriority: priority,
+            widths: '480, 720, 960, 1200, 1500, 1800, 2400',
+            sizes: '(min-width: 990px) 58vw, 100vw',
+            alt: alt
+        }}
+      </button>
+    {%- when 'video' -%}
+      <div class="pdp__media-frame" style="--ratio: {{ media.aspect_ratio | default: 0.8 }}">
+        {{ media | video_tag: controls: true, muted: true, playsinline: true, preload: 'none', image_size: '1500x' }}
+      </div>
+    {%- when 'external_video' -%}
+      <div class="pdp__media-frame pdp__media-frame--embed" style="--ratio: 1.7777">
+        {{ media | external_video_tag: loading: 'lazy' }}
+      </div>
+    {%- else -%}
+      <div class="pdp__media-frame" style="--ratio: {{ media.preview_image.aspect_ratio | default: 1 }}">
+        {{ media.preview_image | image_url: width: 1500 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 58vw, 100vw', alt: alt }}
+      </div>
+  {%- endcase -%}
+</li>

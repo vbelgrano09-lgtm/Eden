@@ -1,0 +1,23 @@
+{%- comment -%} Social links from theme settings. {%- endcomment -%}
+{%- capture links -%}
+  {%- if settings.social_instagram != blank -%}
+    <li><a href="{{ settings.social_instagram }}" target="_blank" rel="noopener"><span class="visually-hidden">{{ 'social.instagram' | t }}</span>{% render 'icon', icon: 'instagram' %}</a></li>
+  {%- endif -%}
+  {%- if settings.social_tiktok != blank -%}
+    <li><a href="{{ settings.social_tiktok }}" target="_blank" rel="noopener"><span class="visually-hidden">{{ 'social.tiktok' | t }}</span>{% render 'icon', icon: 'tiktok' %}</a></li>
+  {%- endif -%}
+  {%- if settings.social_youtube != blank -%}
+    <li><a href="{{ settings.social_youtube }}" target="_blank" rel="noopener"><span class="visually-hidden">{{ 'social.youtube' | t }}</span>{% render 'icon', icon: 'youtube' %}</a></li>
+  {%- endif -%}
+  {%- if settings.social_x != blank -%}
+    <li><a href="{{ settings.social_x }}" target="_blank" rel="noopener"><span class="visually-hidden">{{ 'social.x' | t }}</span>{% render 'icon', icon: 'x' %}</a></li>
+  {%- endif -%}
+  {%- if settings.social_pinterest != blank -%}
+    <li><a href="{{ settings.social_pinterest }}" target="_blank" rel="noopener"><span class="visually-hidden">{{ 'social.pinterest' | t }}</span>{% render 'icon', icon: 'pinterest' %}</a></li>
+  {%- endif -%}
+{%- endcapture -%}
+{%- if links != blank -%}
+  <ul class="social" role="list">
+    {{- links -}}
+  </ul>
+{%- endif -%}

@@ -1,0 +1,69 @@
+{%- doc -%}
+  Big drop countdown (drop section + password page). Switches to LIVE NOW at zero.
+
+  @param {string} iso - Target date, ISO 8601 with offset.
+  @param {string} [start_iso] - Optional start date for the progress bar.
+  @param {string} label - Small label above ("Chapter 002").
+  @param {string} [live_title] - Title when live.
+  @param {string} [live_link] - Link when live.
+  @param {string} [live_button] - Button label when live.
+  @param {string} [readable_date] - Human date for screen readers.
+{%- enddoc -%}
+{%- liquid
+  assign live_label = 'sections.countdown.live_now' | t
+  if live_title != blank
+    assign live_label = live_title
+  endif
+  assign live_cta = 'sections.countdown.shop_now' | t
+  if live_button != blank
+    assign live_cta = live_button
+  endif
+-%}
+<drop-countdown
+  class="countdown"
+  data-target="{{ iso }}"
+  {% if start_iso != blank %}
+    data-start="{{ start_iso }}"
+  {% endif %}
+  data-live-text="{{ live_label | escape }}"
+>
+  <div class="countdown__inner countdown__running">
+    <p class="label">{{ label }}</p>
+    {%- if readable_date != blank -%}
+      <p class="visually-hidden">{{ 'sections.countdown.drops_on' | t: date: readable_date }}</p>
+    {%- endif -%}
+    <div class="countdown__units" aria-hidden="true">
+      <div class="countdown__unit">
+        <span class="countdown__num" data-unit="days">00</span>
+        <span class="label muted">{{ 'sections.countdown.days' | t }}</span>
+      </div>
+      <div class="countdown__unit">
+        <span class="countdown__num" data-unit="hours">00</span>
+        <span class="label muted">{{ 'sections.countdown.hours' | t }}</span>
+      </div>
+      <div class="countdown__unit">
+        <span class="countdown__num" data-unit="minutes">00</span>
+        <span class="label muted">{{ 'sections.countdown.minutes' | t }}</span>
+      </div>
+      <div class="countdown__unit">
+        <span class="countdown__num" data-unit="seconds">00</span>
+        <span class="label muted">{{ 'sections.countdown.seconds' | t }}</span>
+      </div>
+    </div>
+    {%- if start_iso != blank -%}
+      <div class="countdown__bar" aria-hidden="true"><span></span></div>
+    {%- endif -%}
+  </div>
+  <div class="countdown__live">
+    <p class="label">{{ label }}</p>
+    <p class="countdown__live-title h-display">
+      <span class="dot" aria-hidden="true"></span>
+      {{- live_label -}}
+    </p>
+    {%- if live_link != blank -%}
+      <span class="magnetic" data-magnetic>
+        <a class="btn btn--bone btn--lg" href="{{ live_link }}"><span class="btn__label">{{ live_cta }}</span></a>
+      </span>
+    {%- endif -%}
+  </div>
+</drop-countdown>

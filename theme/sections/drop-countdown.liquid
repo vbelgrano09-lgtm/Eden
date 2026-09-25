@@ -1,0 +1,113 @@
+{%- liquid
+  assign s = section.settings
+  capture iso
+    render 'countdown-iso', date: s.date, offset: s.offset
+  endcapture
+  assign start_iso = blank
+  if s.start_date != blank
+    capture start_iso
+      render 'countdown-iso', date: s.start_date, offset: s.offset
+    endcapture
+  endif
+-%}
+<section class="section scheme-{{ s.scheme }}{% if s.grain %} section-grain{% endif %}">
+  <div class="page-width">
+    {%- if s.date != blank -%}
+      {%- render 'countdown',
+        iso: iso,
+        start_iso: start_iso,
+        label: s.label,
+        live_title: s.live_title,
+        live_link: s.live_link,
+        live_button: s.live_button,
+        readable_date: s.date
+      -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Drop countdown",
+  "tag": "div",
+  "class": "section-countdown",
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "Chapter 002 — Drops in"
+    },
+    {
+      "type": "text",
+      "id": "date",
+      "label": "Drop date and time",
+      "info": "Format: YYYY-MM-DD HH:MM (24h). At zero it switches to LIVE NOW.",
+      "default": "2026-11-13 18:00"
+    },
+    {
+      "type": "text",
+      "id": "start_date",
+      "label": "Countdown start (optional)",
+      "info": "Adds a blood-red progress bar from this date to the drop.",
+      "default": "2026-09-01 00:00"
+    },
+    {
+      "type": "select",
+      "id": "offset",
+      "label": "Time zone of these dates",
+      "options": [
+        { "value": "-08:00", "label": "Los Angeles (PST, UTC−8)" },
+        { "value": "-07:00", "label": "Los Angeles summer (PDT, UTC−7)" },
+        { "value": "-06:00", "label": "Chicago (CST, UTC−6)" },
+        { "value": "-05:00", "label": "New York / Toronto (EST, UTC−5)" },
+        { "value": "-04:00", "label": "New York summer (EDT, UTC−4)" },
+        { "value": "Z", "label": "London (GMT, UTC)" },
+        { "value": "+01:00", "label": "London summer (BST, UTC+1)" },
+        { "value": "+08:00", "label": "Perth (AWST, UTC+8)" },
+        { "value": "+10:00", "label": "Sydney (AEST, UTC+10)" },
+        { "value": "+11:00", "label": "Sydney summer (AEDT, UTC+11)" }
+      ],
+      "default": "-05:00"
+    },
+    {
+      "type": "text",
+      "id": "live_title",
+      "label": "Title when live",
+      "default": "Live now"
+    },
+    {
+      "type": "url",
+      "id": "live_link",
+      "label": "Link when live"
+    },
+    {
+      "type": "text",
+      "id": "live_button",
+      "label": "Button when live",
+      "default": "Shop Chapter 002"
+    },
+    {
+      "type": "select",
+      "id": "scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "dark", "label": "Black" },
+        { "value": "bone", "label": "Bone" }
+      ],
+      "default": "dark"
+    },
+    {
+      "type": "checkbox",
+      "id": "grain",
+      "label": "Grain texture",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Drop countdown"
+    }
+  ]
+}
+{% endschema %}

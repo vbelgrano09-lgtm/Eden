@@ -1,0 +1,27 @@
+{
+  "name": "eden-shopify-theme",
+  "version": "1.0.0",
+  "private": true,
+  "description": "EDEN — Shopify Online Store 2.0 theme. The uploadable theme lives in ./theme",
+  "scripts": {
+    "build:webgl": "esbuild src/webgl/eden-webgl.js --bundle --minify --format=iife --target=es2019 --legal-comments=none --outfile=theme/assets/eden-webgl.js",
+    "vendor": "node scripts/copy-vendor.mjs",
+    "check": "shopify theme check --path theme",
+    "zip": "bash scripts/build-zip.sh",
+    "build": "npm run build:webgl && npm run zip",
+    "preview": "node tools/preview/server.mjs",
+    "test:browser": "node tools/preview/test.mjs"
+  },
+  "devDependencies": {
+    "@fontsource-variable/archivo": "^5.2.8",
+    "@fontsource/archivo-black": "^5.2.8",
+    "@shopify/cli": "^4.8.2",
+    "esbuild": "^0.25.0",
+    "gsap": "^3.15.0",
+    "lenis": "^1.3.26",
+    "ogl": "^1.0.11",
+    "liquidjs": "^10.29.0",
+    "playwright-core": "^1.63.0",
+    "axe-core": "^4.11.0"
+  }
+}

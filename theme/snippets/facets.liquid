@@ -1,0 +1,114 @@
+{%- doc -%}
+  Storefront filters (Search & Discovery) for collections and search. Works without JS
+  (Apply button); facets.js updates results in place.
+
+  @param {object} results - The collection or search object.
+  @param {string} section_id - Section id for unique ids.
+{%- enddoc -%}
+<form class="facets__form" id="FacetsForm-{{ section_id }}" data-facets-form>
+  {%- if results.terms -%}
+    <input type="hidden" name="q" value="{{ results.terms | escape }}">
+    <input type="hidden" name="options[prefix]" value="last">
+  {%- endif -%}
+  <div data-facets-form-body>
+    {%- for filter in results.filters -%}
+      {%- case filter.type -%}
+        {%- when 'list', 'boolean' -%}
+          <details class="accordion__item facets__group" open>
+            <summary class="accordion__summary label">
+              <span>
+                {{- filter.label -}}
+                {%- if filter.active_values.size > 0 %} ({{ filter.active_values.size }}){% endif -%}
+              </span>
+              <span class="accordion__icon" aria-hidden="true"></span>
+            </summary>
+            <fieldset class="facets__list">
+              <legend class="visually-hidden">{{ filter.label }}</legend>
+              {%- for value in filter.values -%}
+                {%- liquid
+                  assign input_id = 'Filter-' | append: section_id | append: '-' | append: filter.param_name | append: '-' | append: forloop.index | handle
+                  assign is_disabled = false
+                  if value.count == 0 and value.active == false
+                    assign is_disabled = true
+                  endif
+                -%}
+                <label class="checkbox facets__option{% if is_disabled %} is-disabled{% endif %}" for="{{ input_id }}">
+                  <input
+                    type="checkbox"
+                    id="{{ input_id }}"
+                    name="{{ value.param_name }}"
+                    value="{{ value.value }}"
+                    {% if value.active %}
+                      checked
+                    {% endif %}
+                    {% if is_disabled %}
+                      disabled
+                    {% endif %}
+                  >
+                  {%- if value.swatch.color -%}
+                    <span class="swatch-dot" style="--swatch: {{ value.swatch.color }}"></span>
+                  {%- elsif value.swatch.image -%}
+                    <span class="swatch-dot" style="--swatch: url({{ value.swatch.image | image_url: width: 40 }})"></span>
+                  {%- endif -%}
+                  <span>{{ value.label }}</span>
+                  <span class="muted">({{ value.count }})</span>
+                </label>
+              {%- endfor -%}
+            </fieldset>
+          </details>
+        {%- when 'price_range' -%}
+          {%- liquid
+            assign max_price = filter.range_max | money_without_currency | remove: ',' | remove: '.00'
+            assign min_value = filter.min_value.value | money_without_currency | remove: ','
+            assign max_value = filter.max_value.value | money_without_currency | remove: ','
+            if filter.min_value.value == nil
+              assign min_value = ''
+            endif
+            if filter.max_value.value == nil
+              assign max_value = ''
+            endif
+          -%}
+          <details class="accordion__item facets__group" open>
+            <summary class="accordion__summary label">
+              <span>{{ filter.label }}</span>
+              <span class="accordion__icon" aria-hidden="true"></span>
+            </summary>
+            <fieldset class="facets__price">
+              <legend class="visually-hidden">{{ filter.label }}</legend>
+              <div class="field">
+                <label class="field__label label" for="PriceMin-{{ section_id }}">{{ 'collections.filters.from' | t }} ({{ cart.currency.symbol }})</label>
+                <input
+                  class="input"
+                  id="PriceMin-{{ section_id }}"
+                  type="number"
+                  inputmode="decimal"
+                  name="{{ filter.min_value.param_name }}"
+                  value="{{ min_value }}"
+                  placeholder="0"
+                  min="0"
+                  max="{{ max_price }}"
+                >
+              </div>
+              <div class="field">
+                <label class="field__label label" for="PriceMax-{{ section_id }}">{{ 'collections.filters.to' | t }} ({{ cart.currency.symbol }})</label>
+                <input
+                  class="input"
+                  id="PriceMax-{{ section_id }}"
+                  type="number"
+                  inputmode="decimal"
+                  name="{{ filter.max_value.param_name }}"
+                  value="{{ max_value }}"
+                  placeholder="{{ max_price }}"
+                  min="0"
+                  max="{{ max_price }}"
+                >
+              </div>
+            </fieldset>
+          </details>
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+  <noscript>
+    <button class="btn btn--full" type="submit">{{ 'collections.filters.apply' | t }}</button>
+  </noscript>
+</form>

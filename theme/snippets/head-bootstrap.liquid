@@ -1,0 +1,86 @@
+{%- doc -%}
+  Runs first in <head>: exposes window.EDEN (routes, settings, strings) and decides,
+  before first paint, whether motion is allowed, whether the intro loader plays
+  (once per session) and whether the page-transition curtain should lift.
+
+  @param {boolean} [loader_on] - The loader is enabled for this page.
+{%- enddoc -%}
+<script>
+  window.EDEN = {
+    designMode: {{ request.design_mode | json }},
+    routes: {
+      root: {{ routes.root_url | json }},
+      cart: {{ routes.cart_url | json }},
+      cartAdd: {{ routes.cart_add_url | json }},
+      cartChange: {{ routes.cart_change_url | json }},
+      cartUpdate: {{ routes.cart_update_url | json }},
+      predictiveSearch: {{ routes.predictive_search_url | json }}
+    },
+    settings: {
+      motion: {{ settings.motion_enable | json }},
+      loader: {{ loader_on | default: false | json }},
+      smoothScroll: {{ settings.smooth_scroll | json }},
+      smoothDuration: {{ settings.smooth_scroll_duration | divided_by: 10.0 | json }},
+      transitions: {{ settings.page_transitions | json }},
+      splitText: {{ settings.split_text | json }},
+      cursor: {{ settings.cursor_enable | json }},
+      magnetic: {{ settings.magnetic_enable | json }},
+      webgl: {{ settings.webgl_enable | json }},
+      tilt: {{ settings.card_tilt | json }},
+      cartType: {{ settings.cart_type | json }},
+      predictiveSearch: {{ settings.predictive_search | json }}
+    },
+    assets: {
+      webgl: {{ 'eden-webgl.js' | asset_url | json }}
+    },
+    strings: {
+      addToBag: {{ 'products.product.add_to_bag' | t | json }},
+      adding: {{ 'products.product.adding' | t | json }},
+      added: {{ 'products.product.added' | t | json }},
+      soldOut: {{ 'products.product.sold_out' | t | json }},
+      unavailable: {{ 'products.product.unavailable' | t | json }},
+      selectSize: {{ 'products.product.select_size' | t | json }},
+      cartError: {{ 'cart.error' | t | json }},
+      liveNow: {{ 'sections.countdown.live_now' | t | json }},
+      cartCount: {{ 'cart.count_js' | t | json }}
+    }
+  };
+  (function () {
+    var d = document.documentElement;
+    var cfg = window.EDEN.settings;
+    d.classList.remove('no-js');
+    d.classList.add('js');
+    var reduce = false;
+    try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+    var motion = cfg.motion && !reduce;
+    d.classList.add(motion ? 'motion-ok' : 'motion-off');
+    if (motion && cfg.splitText) d.classList.add('split-on');
+    try { if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) d.classList.add('has-hover'); } catch (e) {}
+    var ss = null;
+    try { ss = window.sessionStorage; } catch (e) {}
+    if (!ss || window.EDEN.designMode) return;
+    // Cross-document View Transition: morph the clicked card image into the product gallery.
+    if (motion && cfg.transitions) {
+      window.addEventListener('pagereveal', function (e) {
+        var handle = null;
+        try { handle = ss.getItem('eden:vt'); ss.removeItem('eden:vt'); } catch (err) {}
+        if (!e.viewTransition || !handle) return;
+        var media = document.querySelector('[data-vt-product-media][data-handle="' + handle.replace(/"/g, '') + '"]');
+        if (!media) return;
+        media.style.viewTransitionName = 'product-media';
+        e.viewTransition.finished.finally(function () { media.style.viewTransitionName = ''; });
+      });
+    }
+    try {
+      if (motion && cfg.loader && !ss.getItem('eden:intro')) {
+        ss.setItem('eden:intro', '1');
+        d.classList.add('has-loader', 'intro-delay');
+        return;
+      }
+      if (motion && cfg.transitions && !('CSSViewTransitionRule' in window) && ss.getItem('eden:pt') === '1') {
+        d.classList.add('pt-enter');
+      }
+      ss.removeItem('eden:pt');
+    } catch (e) {}
+  })();
+</script>

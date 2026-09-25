@@ -1,0 +1,43 @@
+{{ 'collection.css' | asset_url | stylesheet_tag }}
+<div class="page-width">
+  <header class="page-head">
+    <h1 class="page-head__title">{{ section.settings.title }}</h1>
+  </header>
+  <ul class="collections-list" role="list">
+    {%- for collection in collections -%}
+      <li class="collection-tile" data-reveal>
+        <div class="collection-tile__media media-lit">
+          {%- assign tile_image = collection.featured_image -%}
+          {%- if tile_image -%}
+            {%- assign tile_alt = tile_image.alt | default: collection.title -%}
+            {{
+              tile_image
+              | image_url: width: 1200
+              | image_tag: loading: 'lazy', widths: '360, 540, 720, 960, 1200', sizes: '(min-width: 990px) 31vw, (min-width: 750px) 46vw, 92vw', alt: tile_alt
+            }}
+          {%- else -%}
+            {%- render 'media-placeholder', type: 'lifestyle' -%}
+          {%- endif -%}
+        </div>
+        <h2 class="collection-tile__title"><a href="{{ collection.url }}">{{ collection.title }}</a></h2>
+        <p class="label muted">{{ 'collections.count' | t: count: collection.products_count }}</p>
+      </li>
+    {%- endfor -%}
+  </ul>
+</div>
+
+{% schema %}
+{
+  "name": "Collections list",
+  "tag": "section",
+  "class": "section-list-collections",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Chapters"
+    }
+  ]
+}
+{% endschema %}

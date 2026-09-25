@@ -1,0 +1,106 @@
+{%- liquid
+  assign iso = blank
+  if section.settings.show_countdown and section.settings.countdown_date != blank
+    capture iso
+      render 'countdown-iso', date: section.settings.countdown_date, offset: section.settings.countdown_offset
+    endcapture
+  endif
+-%}
+<div
+  class="announcement{% if section.settings.style == 'accent' %} announcement--accent{% endif %}"
+  data-countdown-scope
+  role="region"
+  aria-label="{{ 'sections.announcement.label' | t }}"
+>
+  <div class="announcement__inner label">
+    <span class="announcement__dot" aria-hidden="true"></span>
+    {%- if section.settings.link != blank -%}
+      <a class="link link--static" href="{{ section.settings.link }}">{{ section.settings.text }}</a>
+    {%- else -%}
+      <span>{{ section.settings.text }}</span>
+    {%- endif -%}
+    {%- if iso != blank -%}
+      <drop-countdown data-target="{{ iso }}" data-live-text="{{ section.settings.live_text | escape }}">
+        <span class="announcement__count" data-countdown-text aria-hidden="true"></span>
+        <span class="visually-hidden">{{ 'sections.countdown.drops_on' | t: date: section.settings.countdown_date }}</span>
+      </drop-countdown>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "class": "section-announcement",
+  "enabled_on": { "groups": ["header"] },
+  "settings": [
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "Chapter 002 drops in"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link"
+    },
+    {
+      "type": "select",
+      "id": "style",
+      "label": "Style",
+      "options": [
+        { "value": "black", "label": "Black" },
+        { "value": "accent", "label": "Blood red" }
+      ],
+      "default": "black"
+    },
+    {
+      "type": "header",
+      "content": "Drop countdown"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_countdown",
+      "label": "Show countdown",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "countdown_date",
+      "label": "Drop date and time",
+      "info": "Format: YYYY-MM-DD HH:MM (24h), e.g. 2026-11-13 18:00",
+      "default": "2026-11-13 18:00"
+    },
+    {
+      "type": "select",
+      "id": "countdown_offset",
+      "label": "Time zone of that date",
+      "options": [
+        { "value": "-08:00", "label": "Los Angeles (PST, UTC−8)" },
+        { "value": "-07:00", "label": "Los Angeles summer (PDT, UTC−7)" },
+        { "value": "-06:00", "label": "Chicago (CST, UTC−6)" },
+        { "value": "-05:00", "label": "New York / Toronto (EST, UTC−5)" },
+        { "value": "-04:00", "label": "New York summer (EDT, UTC−4)" },
+        { "value": "Z", "label": "London (GMT, UTC)" },
+        { "value": "+01:00", "label": "London summer (BST, UTC+1)" },
+        { "value": "+08:00", "label": "Perth (AWST, UTC+8)" },
+        { "value": "+10:00", "label": "Sydney (AEST, UTC+10)" },
+        { "value": "+11:00", "label": "Sydney summer (AEDT, UTC+11)" }
+      ],
+      "default": "-05:00"
+    },
+    {
+      "type": "text",
+      "id": "live_text",
+      "label": "Text when the drop is live",
+      "default": "Live now"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement bar"
+    }
+  ]
+}
+{% endschema %}

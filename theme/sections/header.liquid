@@ -1,0 +1,232 @@
+{%- liquid
+  assign menu = section.settings.menu
+  assign cart_label = 'cart.count_label' | t: count: cart.item_count
+-%}
+<header class="header" data-header-behaviour="{{ section.settings.behaviour }}">
+  <div class="header__left">
+    <button
+      class="icon-btn header__menu-toggle"
+      type="button"
+      data-drawer-open="MenuDrawer"
+      aria-controls="MenuDrawer"
+      aria-expanded="false"
+    >
+      <span class="visually-hidden">{{ 'header.menu' | t }}</span>
+      {%- render 'icon', icon: 'menu' -%}
+    </button>
+    {%- if menu.links.size > 0 -%}
+      <nav class="header__nav" aria-label="{{ 'header.main_navigation' | t }}">
+        <ul class="header__nav-list label" role="list">
+          {%- for link in menu.links -%}
+            <li>
+              <a
+                class="header__nav-link"
+                href="{{ link.url }}"
+                {% if link.current %}
+                  aria-current="page"
+                {% endif %}
+              >
+                <span>{{ link.title }}</span>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+  </div>
+
+  <div class="header__logo">
+    <a href="{{ routes.root_url }}" aria-label="{{ 'header.home' | t: shop: shop.name | escape }}">
+      {%- if settings.logo != blank -%}
+        {%- assign logo_alt = settings.logo.alt | default: shop.name -%}
+        {{
+          settings.logo
+          | image_url: width: 600
+          | image_tag:
+            widths: '120, 200, 300, 400, 600',
+            sizes: '(min-width: 990px) 140px, 100px',
+            alt: logo_alt,
+            loading: 'eager',
+            class: 'header__logo-img'
+        }}
+      {%- else -%}
+        {%- render 'logo-eden', decorative: true -%}
+      {%- endif -%}
+    </a>
+  </div>
+
+  <div class="header__right">
+    {%- if section.settings.show_search -%}
+      <a
+        class="icon-btn"
+        href="{{ routes.search_url }}"
+        data-drawer-open="SearchModal"
+        aria-controls="SearchModal"
+        aria-expanded="false"
+      >
+        <span class="visually-hidden">{{ 'header.search' | t }}</span>
+        {%- render 'icon', icon: 'search' -%}
+      </a>
+    {%- endif -%}
+    {%- if shop.customer_accounts_enabled and section.settings.show_account -%}
+      <a class="icon-btn header__desktop-only" href="{{ routes.account_url }}">
+        <span class="visually-hidden">
+          {%- if customer -%}{{ 'header.account' | t }}{%- else -%}{{ 'header.login' | t }}{%- endif -%}
+        </span>
+        {%- render 'icon', icon: 'account' -%}
+      </a>
+    {%- endif -%}
+    <a
+      class="icon-btn"
+      id="HeaderCart"
+      href="{{ routes.cart_url }}"
+      data-drawer-open="CartDrawer"
+      aria-controls="CartDrawer"
+      aria-expanded="false"
+    >
+      <span class="visually-hidden" data-cart-label>{{ cart_label }}</span>
+      {%- render 'icon', icon: 'bag' -%}
+      <span class="cart-count" data-cart-count aria-hidden="true">
+        {%- if cart.item_count > 0 -%}{{ cart.item_count }}{%- endif -%}
+      </span>
+    </a>
+  </div>
+</header>
+
+<eden-drawer id="MenuDrawer" data-no-shade>
+  <div
+    class="menu-drawer"
+    data-drawer-panel
+    role="dialog"
+    aria-modal="true"
+    aria-label="{{ 'header.menu' | t }}"
+    tabindex="-1"
+    data-lenis-prevent
+  >
+    <button class="icon-btn menu-drawer__close" type="button" data-drawer-close data-autofocus>
+      <span class="visually-hidden">{{ 'general.close' | t }}</span>
+      {%- render 'icon', icon: 'close' -%}
+    </button>
+    <nav aria-label="{{ 'header.main_navigation' | t }}">
+      <ul class="menu-drawer__list" role="list">
+        {%- for link in menu.links -%}
+          <li class="menu-drawer__item" style="--i: {{ forloop.index0 }}">
+            <a
+              class="menu-drawer__link"
+              href="{{ link.url }}"
+              {% if link.current %}
+                aria-current="page"
+              {% endif %}
+            >
+              {{- link.title -}}
+            </a>
+            {%- if link.links.size > 0 -%}
+              <ul class="menu-drawer__sub label" role="list">
+                {%- for child in link.links -%}
+                  <li><a class="link" href="{{ child.url }}">{{ child.title }}</a></li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+    <div class="menu-drawer__footer">
+      <div class="menu-drawer__utility label">
+        {%- if shop.customer_accounts_enabled -%}
+          <a href="{{ routes.account_url }}">
+            {%- render 'icon', icon: 'account' -%}
+            {%- if customer -%}{{ 'header.account' | t }}{%- else -%}{{ 'header.login' | t }}{%- endif -%}
+          </a>
+        {%- endif -%}
+        <a href="{{ routes.search_url }}">{% render 'icon', icon: 'search' %}{{ 'header.search' | t }}</a>
+      </div>
+      {%- render 'localization-form', form_id: 'MenuLocalization' -%}
+      {%- render 'social-icons' -%}
+    </div>
+  </div>
+</eden-drawer>
+
+{%- if section.settings.show_search -%}
+  <eden-drawer id="SearchModal">
+    <div
+      class="search-modal"
+      data-drawer-panel
+      role="dialog"
+      aria-modal="true"
+      aria-label="{{ 'header.search' | t }}"
+      tabindex="-1"
+      data-lenis-prevent
+    >
+      <predictive-search class="page-width">
+        <form action="{{ routes.search_url }}" method="get" role="search" class="search-modal__form">
+          <label class="visually-hidden" for="SearchModalInput">{{ 'header.search' | t }}</label>
+          <input
+            class="search-modal__input"
+            id="SearchModalInput"
+            type="search"
+            name="q"
+            placeholder="{{ 'header.search_placeholder' | t }}"
+            autocomplete="off"
+            autocorrect="off"
+            spellcheck="false"
+            aria-controls="PredictiveResults"
+            data-autofocus
+          >
+          <input type="hidden" name="options[prefix]" value="last">
+          <button class="icon-btn" type="submit">
+            <span class="visually-hidden">{{ 'header.search_submit' | t }}</span>
+            {%- render 'icon', icon: 'arrow' -%}
+          </button>
+          <button class="icon-btn" type="button" data-drawer-close>
+            <span class="visually-hidden">{{ 'general.close' | t }}</span>
+            {%- render 'icon', icon: 'close' -%}
+          </button>
+        </form>
+        <div id="PredictiveResults" data-predictive-results></div>
+      </predictive-search>
+    </div>
+  </eden-drawer>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "section-header",
+  "enabled_on": { "groups": ["header"] },
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "select",
+      "id": "behaviour",
+      "label": "On scroll",
+      "options": [
+        { "value": "smart", "label": "Hide going down, show going up" },
+        { "value": "sticky", "label": "Always visible" }
+      ],
+      "default": "smart"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Show search",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_account",
+      "label": "Show account icon",
+      "default": true
+    },
+    {
+      "type": "paragraph",
+      "content": "The header turns transparent over a Hero placed first on the page."
+    }
+  ]
+}
+{% endschema %}

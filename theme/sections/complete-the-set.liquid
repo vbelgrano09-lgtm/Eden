@@ -1,0 +1,135 @@
+{%- comment -%}
+  Complete the set. Source, in order:
+  1. product metafield custom.complete_the_set (product reference) — e.g. the matching jogger
+  2. the product picked in this section (ignored on its own page)
+  3. Shopify complementary recommendations (Search & Discovery app), loaded lazily
+{%- endcomment -%}
+{%- liquid
+  assign s = section.settings
+  assign match = blank
+  if product
+    assign match = product.metafields.custom.complete_the_set.value
+    if match == blank and s.product != blank and s.product.id != product.id
+      assign match = s.product
+    endif
+  endif
+  if recommendations.performed and recommendations.products_count > 0
+    assign match = recommendations.products.first
+  endif
+  assign lines = s.title | newline_to_br | split: '<br />'
+-%}
+<section class="section set-section scheme-{{ s.scheme }}{% if s.grain %} section-grain{% endif %}">
+  <div class="page-width">
+    {%- if match == blank and product -%}
+      <product-recommendations
+        class="set-loader"
+        data-id="{{ section.id }}"
+        data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit=1&intent=complementary"
+        data-hide-empty
+      ></product-recommendations>
+    {%- elsif match != blank -%}
+      <product-recommendations data-id="{{ section.id }}">
+        <div class="set">
+          <div class="set__text">
+            {%- if s.eyebrow != blank -%}
+              <p class="label muted">{{ s.eyebrow }}</p>
+            {%- endif -%}
+            <h2 class="set__title h2" data-split="chars">
+              {%- for line in lines -%}
+                {{ line | strip }}
+                {%- unless forloop.last %}<br>{% endunless -%}
+              {%- endfor -%}
+            </h2>
+            {%- if s.text != blank -%}
+              <p class="muted">{{ s.text }}</p>
+            {%- endif -%}
+            {%- if product and product.featured_media -%}
+              <div class="set__current">
+                <div class="set__current-media">
+                  {{
+                    product.featured_media
+                    | image_url: width: 300
+                    | image_tag: loading: 'lazy', widths: '120, 200, 300', sizes: '96px', alt: ''
+                  }}
+                </div>
+                <div>
+                  <p class="label muted">{{ 'products.set.viewing' | t }}</p>
+                  <p class="card__title">{{ product.title }}</p>
+                </div>
+                <span class="set__plus" aria-hidden="true">{% render 'icon', icon: 'plus' %}</span>
+              </div>
+            {%- endif -%}
+          </div>
+          <div class="set__match">
+            {%- render 'product-card',
+              product: match,
+              sizes: '(min-width: 990px) 40vw, 92vw',
+              id_prefix: section.id
+            -%}
+          </div>
+        </div>
+      </product-recommendations>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Complete the set",
+  "tag": "div",
+  "class": "section-set",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Link each hoodie to its jogger with the product metafield custom.complete_the_set (Product reference). Without it, the product below is used, then Shopify's complementary recommendations."
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Fallback product"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "The set"
+    },
+    {
+      "type": "textarea",
+      "id": "title",
+      "label": "Title",
+      "default": "Complete\nthe set"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "Sold as a set. Worn as one. Same fleece, same weight, same colour."
+    },
+    {
+      "type": "select",
+      "id": "scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "dark", "label": "Black" },
+        { "value": "bone", "label": "Bone" }
+      ],
+      "default": "dark"
+    },
+    {
+      "type": "checkbox",
+      "id": "grain",
+      "label": "Grain texture",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Complete the set"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["product"]
+  }
+}
+{% endschema %}

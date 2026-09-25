@@ -1,0 +1,125 @@
+{%- liquid
+  assign s = section.settings
+  assign w1 = s.word_1 | strip
+  assign w2 = s.word_2 | strip
+  assign w3 = s.word_3 | strip
+  assign chars_1 = w1 | split: ''
+  assign chars_2 = w2 | split: ''
+  assign chars_3 = w3 | split: ''
+-%}
+<section
+  class="fof{% if s.grain %} section-grain{% endif %}"
+  data-fof
+  data-scene="{{ s.scene }}"
+>
+  <div class="fof__stage">
+    <div class="fof__glow" aria-hidden="true"></div>
+    <h2 class="fof__words" aria-label="{{ w1 | escape }} {{ w2 | escape }} {{ w3 | escape }}">
+      <span class="fof__word fof__word--faith" aria-hidden="true">
+        {%- for c in chars_1 -%}
+          <span class="fof__char" data-char="{{ c | escape }}">{{ c | replace: ' ', '&nbsp;' }}</span>
+        {%- endfor -%}
+      </span>
+      {%- if w2 != blank -%}
+        <span class="fof__word fof__word--over" aria-hidden="true">
+          {%- for c in chars_2 -%}
+            <span class="fof__char" data-char="{{ c | escape }}">{{ c | replace: ' ', '&nbsp;' }}</span>
+          {%- endfor -%}
+        </span>
+      {%- endif -%}
+      <span class="fof__word fof__word--fear" aria-hidden="true">
+        {%- for c in chars_3 -%}
+          <span class="fof__char" data-char="{{ c | escape }}">{{ c | replace: ' ', '&nbsp;' }}</span>
+        {%- endfor -%}
+      </span>
+    </h2>
+
+    {%- if s.show_wordmark and settings.wordmark != blank -%}
+      <div class="fof__wordmark" aria-hidden="true">
+        {{
+          settings.wordmark
+          | image_url: width: 1800
+          | image_tag: loading: 'lazy', widths: '600, 900, 1200, 1800', sizes: '(min-width: 990px) 900px, 80vw', alt: ''
+        }}
+      </div>
+    {%- endif -%}
+
+    {%- if s.subline != blank -%}
+      <div class="fof__subline">
+        <p class="h3">{{ s.subline }}</p>
+        {%- if s.subline_label != blank -%}
+          <p class="label muted">{{ s.subline_label }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Faith over fear scene",
+  "tag": "div",
+  "class": "section-fof",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "A pinned black scene: the words scale up and fill with white as you scroll, the last word cracks and shatters, the first stays. Reduced-motion visitors see the words, static and readable."
+    },
+    {
+      "type": "text",
+      "id": "word_1",
+      "label": "Word that stays",
+      "default": "Faith"
+    },
+    {
+      "type": "text",
+      "id": "word_2",
+      "label": "Middle word",
+      "default": "over"
+    },
+    {
+      "type": "text",
+      "id": "word_3",
+      "label": "Word that breaks",
+      "default": "Fear"
+    },
+    {
+      "type": "text",
+      "id": "subline",
+      "label": "Line after the break",
+      "default": "When we fall, we rise."
+    },
+    {
+      "type": "text",
+      "id": "subline_label",
+      "label": "Small label under it",
+      "default": "EDEN — Chapter 001"
+    },
+    {
+      "type": "checkbox",
+      "id": "scene",
+      "label": "Enable scroll scene",
+      "info": "Off: the three words stay static.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_wordmark",
+      "label": "End on the FAITH OVER FEAR wordmark image",
+      "info": "Uses the wordmark from Theme settings → Identity.",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "grain",
+      "label": "Grain texture",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Faith over fear scene"
+    }
+  ]
+}
+{% endschema %}

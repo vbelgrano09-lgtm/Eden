@@ -1,0 +1,91 @@
+{{ 'cart.css' | asset_url | stylesheet_tag }}
+<div class="page-width cart-page" data-cart-section="{{ section.id }}">
+  <header class="page-head">
+    <h1 class="page-head__title">
+      {{ 'cart.title' | t }}
+      <span class="label muted">({{ cart.item_count }})</span>
+    </h1>
+  </header>
+
+  {%- if cart.item_count > 0 -%}
+    <cart-items class="cart-page__layout">
+      <form action="{{ routes.cart_url }}" method="post" id="CartPageForm" class="cart-page__items">
+        {%- for item in cart.items -%}
+          {%- render 'cart-line-item', item: item, id_prefix: 'CartPage', large: true -%}
+        {%- endfor -%}
+        <noscript>
+          <button class="btn btn--small" type="submit" name="update">{{ 'cart.update' | t }}</button>
+        </noscript>
+      </form>
+
+      <aside class="cart-page__summary" aria-label="{{ 'cart.summary' | t }}">
+        {%- if settings.cart_note -%}
+          <div class="field">
+            <label class="field__label label" for="CartPageNote">{{ 'cart.note' | t }}</label>
+            <textarea class="textarea" id="CartPageNote" name="note" form="CartPageForm" data-cart-note>{{ cart.note }}</textarea>
+          </div>
+        {%- endif -%}
+        {%- for discount in cart.cart_level_discount_applications -%}
+          <div class="cart-page__row">
+            <span class="label">{{ discount.title }}</span>
+            <span>−{{ discount.total_allocated_amount | money }}</span>
+          </div>
+        {%- endfor -%}
+        <div class="cart-page__row cart-page__total">
+          <span class="label">{{ 'cart.subtotal' | t }}</span>
+          <span class="cart-page__subtotal">{{ cart.total_price | money_with_currency }}</span>
+        </div>
+        <p class="label muted">{{ 'cart.taxes' | t }}</p>
+        <button class="btn btn--bone btn--full btn--lg" type="submit" name="checkout" form="CartPageForm">
+          <span class="btn__label">{{ 'cart.checkout' | t }}</span>
+        </button>
+        {%- if additional_checkout_buttons and section.settings.show_express -%}
+          <div class="cart-page__express">{{ content_for_additional_checkout_buttons }}</div>
+        {%- endif -%}
+        <p class="cart-page__mto">
+          {%- render 'icon', icon: 'nails' -%}
+          <span class="muted">{{ settings.cart_message }}</span>
+        </p>
+        <a class="label link link--static" href="{{ routes.all_products_collection_url }}">{{ 'cart.continue' | t }}</a>
+      </aside>
+    </cart-items>
+  {%- else -%}
+    <div class="cart-page__empty">
+      <p class="h2">{{ section.settings.empty_title }}</p>
+      <p class="muted">{{ section.settings.empty_text }}</p>
+      <span class="magnetic" data-magnetic>
+        <a class="btn btn--bone btn--lg" href="{{ routes.all_products_collection_url }}">
+          <span class="btn__label">{{ 'cart.continue' | t }} {% render 'icon', icon: 'arrow' %}</span>
+        </a>
+      </span>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Cart",
+  "tag": "section",
+  "class": "section-main-cart",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_express",
+      "label": "Show express checkout buttons",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "empty_title",
+      "label": "Empty heading",
+      "default": "Nothing here yet."
+    },
+    {
+      "type": "text",
+      "id": "empty_text",
+      "label": "Empty text",
+      "default": "Chapter 001 is live. Every piece made for you."
+    }
+  ]
+}
+{% endschema %}

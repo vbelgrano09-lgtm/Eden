@@ -1,0 +1,27 @@
+{%- doc -%}
+  Outputs a CSS background value for a color option value: native Shopify swatch first,
+  then the "Color swatches" theme setting (Name: #hex), otherwise nothing.
+
+  @param {object} value - A product option value.
+{%- enddoc -%}
+{%- liquid
+  assign swatch_css = ''
+  if value.swatch.image
+    assign swatch_url = value.swatch.image | image_url: width: 72
+    assign swatch_css = 'url(' | append: swatch_url | append: ') center / cover'
+  elsif value.swatch.color
+    assign swatch_css = value.swatch.color
+  else
+    assign wanted = value.name | default: value | strip | downcase
+    assign lines = settings.swatch_map | newline_to_br | split: '<br />'
+    for line in lines
+      assign pair = line | split: ':'
+      assign key = pair.first | strip | downcase
+      if key == wanted and pair.size > 1
+        assign swatch_css = pair.last | strip
+        break
+      endif
+    endfor
+  endif
+  echo swatch_css
+-%}

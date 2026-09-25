@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-cart",
+      "settings": {
+        "show_express": true,
+        "empty_title": "Nothing here yet.",
+        "empty_text": "Chapter 001 is live. Every piece made for you."
+      }
+    }
+  },
+  "order": ["main"]
+}

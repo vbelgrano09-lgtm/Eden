@@ -1,0 +1,6 @@
+{
+  "sections": {
+    "main": { "type": "main-blog", "settings": { "eyebrow": "Journal", "per_page": 9, "show_tags": true } }
+  },
+  "order": ["main"]
+}

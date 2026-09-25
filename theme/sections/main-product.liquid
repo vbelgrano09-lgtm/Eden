@@ -1,0 +1,542 @@
+{{ 'product.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'product.js' | asset_url }}" defer></script>
+
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign form_id = 'ProductForm-' | append: section.id
+  assign featured = current_variant.featured_media | default: product.featured_media
+
+  assign coming_soon = false
+  if settings.coming_soon_tag != blank and product.tags contains settings.coming_soon_tag
+    assign coming_soon = true
+  endif
+
+  assign size_option = product.options_by_name['Size']
+  assign require_size = false
+  if section.settings.require_size and size_option and product.selected_variant == blank and product.has_only_default_variant == false
+    assign require_size = true
+  endif
+
+  assign ships_in = product.metafields.custom.ships_in_days.value | default: settings.ships_in_days
+  assign title_escaped = product.title | escape
+-%}
+
+<section
+  class="pdp"
+  data-product-handle="{{ product.handle }}"
+  data-section="{{ section.id }}"
+  data-require-size="{{ require_size }}"
+>
+  <div class="pdp__layout">
+    {%- comment -%} ---------- Gallery ---------- {%- endcomment -%}
+    <media-gallery class="pdp__gallery pdp__gallery--{{ section.settings.gallery_layout }}" data-zoom="Zoom-{{ section.id }}">
+      <ul class="pdp__media-list" role="list" data-media-list aria-label="{{ 'products.product.gallery' | t: title: title_escaped }}">
+        {%- if product.media.size > 0 -%}
+          {%- capture media_items -%}
+            {%- if featured -%}
+              {%- render 'product-media-item', media: featured, product: product, position: 0, first: true -%}
+            {%- endif -%}
+            {%- assign idx = 1 -%}
+            {%- for media in product.media -%}
+              {%- if featured == blank or media.id != featured.id -%}
+                {%- render 'product-media-item', media: media, product: product, position: idx, first: false -%}
+                {%- assign idx = idx | plus: 1 -%}
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endcapture -%}
+          {{ media_items }}
+        {%- else -%}
+          <li class="pdp__media-item" data-vt-product-media data-handle="{{ product.handle }}">
+            <div class="pdp__media-frame">{% render 'media-placeholder', type: 'product' %}</div>
+          </li>
+        {%- endif -%}
+      </ul>
+      {%- if product.media.size > 1 -%}
+        <p class="pdp__counter label" aria-hidden="true">
+          <span data-media-current>1</span> / {{ product.media.size }}
+        </p>
+      {%- endif -%}
+
+      <dialog class="modal modal--zoom" id="Zoom-{{ section.id }}" aria-label="{{ 'products.product.zoom_label' | t: title: title_escaped }}">
+        <div class="modal__head">
+          <p class="label">{{ product.title }}</p>
+          <button class="icon-btn" type="button" data-modal-close>
+            <span class="visually-hidden">{{ 'general.close' | t }}</span>
+            {%- render 'icon', icon: 'close' -%}
+          </button>
+        </div>
+        <div class="zoom__body" data-lenis-prevent>
+          {%- for media in product.media -%}
+            {%- if media.media_type == 'image' -%}
+              <figure class="zoom__item" data-zoom-item="{{ media.id }}">
+                {%- assign zoom_alt = media.alt | default: product.title -%}
+                {{
+                  media
+                  | image_url: width: 3000
+                  | image_tag: loading: 'lazy', widths: '1100, 1600, 2200, 3000', sizes: '100vw', alt: zoom_alt, class: 'zoom__img'
+                }}
+              </figure>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </dialog>
+    </media-gallery>
+
+    {%- comment -%} ---------- Info ---------- {%- endcomment -%}
+    <div class="pdp__info">
+      <div class="pdp__info-inner">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when '@app' -%}
+              {% render block %}
+
+            {%- when 'title' -%}
+              <div class="pdp__title-block" {{ block.shopify_attributes }}>
+                {%- if block.settings.eyebrow != blank -%}
+                  <p class="label muted">{{ block.settings.eyebrow }}</p>
+                {%- endif -%}
+                <h1 class="pdp__title h2">{{ product.title }}</h1>
+              </div>
+
+            {%- when 'price' -%}
+              <div class="pdp__price" data-product-price {{ block.shopify_attributes }}>
+                {%- if coming_soon -%}
+                  <span class="label">{{ 'products.card.coming_soon' | t }}</span>
+                {%- else -%}
+                  {%- render 'price', variant: current_variant, show_unit: true -%}
+                {%- endif -%}
+              </div>
+              {%- if cart.taxes_included or shop.shipping_policy.body != blank -%}
+                <p class="pdp__tax label muted">
+                  {%- if cart.taxes_included -%}{{ 'products.product.taxes_included' | t }}{%- endif -%}
+                  {%- if shop.shipping_policy.body != blank %}
+                    {{ 'products.product.shipping_policy_html' | t: link: shop.shipping_policy.url }}
+                  {%- endif -%}
+                </p>
+              {%- endif -%}
+
+            {%- when 'text' -%}
+              <div class="pdp__text rte" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+
+            {%- when 'description' -%}
+              {%- if product.description != blank -%}
+                <div class="pdp__description rte" {{ block.shopify_attributes }}>{{ product.description }}</div>
+              {%- endif -%}
+
+            {%- when 'variant_picker' -%}
+              {%- unless product.has_only_default_variant -%}
+                <variant-picker
+                  class="pdp__variants"
+                  data-form="{{ form_id }}"
+                  data-section="{{ section.id }}"
+                  {{ block.shopify_attributes }}
+                >
+                  {%- for option in product.options_with_values -%}
+                    {%- liquid
+                      assign option_index = forloop.index0
+                      assign option_name = option.name | downcase
+                      assign is_color = false
+                      if option_name == 'color' or option_name == 'colour'
+                        assign is_color = true
+                      endif
+                      assign is_size = false
+                      if option_name == 'size'
+                        assign is_size = true
+                      endif
+                    -%}
+                    <fieldset class="picker{% if is_color %} picker--color{% endif %}{% if is_size %} picker--size{% endif %}" data-option-index="{{ forloop.index0 }}">
+                      <div class="picker__head">
+                        <legend class="label">
+                          {{ option.name -}}
+                          {%- if is_color %}: <span class="muted" data-option-value>{{ option.selected_value }}</span>{% endif -%}
+                        </legend>
+                        {%- if is_size and block.settings.size_guide -%}
+                          <button class="text-btn label link link--static" type="button" data-modal-open="SizeGuide-{{ section.id }}">
+                            {{- 'products.product.size_guide' | t -}}
+                          </button>
+                        {%- endif -%}
+                      </div>
+                      <div class="picker__values">
+                        {%- for value in option.values -%}
+                          {%- liquid
+                            assign input_id = section.id | append: '-' | append: option_index | append: '-' | append: forloop.index0
+                            assign checked = false
+                            if value.selected
+                              assign checked = true
+                            endif
+                            if is_size and require_size
+                              assign checked = false
+                            endif
+                          -%}
+                          <input
+                            class="picker__input visually-hidden"
+                            type="radio"
+                            id="{{ input_id }}"
+                            name="{{ section.id }}-option-{{ option_index }}"
+                            value="{{ value | escape }}"
+                            {% if checked %}
+                              checked
+                            {% endif %}
+                          >
+                          {%- if is_color -%}
+                            {%- capture swatch_bg -%}{%- render 'swatch-value', value: value -%}{%- endcapture -%}
+                            <label class="picker__swatch" for="{{ input_id }}" title="{{ value | escape }}">
+                              <span class="picker__swatch-dot" style="{% if swatch_bg != blank %}--swatch: {{ swatch_bg | strip }};{% endif %}"></span>
+                              <span class="visually-hidden">{{ value }}</span>
+                            </label>
+                          {%- else -%}
+                            <label class="picker__pill" for="{{ input_id }}">{{ value }}</label>
+                          {%- endif -%}
+                        {%- endfor -%}
+                      </div>
+                    </fieldset>
+                  {%- endfor -%}
+                  <script type="application/json" data-product-json>
+                    {
+                      "moneyFormat": {{ shop.money_format | json }},
+                      "variants": [
+                        {%- for v in product.variants -%}
+                          {
+                            "id": {{ v.id }},
+                            "title": {{ v.title | json }},
+                            "available": {{ v.available | json }},
+                            "options": {{ v.options | json }},
+                            "price": {{ v.price | json }},
+                            "compare": {{ v.compare_at_price | default: 0 | json }},
+                            "media": {{ v.featured_media.id | json }}
+                          }{% unless forloop.last %},{% endunless %}
+                        {%- endfor -%}
+                      ]
+                    }
+                  </script>
+                </variant-picker>
+                {%- if block.settings.size_guide -%}
+                  {%- render 'size-guide', block: block, section_id: section.id, product: product -%}
+                {%- endif -%}
+              {%- endunless -%}
+
+            {%- when 'made_to_order' -%}
+              <p class="pdp__mto label" {{ block.shopify_attributes }}>
+                {%- render 'icon', icon: 'nails' -%}
+                <span>{{ block.settings.text | replace: '[days]', ships_in }}</span>
+              </p>
+
+            {%- when 'buy_buttons' -%}
+              <product-form class="pdp__form" data-section="{{ section.id }}" {{ block.shopify_attributes }}>
+                {%- form 'product', product, id: form_id, class: 'product-form', novalidate: 'novalidate' -%}
+                  <input
+                    type="hidden"
+                    name="id"
+                    value="{% unless require_size %}{{ current_variant.id }}{% endunless %}"
+                    data-variant-id-input
+                  >
+                  <noscript>
+                    <label class="label" for="{{ form_id }}-select">{{ 'products.product.variant' | t }}</label>
+                    <select class="select" id="{{ form_id }}-select" name="id">
+                      {%- for v in product.variants -%}
+                        <option
+                          value="{{ v.id }}"
+                          {% if v == current_variant %}
+                            selected
+                          {% endif %}
+                          {% unless v.available %}
+                            disabled
+                          {% endunless %}
+                        >
+                          {{ v.title }} — {{ v.price | money | strip_html }}
+                        </option>
+                      {%- endfor -%}
+                    </select>
+                  </noscript>
+
+                  {%- if block.settings.show_quantity -%}
+                    <div class="pdp__qty">
+                      <label class="label" for="{{ form_id }}-qty">{{ 'products.product.quantity' | t }}</label>
+                      <input class="input qty__input--pdp" id="{{ form_id }}-qty" type="number" name="quantity" min="1" value="1" inputmode="numeric">
+                    </div>
+                  {%- endif -%}
+
+                  <p class="form-error pdp__error" data-form-error role="alert" hidden></p>
+
+                  {%- if coming_soon -%}
+                    <button class="btn btn--full btn--lg" type="button" disabled>
+                      <span class="btn__label">{{ 'products.card.coming_soon' | t }}</span>
+                    </button>
+                  {%- else -%}
+                    <button
+                      class="btn btn--bone btn--full btn--lg pdp__atc"
+                      type="submit"
+                      name="add"
+                      data-atc
+                      {% unless current_variant.available or require_size %}
+                        disabled
+                      {% endunless %}
+                    >
+                      <span class="btn__label" data-atc-label>
+                        {%- if require_size -%}
+                          {{ 'products.product.select_size' | t }}
+                        {%- elsif current_variant.available -%}
+                          {{ 'products.product.add_to_bag' | t }}
+                        {%- else -%}
+                          {{ 'products.product.sold_out' | t }}
+                        {%- endif -%}
+                      </span>
+                    </button>
+                    {%- if block.settings.show_dynamic_checkout -%}
+                      <div class="pdp__dynamic">{{ form | payment_button }}</div>
+                    {%- endif -%}
+                  {%- endif -%}
+                {%- endform -%}
+                {%- if coming_soon -%}
+                  <div class="pdp__notify">
+                    <p class="label muted">{{ 'products.product.notify' | t }}</p>
+                    {%- render 'newsletter-form', form_id: 'Notify', button: block.settings.notify_button -%}
+                  </div>
+                {%- endif -%}
+              </product-form>
+
+            {%- when 'collapsible_tab' -%}
+              <details class="accordion__item pdp__accordion" {% if block.settings.open %}open{% endif %} {{ block.shopify_attributes }}>
+                <summary class="accordion__summary label">
+                  <span>{{ block.settings.heading }}</span>
+                  <span class="accordion__icon" aria-hidden="true"></span>
+                </summary>
+                <div class="accordion__content rte">
+                  {%- if block.settings.use_description and product.description != blank -%}
+                    {{ product.description }}
+                  {%- endif -%}
+                  {{ block.settings.content }}
+                  {%- if block.settings.page != blank -%}
+                    {{ block.settings.page.content }}
+                  {%- endif -%}
+                </div>
+              </details>
+
+            {%- when 'share' -%}
+              <div class="pdp__share label" {{ block.shopify_attributes }}>
+                <a class="link link--static" href="mailto:?subject={{ product.title | url_encode }}&body={{ request.origin | append: product.url | url_encode }}">
+                  {{- 'products.product.share' | t -}}
+                </a>
+              </div>
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+
+  {%- unless coming_soon -%}
+    <sticky-atc class="sticky-atc" data-form="{{ form_id }}" hidden>
+      <div class="sticky-atc__info">
+        <p class="sticky-atc__title">{{ product.title }}</p>
+        <p class="sticky-atc__meta label muted" data-sticky-variant>
+          {%- unless require_size or product.has_only_default_variant -%}{{ current_variant.title }}{%- endunless -%}
+        </p>
+      </div>
+      <button class="btn btn--bone sticky-atc__btn" type="submit" form="{{ form_id }}" name="add" data-atc>
+        <span class="btn__label" data-atc-label>
+          {%- if require_size -%}
+            {{ 'products.product.select_size' | t }}
+          {%- elsif current_variant.available -%}
+            {{ 'products.product.add_to_bag' | t }}
+          {%- else -%}
+            {{ 'products.product.sold_out' | t }}
+          {%- endif -%}
+        </span>
+        <span class="sticky-atc__price" data-sticky-price>{{ current_variant.price | money }}</span>
+      </button>
+    </sticky-atc>
+  {%- endunless -%}
+</section>
+
+{%- render 'json-ld-product', product: product -%}
+
+{% schema %}
+{
+  "name": "Product",
+  "tag": "div",
+  "class": "section-main-product",
+  "settings": [
+    {
+      "type": "select",
+      "id": "gallery_layout",
+      "label": "Gallery (desktop)",
+      "options": [
+        { "value": "stack", "label": "Stacked, full width" },
+        { "value": "grid", "label": "First large, then two columns" }
+      ],
+      "default": "stack"
+    },
+    {
+      "type": "checkbox",
+      "id": "require_size",
+      "label": "Ask shoppers to choose a size",
+      "info": "No size is preselected, so nobody orders the wrong one by accident.",
+      "default": true
+    },
+    {
+      "type": "paragraph",
+      "content": "Phones get a swipe gallery and a sticky Add to bag bar that shows whenever the main button is off screen."
+    }
+  ],
+  "blocks": [
+    { "type": "@app" },
+    {
+      "type": "title",
+      "name": "Title",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Label above title",
+          "default": "EDEN — Chapter 001"
+        }
+      ]
+    },
+    {
+      "type": "price",
+      "name": "Price",
+      "limit": 1
+    },
+    {
+      "type": "variant_picker",
+      "name": "Color & size picker",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "size_guide",
+          "label": "Show size guide",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "size_guide_title",
+          "label": "Size guide title",
+          "default": "Size guide"
+        },
+        {
+          "type": "textarea",
+          "id": "size_table",
+          "label": "Size table (cm)",
+          "info": "First row is the header. Separate columns with |. Values in cm; shoppers can switch to inches.",
+          "default": "Size | Chest | Length | Sleeve\nXS | 124 | 70 | 58\nS | 128 | 72 | 59\nM | 132 | 74 | 60\nL | 136 | 76 | 61\nXL | 140 | 78 | 62\nXXL | 144 | 80 | 63"
+        },
+        {
+          "type": "richtext",
+          "id": "size_note",
+          "label": "Fit note",
+          "default": "<p>Cut oversized on purpose. Measurements are the garment laid flat (chest is doubled). Want it closer to the body? Size down.</p>"
+        },
+        {
+          "type": "text",
+          "id": "model_note",
+          "label": "Model note",
+          "default": "Model is 185 cm / 6'1\" and wears L."
+        },
+        {
+          "type": "page",
+          "id": "size_page",
+          "label": "Extra content from a page (optional)"
+        }
+      ]
+    },
+    {
+      "type": "made_to_order",
+      "name": "Made to order note",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "info": "[days] is replaced with the product metafield custom.ships_in_days, or the default in Theme settings → Products.",
+          "default": "Made to order · ships in [days] days"
+        }
+      ]
+    },
+    {
+      "type": "buy_buttons",
+      "name": "Buy buttons",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_quantity",
+          "label": "Show quantity",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "show_dynamic_checkout",
+          "label": "Show express checkout buttons",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "notify_button",
+          "label": "Coming soon: notify button",
+          "default": "Notify me"
+        }
+      ]
+    },
+    {
+      "type": "description",
+      "name": "Description",
+      "limit": 1
+    },
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Sold as a set. Worn as one.</p>"
+        }
+      ]
+    },
+    {
+      "type": "collapsible_tab",
+      "name": "Accordion",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Details"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "info": "Connect a product metafield with the dynamic source button for per-product copy."
+        },
+        {
+          "type": "checkbox",
+          "id": "use_description",
+          "label": "Start with the product description",
+          "default": false
+        },
+        {
+          "type": "page",
+          "id": "page",
+          "label": "Content from a page"
+        },
+        {
+          "type": "checkbox",
+          "id": "open",
+          "label": "Open by default",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "share",
+      "name": "Share",
+      "limit": 1
+    }
+  ]
+}
+{% endschema %}

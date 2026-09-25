@@ -1,0 +1,161 @@
+{%- liquid
+  assign s = section.settings
+  case s.separator
+    when 'nails'
+      assign sep_icon = 'nails'
+    when 'none'
+      assign sep_icon = blank
+    else
+      assign sep_icon = 'cross'
+  endcase
+  capture marquee_label
+    for block in section.blocks
+      echo block.settings.text
+      unless forloop.last
+        echo ' · '
+      endunless
+    endfor
+  endcapture
+-%}
+<scroll-marquee
+  class="marquee{% if s.style == 'accent' %} marquee--accent{% endif %}{% if s.direction == 'right' %} marquee--reverse{% endif %}"
+  data-reactive="{{ s.reactive }}"
+  data-boost="{{ s.boost }}"
+  style="--marquee-duration: {{ s.speed }}s; --marquee-scale: {{ s.size | divided_by: 100.0 }};"
+  role="marquee"
+  aria-label="{{ marquee_label | strip | escape }}"
+>
+  <div class="marquee__track">
+    {%- for group in (1..2) -%}
+      <div class="marquee__group"{% if group == 2 %} aria-hidden="true"{% endif %}>
+        {%- for rep in (1..2) -%}
+          {%- for block in section.blocks -%}
+            <span
+              class="marquee__item{% if block.settings.outline %} marquee__item--outline{% endif %}{% if rep > 1 %} marquee__dup{% endif %}"
+              {% if group == 1 and rep == 1 %}
+                {{ block.shopify_attributes }}
+              {% endif %}
+              aria-hidden="true"
+            >
+              {{- block.settings.text -}}
+            </span>
+            {%- if sep_icon != blank -%}
+              <span class="marquee__sep{% if rep > 1 %} marquee__dup{% endif %}" aria-hidden="true">
+                {%- render 'icon', icon: sep_icon -%}
+              </span>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endfor -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</scroll-marquee>
+
+{% schema %}
+{
+  "name": "Marquee",
+  "tag": "section",
+  "class": "section-marquee",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "select",
+      "id": "separator",
+      "label": "Separator",
+      "options": [
+        { "value": "cross", "label": "Cross ✝" },
+        { "value": "nails", "label": "Crossed nails" },
+        { "value": "none", "label": "None" }
+      ],
+      "default": "cross"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Loop duration",
+      "info": "Lower is faster.",
+      "min": 10,
+      "max": 90,
+      "step": 2,
+      "unit": "s",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "size",
+      "label": "Text size",
+      "min": 50,
+      "max": 160,
+      "step": 10,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "select",
+      "id": "direction",
+      "label": "Direction",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "checkbox",
+      "id": "reactive",
+      "label": "React to scroll",
+      "info": "Speeds up with scroll velocity and flips direction when scrolling up.",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "boost",
+      "label": "Scroll boost",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "style",
+      "label": "Style",
+      "options": [
+        { "value": "default", "label": "Black" },
+        { "value": "accent", "label": "Blood red" }
+      ],
+      "default": "default"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Faith over fear"
+        },
+        {
+          "type": "checkbox",
+          "id": "outline",
+          "label": "Outlined",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Marquee",
+      "blocks": [
+        { "type": "text", "settings": { "text": "Faith over fear" } },
+        { "type": "text", "settings": { "text": "He is risen", "outline": true } },
+        { "type": "text", "settings": { "text": "Be still" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

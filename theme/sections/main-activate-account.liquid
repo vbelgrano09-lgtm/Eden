@@ -1,0 +1,31 @@
+{{ 'customer.css' | asset_url | stylesheet_tag }}
+<div class="customer page-width page-width--narrow">
+  <header class="page-head">
+    <p class="label muted">{{ 'customer.eyebrow' | t }}</p>
+    <h1 class="page-head__title">{{ 'customer.activate.title' | t }}</h1>
+    <p class="muted">{{ 'customer.activate.text' | t }}</p>
+  </header>
+  {%- form 'activate_customer_password', class: 'customer__form' -%}
+    {%- if form.errors -%}
+      <div class="form-message form-message--error" role="alert">{{ form.errors | default_errors }}</div>
+    {%- endif -%}
+    <div class="field">
+      <label class="field__label label" for="ActivatePassword">{{ 'customer.fields.password' | t }}</label>
+      <input class="input" id="ActivatePassword" type="password" name="customer[password]" autocomplete="new-password" required>
+    </div>
+    <div class="field">
+      <label class="field__label label" for="ActivatePasswordConfirm">{{ 'customer.fields.password_confirm' | t }}</label>
+      <input class="input" id="ActivatePasswordConfirm" type="password" name="customer[password_confirmation]" autocomplete="new-password" required>
+    </div>
+    <button class="btn btn--bone btn--full btn--lg" type="submit">{{ 'customer.activate.submit' | t }}</button>
+    <button class="btn btn--full" type="submit" name="decline">{{ 'customer.activate.decline' | t }}</button>
+  {%- endform -%}
+</div>
+
+{% schema %}
+{
+  "name": "Activate account",
+  "tag": "section",
+  "class": "section-customer"
+}
+{% endschema %}

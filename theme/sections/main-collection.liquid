@@ -1,0 +1,259 @@
+{{ 'collection.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'facets.js' | asset_url }}" defer></script>
+
+{%- liquid
+  assign s = section.settings
+  assign cols_d = s.columns_desktop
+  assign vw_d = 92 | divided_by: cols_d
+  capture sizes
+    echo '(min-width: 990px) ' | append: vw_d | append: 'vw, (min-width: 750px) 46vw, 46vw'
+  endcapture
+  assign active_count = 0
+  for filter in collection.filters
+    assign active_count = active_count | plus: filter.active_values.size
+    if filter.type == 'price_range'
+      if filter.min_value.value != nil or filter.max_value.value != nil
+        assign active_count = active_count | plus: 1
+      endif
+    endif
+  endfor
+  assign sort_by = collection.sort_by | default: collection.default_sort_by
+-%}
+
+{%- paginate collection.products by s.per_page -%}
+  <div class="collection" data-section="{{ section.id }}">
+    <header class="page-width collection__head">
+      <div>
+        {%- if s.eyebrow != blank -%}
+          <p class="label muted">{{ s.eyebrow }}</p>
+        {%- endif -%}
+        <h1 class="collection__title h1">{{ collection.title }}</h1>
+      </div>
+      {%- if s.show_description and collection.description != blank -%}
+        <div class="collection__description rte muted">{{ collection.description }}</div>
+      {%- endif -%}
+    </header>
+
+    {%- if s.show_image and collection.image -%}
+      {%- assign banner_alt = collection.image.alt | default: collection.title -%}
+      <div class="collection__banner media-lit">
+        {{
+          collection.image
+          | image_url: width: 2400
+          | image_tag:
+            loading: 'eager',
+            fetchpriority: 'high',
+            widths: '750, 1100, 1500, 1920, 2400',
+            sizes: '100vw',
+            alt: banner_alt
+        }}
+      </div>
+    {%- endif -%}
+
+    <facet-filters data-section="{{ section.id }}">
+      <div class="page-width collection__toolbar">
+        <div class="collection__toolbar-left">
+          {%- if s.enable_filtering and collection.filters.size > 0 -%}
+            <button
+              class="btn btn--small"
+              type="button"
+              data-drawer-open="Facets-{{ section.id }}"
+              aria-controls="Facets-{{ section.id }}"
+              aria-expanded="false"
+            >
+              {%- render 'icon', icon: 'filter' -%}
+              <span>{{ 'collections.filters.title' | t }}</span>
+              <span data-facets-badge>{% if active_count > 0 %}({{ active_count }}){% endif %}</span>
+            </button>
+          {%- endif -%}
+          <p class="label muted" data-facets-count role="status">
+            {{- 'collections.count' | t: count: collection.products_count -}}
+          </p>
+        </div>
+        {%- if s.enable_sorting -%}
+          <form class="collection__sort" data-sort-form>
+            <label class="label muted" for="SortBy-{{ section.id }}">{{ 'collections.sort.label' | t }}</label>
+            <div class="select-wrap">
+              <select class="select select--inline" id="SortBy-{{ section.id }}" name="sort_by">
+                {%- for option in collection.sort_options -%}
+                  <option
+                    value="{{ option.value | escape }}"
+                    {% if option.value == sort_by %}
+                      selected
+                    {% endif %}
+                  >
+                    {{ option.name | escape }}
+                  </option>
+                {%- endfor -%}
+              </select>
+              {%- render 'icon', icon: 'chevron' -%}
+            </div>
+            <noscript><button class="btn btn--small" type="submit">{{ 'collections.sort.apply' | t }}</button></noscript>
+          </form>
+        {%- endif -%}
+      </div>
+
+      <div class="page-width" data-facets-active>
+        {%- if active_count > 0 -%}
+          <ul class="facets__active" role="list">
+            {%- for filter in collection.filters -%}
+              {%- for value in filter.active_values -%}
+                <li>
+                  <a class="chip" href="{{ value.url_to_remove }}" data-facet-link>
+                    {{- value.label -}}
+                    {%- render 'icon', icon: 'close' -%}
+                    <span class="visually-hidden">{{ 'collections.filters.remove' | t }}</span>
+                  </a>
+                </li>
+              {%- endfor -%}
+              {%- if filter.type == 'price_range' -%}
+                {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
+                  <li>
+                    <a class="chip" href="{{ filter.url_to_remove }}" data-facet-link>
+                      {{- filter.min_value.value | default: 0 | money }} – {{ filter.max_value.value | default: filter.range_max | money -}}
+                      {%- render 'icon', icon: 'close' -%}
+                      <span class="visually-hidden">{{ 'collections.filters.remove' | t }}</span>
+                    </a>
+                  </li>
+                {%- endif -%}
+              {%- endif -%}
+            {%- endfor -%}
+            <li>
+              <a class="chip chip--clear label" href="{{ collection.url }}?sort_by={{ sort_by }}" data-facet-link>
+                {{- 'collections.filters.clear' | t -}}
+              </a>
+            </li>
+          </ul>
+        {%- endif -%}
+      </div>
+
+      {%- if s.enable_filtering and collection.filters.size > 0 -%}
+        <eden-drawer id="Facets-{{ section.id }}">
+          <div
+            class="facets"
+            data-drawer-panel
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="FacetsTitle-{{ section.id }}"
+            tabindex="-1"
+          >
+            <div class="facets__head">
+              <h2 class="h3" id="FacetsTitle-{{ section.id }}">{{ 'collections.filters.title' | t }}</h2>
+              <button class="icon-btn" type="button" data-drawer-close data-autofocus>
+                <span class="visually-hidden">{{ 'general.close' | t }}</span>
+                {%- render 'icon', icon: 'close' -%}
+              </button>
+            </div>
+            <div class="facets__body" data-lenis-prevent>
+              {%- render 'facets', results: collection, section_id: section.id -%}
+            </div>
+            <div class="facets__foot">
+              <a class="btn btn--small" href="{{ collection.url }}?sort_by={{ sort_by }}" data-facet-link>{{ 'collections.filters.clear' | t }}</a>
+              <button class="btn btn--bone btn--small" type="button" data-drawer-close>
+                <span data-facets-show>{{ 'collections.filters.show' | t: count: collection.products_count }}</span>
+              </button>
+            </div>
+          </div>
+        </eden-drawer>
+      {%- endif -%}
+
+      <div class="page-width collection__results" data-facets-results>
+        {%- if collection.products.size > 0 -%}
+          <div class="product-grid" style="--cols-desktop: {{ cols_d }}; --cols-mobile: {{ s.columns_mobile }};">
+            {%- for product in collection.products -%}
+              {%- liquid
+                assign eager = false
+                if forloop.index <= cols_d and paginate.current_page == 1
+                  assign eager = true
+                endif
+              -%}
+              {%- render 'product-card',
+                product: product,
+                sizes: sizes,
+                eager: eager,
+                id_prefix: section.id,
+                index: forloop.index0
+              -%}
+            {%- endfor -%}
+          </div>
+          {%- render 'pagination', paginate: paginate -%}
+        {%- else -%}
+          <div class="collection__empty">
+            <p class="h3">{{ 'collections.empty' | t }}</p>
+            {%- if active_count > 0 -%}
+              <a class="btn" href="{{ collection.url }}" data-facet-link>{{ 'collections.filters.clear' | t }}</a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </facet-filters>
+  </div>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Collection",
+  "tag": "section",
+  "class": "section-main-collection",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "EDEN — Made to order"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show collection description",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "label": "Show collection image",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "per_page",
+      "label": "Products per page",
+      "min": 6,
+      "max": 48,
+      "step": 3,
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Columns on desktop",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "columns_mobile",
+      "label": "Columns on phones",
+      "min": 1,
+      "max": 2,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "label": "Enable filters",
+      "info": "Set up filters with the Shopify Search & Discovery app.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "label": "Enable sorting",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

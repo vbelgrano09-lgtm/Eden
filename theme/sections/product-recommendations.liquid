@@ -1,0 +1,81 @@
+{%- liquid
+  assign s = section.settings
+  assign vw = 92 | divided_by: s.columns
+  capture sizes
+    echo '(min-width: 990px) ' | append: vw | append: 'vw, 46vw'
+  endcapture
+-%}
+<section class="section section--tight scheme-{{ s.scheme }}">
+  <div class="page-width">
+    <product-recommendations
+      data-id="{{ section.id }}"
+      {% if product %}
+        data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ s.limit }}&intent=related"
+        data-hide-empty
+      {% endif %}
+    >
+      {%- if recommendations.performed and recommendations.products_count > 0 -%}
+        <div class="section-head">
+          <h2 class="h3">{{ s.title }}</h2>
+        </div>
+        <div class="product-grid" style="--cols-desktop: {{ s.columns }}; --cols-mobile: 2;">
+          {%- for rec in recommendations.products -%}
+            {%- render 'product-card', product: rec, sizes: sizes, id_prefix: section.id, index: forloop.index0 -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </product-recommendations>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Related products",
+  "tag": "div",
+  "class": "section-related",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Also in the chapter"
+    },
+    {
+      "type": "range",
+      "id": "limit",
+      "label": "Products",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns on desktop",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "dark", "label": "Black" },
+        { "value": "bone", "label": "Bone" }
+      ],
+      "default": "dark"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Related products"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["product"]
+  }
+}
+{% endschema %}

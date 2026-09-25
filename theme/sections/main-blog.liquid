@@ -1,0 +1,81 @@
+{%- paginate blog.articles by section.settings.per_page -%}
+  <div class="page-width">
+    <header class="page-head">
+      <p class="label muted">{{ section.settings.eyebrow }}</p>
+      <h1 class="page-head__title">{{ blog.title }}</h1>
+    </header>
+    {%- if blog.all_tags.size > 0 and section.settings.show_tags -%}
+      <ul class="facets__active" role="list" aria-label="{{ 'blogs.tags' | t }}">
+        <li><a class="chip" href="{{ blog.url }}"{% if current_tags == blank %} aria-current="page"{% endif %}>{{ 'blogs.all' | t }}</a></li>
+        {%- for tag in blog.all_tags -%}
+          <li>
+            <a
+              class="chip"
+              href="{{ blog.url }}/tagged/{{ tag | handle }}"
+              {% if current_tags contains tag %}
+                aria-current="page"
+              {% endif %}
+            >
+              {{- tag -}}
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+    <div class="blog-grid section--tight">
+      {%- for article in blog.articles -%}
+        <article class="article-card" data-reveal>
+          <div class="article-card__media media-lit">
+            {%- if article.image -%}
+              {%- assign article_alt = article.image.alt | default: article.title -%}
+              {{
+                article.image
+                | image_url: width: 1200
+                | image_tag: loading: 'lazy', widths: '360, 540, 720, 960, 1200', sizes: '(min-width: 990px) 31vw, (min-width: 750px) 46vw, 92vw', alt: article_alt
+              }}
+            {%- else -%}
+              {%- render 'media-placeholder', type: 'lifestyle' -%}
+            {%- endif -%}
+          </div>
+          <p class="label muted">{{ article.published_at | time_tag: format: 'month_day_year' }}</p>
+          <h2 class="article-card__title"><a href="{{ article.url }}">{{ article.title }}</a></h2>
+          {%- if article.excerpt_or_content != blank -%}
+            <p class="muted">{{ article.excerpt_or_content | strip_html | truncatewords: 26 }}</p>
+          {%- endif -%}
+        </article>
+      {%- endfor -%}
+    </div>
+    {%- render 'pagination', paginate: paginate -%}
+  </div>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Blog",
+  "tag": "section",
+  "class": "section-main-blog",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Journal"
+    },
+    {
+      "type": "range",
+      "id": "per_page",
+      "label": "Articles per page",
+      "min": 3,
+      "max": 24,
+      "step": 3,
+      "default": 9
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tags",
+      "label": "Show tag filter",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

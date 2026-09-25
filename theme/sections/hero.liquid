@@ -1,0 +1,326 @@
+{%- liquid
+  assign s = section.settings
+  assign heading_tag = 'h2'
+  if section.index == 1
+    assign heading_tag = 'h1'
+  endif
+  assign lines = s.heading | newline_to_br | split: '<br />'
+  assign focal = s.image.presentation.focal_point | default: '50% 50%'
+
+  assign video_desktop = blank
+  assign video_mobile = blank
+  if s.video != blank
+    assign best_desktop = 0
+    assign best_mobile = 0
+    for source in s.video.sources
+      if source.format == 'mp4'
+        if source.height <= 1080 and source.height > best_desktop
+          assign best_desktop = source.height
+          assign video_desktop = source.url
+        endif
+        if source.height <= 720 and source.height > best_mobile
+          assign best_mobile = source.height
+          assign video_mobile = source.url
+        endif
+      endif
+    endfor
+    if video_mobile == blank
+      assign video_mobile = video_desktop
+    endif
+  endif
+-%}
+<section
+  class="hero{% if s.zoom %} hero--zoom{% endif %}{% if s.height == 'auto' %} hero--auto{% endif %}"
+  data-hero
+  data-parallax="{{ s.parallax }}"
+  {% if s.header_overlay %}
+    data-header-overlay
+  {% endif %}
+  style="--shade: {{ s.overlay | divided_by: 100.0 }}; --zoom-duration: {{ s.zoom_duration }}s; --focal: {{ focal }};"
+>
+  <div class="hero__media media-lit">
+    <div class="hero__zoom">
+      {%- if s.image != blank -%}
+        {%- assign alt = s.image.alt | default: s.heading | strip_newlines -%}
+        {%- if s.image_mobile != blank -%}
+          <picture>
+            <source
+              media="(max-width: 749px)"
+              srcset="
+                {{ s.image_mobile | image_url: width: 480 }} 480w,
+                {{ s.image_mobile | image_url: width: 750 }} 750w,
+                {{ s.image_mobile | image_url: width: 1080 }} 1080w,
+                {{ s.image_mobile | image_url: width: 1440 }} 1440w
+              "
+              sizes="100vw"
+              width="{{ s.image_mobile.width }}"
+              height="{{ s.image_mobile.height }}"
+            >
+            {{
+              s.image
+              | image_url: width: 3200
+              | image_tag:
+                loading: 'eager',
+                fetchpriority: 'high',
+                widths: '750, 1100, 1500, 1920, 2400, 3200',
+                sizes: '100vw',
+                alt: alt
+            }}
+          </picture>
+        {%- else -%}
+          {{
+            s.image
+            | image_url: width: 3200
+            | image_tag:
+              loading: 'eager',
+              fetchpriority: 'high',
+              preload: true,
+              widths: '480, 750, 1100, 1500, 1920, 2400, 3200',
+              sizes: '100vw',
+              alt: alt
+          }}
+        {%- endif -%}
+      {%- else -%}
+        {%- render 'media-placeholder', type: 'hero' -%}
+      {%- endif -%}
+      {%- if video_desktop != blank -%}
+        <video
+          data-hero-video
+          data-src-desktop="{{ video_desktop }}"
+          data-src-mobile="{{ video_mobile }}"
+          data-mobile="{{ s.video_mobile }}"
+          muted
+          loop
+          playsinline
+          preload="none"
+          aria-hidden="true"
+          tabindex="-1"
+        ></video>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <div class="hero__shade"></div>
+
+  {%- if s.layer_image != blank -%}
+    <div class="hero__layer" data-hero-layer aria-hidden="true">
+      {{
+        s.layer_image
+        | image_url: width: 2200
+        | image_tag: loading: 'eager', widths: '750, 1100, 1500, 2200', sizes: '(min-width: 990px) 1100px, 92vw', alt: ''
+      }}
+    </div>
+  {%- endif -%}
+
+  <div class="hero__content{% if s.layout == 'center' %} hero__content--center{% endif %}">
+    {%- if s.eyebrow != blank -%}
+      <p class="hero__eyebrow label hero__fade" style="--i: 0">{{ s.eyebrow }}</p>
+    {%- endif -%}
+    <{{ heading_tag }} class="hero__title h-display">
+      {%- for line in lines -%}
+        <span class="hero__line"><span class="hero__line-inner" style="--i: {{ forloop.index0 }}">{{ line | strip }}</span></span>
+      {%- endfor -%}
+    </{{ heading_tag }}>
+    <div class="hero__bottom hero__fade" style="--i: 2">
+      {%- if s.subheading != blank -%}
+        <p class="hero__sub body-lg">{{ s.subheading }}</p>
+      {%- endif -%}
+      <div class="hero__ctas">
+        {%- if s.button_label != blank -%}
+          <span class="magnetic"{% if s.magnetic %} data-magnetic{% endif %}>
+            <a class="btn btn--bone btn--lg" href="{{ s.button_link | default: routes.all_products_collection_url }}">
+              <span class="btn__label">{{ s.button_label }} {% render 'icon', icon: 'arrow' %}</span>
+            </a>
+          </span>
+        {%- endif -%}
+        {%- if s.button2_label != blank -%}
+          <span class="magnetic"{% if s.magnetic %} data-magnetic{% endif %}>
+            <a class="btn btn--lg" href="{{ s.button2_link }}">
+              <span class="btn__label">{{ s.button2_label }}</span>
+            </a>
+          </span>
+        {%- endif -%}
+        {%- if video_desktop != blank -%}
+          <button class="text-btn label hero__video-toggle" type="button" data-hero-video-toggle hidden>
+            <span data-when-playing>{{ 'sections.hero.pause' | t }}</span>
+            <span data-when-paused hidden>{{ 'sections.hero.play' | t }}</span>
+          </button>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  {%- if s.scroll_hint -%}
+    <span class="hero__scroll label" aria-hidden="true">{{ 'sections.hero.scroll' | t }}</span>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "tag": "div",
+  "class": "section-hero",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Media"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "info": "Largest paint on the page: loads first with high priority. 2400px+ wide, dark and moody works best."
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Mobile image (optional)",
+      "info": "Portrait crop for phones."
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Background video (optional)",
+      "info": "Plays muted on desktop over the image, after the page is interactive. Upload an MP4."
+    },
+    {
+      "type": "checkbox",
+      "id": "video_mobile",
+      "label": "Also play the video on phones",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "layer_image",
+      "label": "Parallax layer (optional)",
+      "info": "A transparent PNG (e.g. a cut-out figure or the wordmark) that floats at a different speed."
+    },
+    {
+      "type": "range",
+      "id": "overlay",
+      "label": "Bottom shade",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "EDEN — Faith over fear"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Headline",
+      "info": "One line per row.",
+      "default": "Chapter 001\nIs live"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Oversized heavyweight sets. Made to order. Shipped worldwide."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "text",
+      "id": "button2_label",
+      "label": "Second button label",
+      "default": "The meaning"
+    },
+    {
+      "type": "url",
+      "id": "button2_link",
+      "label": "Second button link"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        { "value": "bottom", "label": "Bottom left" },
+        { "value": "center", "label": "Centered" }
+      ],
+      "default": "bottom"
+    },
+    {
+      "type": "select",
+      "id": "height",
+      "label": "Height",
+      "options": [
+        { "value": "full", "label": "Full screen" },
+        { "value": "auto", "label": "Tall" }
+      ],
+      "default": "full"
+    },
+    {
+      "type": "checkbox",
+      "id": "header_overlay",
+      "label": "Transparent header over this hero",
+      "info": "Only when the hero is the first section.",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Effects"
+    },
+    {
+      "type": "checkbox",
+      "id": "zoom",
+      "label": "Slow zoom",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "zoom_duration",
+      "label": "Zoom duration",
+      "min": 6,
+      "max": 30,
+      "step": 1,
+      "unit": "s",
+      "default": 14
+    },
+    {
+      "type": "checkbox",
+      "id": "parallax",
+      "label": "Scroll parallax",
+      "info": "Image, layer and text move at different speeds. Lighter on phones.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "magnetic",
+      "label": "Magnetic buttons",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "scroll_hint",
+      "label": "Scroll hint (desktop)",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero"
+    }
+  ]
+}
+{% endschema %}
