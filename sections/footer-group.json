@@ -11,25 +11,19 @@
   "type": "footer",
   "name": "Footer group",
   "sections": {
-    "1790429443a4c42bcf": {
-      "type": "_blocks",
-      "blocks": {
-        "ai_gen_block_0906fb0_WyGVnP": {
-          "type": "ai_gen_block_0906fb0",
-          "settings": {
-            "heading": "Catálogo",
-            "collection": "ropa",
-            "products_to_show": 12,
-            "desktop_width_percent": 100,
-            "columns_desktop": "4"
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "ai_gen_block_0906fb0_WyGVnP"
-      ],
-      "settings": {}
+    "catalog": {
+      "type": "catalog-carousel",
+      "settings": {
+        "eyebrow": "",
+        "title": "Catálogo",
+        "collection": "ropa",
+        "limit": 12,
+        "per_view": 4,
+        "show_view_all": true,
+        "view_all_label": "Ver todo",
+        "scheme": "dark",
+        "grain": false
+      }
     },
     "footer": {
       "type": "footer",
@@ -77,7 +71,7 @@
     }
   },
   "order": [
-    "1790429443a4c42bcf",
+    "catalog",
     "footer"
   ]
 }

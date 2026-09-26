@@ -33,7 +33,7 @@ const overflowX = (page) => page.evaluate(() => {
   const offenders = [];
   document.querySelectorAll('body *').forEach((el) => {
     const r = el.getBoundingClientRect();
-    if (r.width && (r.right > w + 1) && getComputedStyle(el).position !== 'fixed' && !el.closest('.marquee, .gallery__viewport, .pdp__media-list, .grain, .hero__zoom, .fof, [data-drawer-panel], .loader, .card__sizes, .zoom__body, .verse__bg, .story__img, .banner__img, .pt-curtain, .not-found__code, .size-guide__table-wrap')) offenders.push(`${el.tagName.toLowerCase()}.${String(el.className).split(' ').slice(0, 2).join('.')} → ${Math.round(r.right)}px`);
+    if (r.width && (r.right > w + 1) && getComputedStyle(el).position !== 'fixed' && !el.closest('.marquee, .gallery__viewport, .catalog__viewport, .pdp__media-list, .grain, .hero__zoom, .fof, [data-drawer-panel], .loader, .card__sizes, .zoom__body, .verse__bg, .story__img, .banner__img, .pt-curtain, .not-found__code, .size-guide__table-wrap')) offenders.push(`${el.tagName.toLowerCase()}.${String(el.className).split(' ').slice(0, 2).join('.')} → ${Math.round(r.right)}px`);
   });
   return { scroll: document.scrollingElement.scrollWidth - w, offenders: offenders.slice(0, 8) };
 });
@@ -245,11 +245,43 @@ if (suite === 'all' || suite === 'product') {
   await sleep(800);
   const labels = await es.evaluate(() => Array.from(document.querySelectorAll('[data-product-handle="he-is-risen-hoodie"] .card__size')).map((b) => b.textContent.trim()));
   log(labels.length > 0 && labels.every((l) => l.length <= 3), 'quick add shows size labels for "Talla"', labels.join(' '));
+
+  // One product per colour (tags group:/color:): swatch links to the sibling products.
+  await es.goto(BASE + '/products/hoodie-eden-olive', { waitUntil: 'domcontentloaded' });
+  await sleep(1200);
+  const links = await es.evaluate(() => {
+    const a = Array.from(document.querySelectorAll('.picker--links a.picker__swatch'));
+    return { colors: a.map((x) => x.title), current: (document.querySelector('.picker--links [aria-current="true"]') || {}).title, label: document.querySelector('.picker--links .label').textContent.trim(), size: !!document.querySelector('.picker--size') };
+  });
+  log(links.colors.join() === 'Black,Olive,Stone' && links.current === 'Olive' && links.label === 'Color: Olive' && links.size, 'colour links between grouped products', JSON.stringify(links));
+  await shot(es, 'pdp-color-links');
+  await es.click('.picker--links a[title="Black"]');
+  await es.waitForURL('**/products/hoodie-eden-black', { timeout: 8000 }).catch(() => {});
+  log(es.url().endsWith('/products/hoodie-eden-black'), 'colour link opens the other colour', es.url());
+  await sleep(1500);
+  await axe(es, 'grouped product');
   await es.context().close();
 }
 
 /* ---------------- Collection, quick add, search, 404, password ---------------- */
 if (suite === 'all' || suite === 'other') {
+  const cat = await newPage({ reduced: true });
+  await cat.goto(BASE + '/', { waitUntil: 'domcontentloaded' });
+  await cat.locator('.catalog').scrollIntoViewIfNeeded();
+  await sleep(800);
+  const c1 = await cat.evaluate(() => {
+    const v = document.querySelector('.catalog__viewport');
+    const items = Array.from(document.querySelectorAll('.catalog__item'));
+    const vis = items.filter((i) => { const r = i.getBoundingClientRect(); return r.left >= -1 && r.right <= innerWidth + 1; }).length;
+    return { count: items.length, visible: vis, left: v.scrollLeft, prevDisabled: document.querySelector('.catalog [data-gallery-prev]').disabled };
+  });
+  await cat.click('.catalog [data-gallery-next]');
+  await sleep(600);
+  const left2 = await cat.evaluate(() => document.querySelector('.catalog__viewport').scrollLeft);
+  log(c1.count === 9 && c1.visible === 4 && c1.prevDisabled && left2 > 0, 'catalog carousel: all products, 4 per view, arrows scroll', JSON.stringify({ ...c1, left2 }));
+  await shot(cat, 'catalog-carousel');
+  await cat.context().close();
+
   const page = await newPage();
   await page.goto(BASE + '/collections/chapter-001', { waitUntil: 'domcontentloaded' });
   await sleep(2200);

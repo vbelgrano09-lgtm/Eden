@@ -260,8 +260,13 @@
 .picker__swatch:hover .picker__swatch-dot {
   transform: scale(1.08);
 }
-.picker__input:checked + .picker__swatch::after {
+.picker__input:checked + .picker__swatch::after,
+.picker__swatch[aria-current='true']::after {
   border-color: var(--fg);
+}
+a.picker__swatch:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 3px;
 }
 .picker__swatch.is-unavailable .picker__swatch-dot {
   opacity: 0.45;

@@ -10,7 +10,7 @@ Faith that is worn, not preached. A cinematic, dark Online Store 2.0 theme for E
 
 ## First-time setup (15 minutes)
 
-1. **Products — import the catalog.** Shopify admin → **Products → Import** → `catalog/eden-products.csv`. It creates the *Faith Over Fear Hoodie*: 6 colours (Black, Olive, Charcoal, Teal, Blue, Stone) × 5 sizes (S–2XL) = 30 variants, the 12 photos (front + back per colour, pulled from `catalog/images/` on GitHub), the specs, SKUs, **cost per item** (S/M/L 43.26, XL/2XL 45.23) and the tag `chapter-001`. **Set your real selling price** after importing (the CSV uses 95.00 as a placeholder) and update the size table (Theme editor → Product → *Size & fit*) with your supplier's measurements.
+1. **Products — import the catalog.** Shopify admin → **Products → Import** → `catalog/eden-products.csv`. It creates **one product per colour** (*Hoodie Eden — Black, Olive, Charcoal, Teal, Blue, Stone*), each with sizes S–2XL, its own front + back photos (pulled from `catalog/images/` on GitHub), the specs, SKUs and **cost per item** (S/M/L 43.26, XL/2XL 45.23). The tags `group:hoodie-eden` + `color:<Name>` link the six: the product page shows colour swatches that jump between them. **Set your real selling price** after importing (the CSV uses 95.00 as a placeholder) and update the size table (Theme editor → Product → *Size & fit*) with your supplier's measurements.
 2. **Logo.** The real EDEN logo (crossed nails over the D) ships with the theme (`assets/eden-logo-*.webp`, favicon `eden-favicon.png`) and is used in the header, intro loader, password page and gift card. Theme settings → *Identity* → *Logo* only overrides the header logo; the FAITH OVER FEAR wordmark image is optional (live type otherwise).
 3. **Collection (optional).** Create a collection `Chapter 001` (handle `chapter-001`, condition *tag = chapter-001*) and pick it in the Chapter gallery / Product grid sections. Until a section has a collection with products, it shows **all products**; with no products at all it shows the six colourways from the built-in photos.
 4. **Menus.** Navigation → `main-menu` (header + mobile menu) and `footer` (footer column).
@@ -68,6 +68,7 @@ Per-section switches live in each section (below). Visitors whose device asks fo
 | Marquee | Text blocks (outline option), ✝ / nails / no separator, loop speed, size, direction, **react to scroll** (+ boost): speed and direction follow the scroll. |
 | Chapter gallery | Collection, product count, **pin & move sideways on desktop** (sticky scene; drag, keyboard and arrow keys supported), end card, scheme, grain. Phones get a swipe row with arrows. |
 | Faith over fear scene | The three words, closing line, **enable scroll scene**, end on the wordmark image, grain. Letters scale and fill with white; FEAR cracks and shatters; FAITH stays. |
+| Catalog carousel | Swipe/arrow carousel of product cards (all products when the collection is empty), 3–5 per view on desktop, progress bar, "View all". Placed above the footer on every page. |
 | Product grid | Collection, count, columns (desktop 2–4, phones 1–2), "View all", scheme, grain. Cards: badges, **5 COLORS** count, quick add by size. |
 | Brand story | Image left/right (+ parallax), eyebrow, "We fall. / We rise.", text, sign-off, button, scheme. |
 | Verse | Verse, reference (Psalm 46:10), note, reveal style (letters/words/lines), optional background image (+ strength, parallax), scheme, grain. |
@@ -84,7 +85,7 @@ Per-section switches live in each section (below). Visitors whose device asks fo
 
 | Section | Notes & settings |
 |---|---|
-| Product | Sticky info column; gallery (stacked or grid) with zoom dialog (pan on desktop, pinch on phones); blocks: title, price, **color & size picker** (size required by default, size guide in cm/in), **made-to-order note**, buy buttons (express checkout toggle), text, description, **accordions** (Details, Size & fit, The meaning, Care, Shipping), share, app blocks. **Sticky add-to-bag bar on phones** whenever the main button is off screen. Product JSON-LD. |
+| Product | Sticky info column; gallery (stacked or grid) with zoom dialog (pan on desktop, pinch on phones); blocks: title, price, **color & size picker** (plus colour links between products tagged `group:<name>` / `color:<Name>`) (size required by default, size guide in cm/in), **made-to-order note**, buy buttons (express checkout toggle), text, description, **accordions** (Details, Size & fit, The meaning, Care, Shipping), share, app blocks. **Sticky add-to-bag bar on phones** whenever the main button is off screen. Product JSON-LD. |
 | Complete the set | Metafield `custom.complete_the_set` → fallback product → Shopify complementary recommendations. |
 | Related products | Title, count, columns. Lazy-loaded. |
 | Collection | Filters drawer (Search & Discovery), sorting, AJAX updates with URL history, columns, per page. |
@@ -117,7 +118,7 @@ npm install
 npm run check          # Shopify Theme Check
 npm run preview        # local preview with a mock catalog → http://localhost:4321
                        # EMPTY_STORE=1 npm run preview → a fresh store (no products/images)
-npm run test:browser   # 58 browser checks: effects, cart, a11y (axe), overflow (needs Chromium)
+npm run test:browser   # 62 browser checks: effects, cart, a11y (axe), overflow (needs Chromium)
 npm run build          # rebuild the OGL/WebGL bundle + dist/eden-theme.zip
 npm run vendor         # recopy GSAP, Lenis and fonts from node_modules after an upgrade
 ```

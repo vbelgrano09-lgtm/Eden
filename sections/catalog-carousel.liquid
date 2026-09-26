@@ -1,0 +1,157 @@
+{%- liquid
+  assign s = section.settings
+  # No collection picked (or it's empty / doesn't exist yet): show the whole catalog.
+  assign source = s.collection
+  if source == blank or source.products_count == 0
+    assign source = collections.all
+  endif
+  assign per_view = s.per_view | default: 4
+  assign vw_d = 92 | divided_by: per_view
+  capture sizes
+    echo '(min-width: 990px) ' | append: vw_d | append: 'vw, (min-width: 750px) 42vw, 72vw'
+  endcapture
+-%}
+<section
+  class="section catalog scheme-{{ s.scheme }}{% if s.grain %} section-grain{% endif %}"
+  aria-labelledby="CatalogTitle-{{ section.id }}"
+  data-carousel
+  style="--per-view: {{ per_view }};"
+>
+  <div class="page-width section-head">
+    <div>
+      {%- if s.eyebrow != blank -%}
+        <p class="label muted section-head__eyebrow">{{ s.eyebrow }}</p>
+      {%- endif -%}
+      <h2 class="h2 section-head__title" id="CatalogTitle-{{ section.id }}" data-split="chars">{{ s.title }}</h2>
+    </div>
+    {%- if s.show_view_all and source.products_count > 0 -%}
+      <a class="label link link--static" href="{{ source.url }}">
+        {{- s.view_all_label }} ({{ source.products_count }})
+      </a>
+    {%- endif -%}
+  </div>
+
+  <gallery-scroller class="catalog__viewport" data-cursor="drag" data-cursor-label="{{ 'general.cursor.drag' | t }}">
+    <ul
+      class="catalog__track"
+      role="list"
+      tabindex="0"
+      data-track
+      aria-label="{{ 'sections.gallery.list_label' | t: title: s.title | escape }}"
+    >
+      {%- if source.products.size > 0 -%}
+        {%- for product in source.products limit: s.limit -%}
+          <li class="catalog__item">
+            {%- render 'product-card', product: product, sizes: sizes, id_prefix: section.id, index: forloop.index0 -%}
+          </li>
+        {%- endfor -%}
+      {%- else -%}
+        {%- comment -%} No products in the store yet: show the six hoodie colourways that ship with the theme. {%- endcomment -%}
+        {%- assign color_names = 'sections.gallery.placeholder_colors' | t | split: ',' -%}
+        {%- for i in (1..6) -%}
+          <li class="catalog__item">
+            <div class="card">
+              <div class="card__media media-lit">
+                {%- render 'media-placeholder', type: 'product', index: forloop.index0 -%}
+              </div>
+              <div class="card__info">
+                <h3 class="card__title">{{ 'sections.gallery.placeholder_title' | t }}</h3>
+                <span class="card__price label muted">{{ color_names[forloop.index0] }}</span>
+              </div>
+            </div>
+          </li>
+        {%- endfor -%}
+      {%- endif -%}
+    </ul>
+  </gallery-scroller>
+
+  <div class="page-width catalog__foot">
+    <div class="gallery__progress" aria-hidden="true"><span class="gallery__progress-bar"></span></div>
+    <div class="gallery__nav">
+      <button class="icon-btn" type="button" data-gallery-prev aria-label="{{ 'general.previous' | t }}">
+        {%- render 'icon', icon: 'arrow-left' -%}
+      </button>
+      <button class="icon-btn" type="button" data-gallery-next aria-label="{{ 'general.next' | t }}">
+        {%- render 'icon', icon: 'arrow' -%}
+      </button>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Catalog carousel",
+  "tag": "div",
+  "class": "section-catalog",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Catalog"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection",
+      "info": "Empty or no products: shows every product in the store."
+    },
+    {
+      "type": "range",
+      "id": "limit",
+      "label": "Products to show",
+      "min": 2,
+      "max": 24,
+      "step": 1,
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "per_view",
+      "label": "Products visible on desktop",
+      "min": 3,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show \"View all\" link",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "view_all_label",
+      "label": "\"View all\" label",
+      "default": "View all"
+    },
+    {
+      "type": "select",
+      "id": "scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "dark", "label": "Dark" },
+        { "value": "bone", "label": "Bone" }
+      ],
+      "default": "dark"
+    },
+    {
+      "type": "checkbox",
+      "id": "grain",
+      "label": "Film grain",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Catalog carousel"
+    }
+  ]
+}
+{% endschema %}

@@ -117,6 +117,7 @@
       }
     },
     "product": {
+      "color": "Color",
       "add_to_bag": "Add to bag",
       "adding": "Adding",
       "added": "Added to your bag",

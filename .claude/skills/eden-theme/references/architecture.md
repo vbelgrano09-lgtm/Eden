@@ -52,7 +52,7 @@ catalog/                  eden-products.csv (Shopify product import) + images/ (
 `theme.js` (no deps) exposes `EDEN.utils` (`$`, `$$`, `debounce`, `announce`, `trapFocus`, `lockScroll`/`unlockScroll`, `shade`) and `EDEN.cart`:
 - `<eden-drawer id>` with `[data-drawer-panel]` (gets `.is-open`), `[data-drawer-close]`, `[data-autofocus]`; opened by any `[data-drawer-open="Id"]`. Used for CartDrawer, MenuDrawer, SearchModal, Facets-*.
 - `EDEN.cart.add(items)`, `.change(key, qty)`, `.update({note})` → AJAX Cart API with `sections` = `cart-drawer` + every `[data-cart-section]`; re-renders and restores focus.
-- `<cart-items>`, `<product-form>` (requires a variant id; emits `product-form:needs-option`), `<quick-add>`, `<predictive-search>`, `<drop-countdown data-target="ISO">` (adds `.is-live`), `<scroll-marquee data-reactive>` (changes the CSS animation's playbackRate on scroll), `<gallery-scroller>` (native row: buttons, arrows, progress).
+- `<cart-items>`, `<product-form>` (requires a variant id; emits `product-form:needs-option`), `<quick-add>`, `<predictive-search>`, `<drop-countdown data-target="ISO">` (adds `.is-live`), `<scroll-marquee data-reactive>` (changes the CSS animation's playbackRate on scroll), `<gallery-scroller>` (native row: buttons, arrows, progress; track = `[data-track]` or `.gallery__track`, root = `[data-gallery]` or `[data-carousel]`).
 - `[data-modal-open="Id"]` opens a native `<dialog>`; `[data-modal-close]` closes; backdrop click closes.
 - Page transitions: native cross-document View Transitions (`@view-transition` inline in theme.liquid when enabled); curtain fallback when `CSSViewTransitionRule` is missing.
 
@@ -99,5 +99,7 @@ Headline sizes are clamps sized so the longest default line fits its column (Arc
 - JSON files saved by the Shopify editor (GitHub sync) start with a `/* … */` header; keep it, the preview harness strips it.
 - Menus `main-menu`, `footer`. Pages use templates `page.story`, `page.faq`, `page.contact`.
 - Metafields: `custom.ships_in_days` (text), `custom.complete_the_set` (product reference).
+- One product per colour: tags `group:<name>` + `color:<Name>` → `snippets/product-color-links` (siblings searched in the first 50 of `collections.all`, ordered by the swatch map).
+- `blocks/` may hold AI blocks the merchant generated in the Shopify editor; leave them unless replacing their usage.
 - Tag `coming-soon` → badge, no add to bag, notify form. Sold out is automatic.
 - Countdown dates are text `YYYY-MM-DD HH:MM` + an offset select, turned into ISO by `snippets/countdown-iso.liquid`.

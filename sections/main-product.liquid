@@ -132,6 +132,7 @@
               {%- endif -%}
 
             {%- when 'variant_picker' -%}
+              {%- render 'product-color-links', product: product -%}
               {%- unless product.has_only_default_variant -%}
                 <variant-picker
                   class="pdp__variants"

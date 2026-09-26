@@ -58,7 +58,7 @@ class OptionValue extends Drop {
   constructor(name, selected, swatchHex) { super(); this.name = name; this.selected = selected; this.available = true; this.swatch = swatchHex ? { color: swatchHex } : null; }
   valueOf() { return this.name; } toString() { return this.name; }
 }
-function makeProduct({ title, handle, kind, colors, sizes, price, tags = [], allSoldOut = false, compare = 0, sizeName = 'Size' }) {
+function makeProduct({ title, handle, kind, colors, sizes, price, tags = [], allSoldOut = false, compare = 0, sizeName = 'Size', sizeOnly = false }) {
   const media = [];
   colors.forEach((c, i) => {
     media.push(makeImage(`${handle}-${i}-1`, productSvg(c, 1, kind), 1200, 1500, `${title} in ${c}, front`));
@@ -82,7 +82,15 @@ function makeProduct({ title, handle, kind, colors, sizes, price, tags = [], all
     options: ['Color', sizeName], options_with_values: [colorOpt, sizeOpt], options_by_name: { Color: colorOpt, color: colorOpt, [sizeName]: sizeOpt, [sizeName.toLowerCase()]: sizeOpt },
     has_only_default_variant: false, variants, selected_variant: null, selected_or_first_available_variant: first, first_available_variant: first,
     metafields: { custom: {} },
+    ...(sizeOnly ? sizeOnlyShape(variants, sizeName, sizes, first) : {}),
   };
+}
+// One product per colour (the EDEN catalog CSV): a single Size option.
+function sizeOnlyShape(variants, sizeName, sizes, first) {
+  const vs = variants.map((v) => ({ ...v, title: v.options[1], options: [v.options[1]], option1: v.options[1], option2: null }));
+  const f = vs.find((v) => v.id === first.id);
+  const sizeOpt = { name: sizeName, position: 1, values: sizes.map((v) => new OptionValue(v, v === f.options[0], null)), selected_value: f.options[0] };
+  return { variants: vs, options: [sizeName], options_with_values: [sizeOpt], options_by_name: { [sizeName]: sizeOpt, [sizeName.toLowerCase()]: sizeOpt }, selected_or_first_available_variant: f, first_available_variant: f };
 }
 const P = [
   makeProduct({ title: 'Faith Over Fear Hoodie', handle: 'faith-over-fear-hoodie', kind: 'hoodie', colors: ['Black', 'Bone', 'Washed Black', 'Stone', 'Blood'], sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'], price: 11000 }),
@@ -94,7 +102,9 @@ const P = [
 ];
 P[0].metafields.custom.complete_the_set = { value: P[1] };
 P[0].metafields.custom.ships_in_days = { value: '7–10' };
-const byHandle = Object.fromEntries(P.map((p) => [p.handle, p]));
+// Grouped products (tags group:/color:) → colour links on the product page. Only in collections.all.
+const GROUPED = ['Black', 'Olive', 'Stone'].map((c) => makeProduct({ title: `Hoodie Eden — ${c}`, handle: `hoodie-eden-${c.toLowerCase()}`, kind: 'hoodie', colors: [c], sizes: ['S', 'M', 'L', 'XL', '2XL'], price: 9500, sizeOnly: true, tags: ['chapter-001', 'group:hoodie-eden', `color:${c}`] }));
+const byHandle = Object.fromEntries([...P, ...GROUPED].map((p) => [p.handle, p]));
 const filters = [
   { type: 'list', label: 'Color', param_name: 'filter.v.option.color', active_values: [], values: Object.keys(COLORS).map((c) => ({ label: c, value: c, param_name: 'filter.v.option.color', count: 2, active: false, swatch: { color: COLORS[c] } })) },
   { type: 'list', label: 'Size', param_name: 'filter.v.option.size', active_values: [], values: ['XS', 'S', 'M', 'L', 'XL', 'XXL'].map((s) => ({ label: s, value: s, param_name: 'filter.v.option.size', count: s === 'XS' ? 0 : 4, active: false })) },
@@ -109,7 +119,7 @@ const COLLECTION = {
 
 // Shopify's `collections` is iterable and also exposes collections.all (every product).
 const ALL_COLLECTIONS = [COLLECTION];
-ALL_COLLECTIONS.all = { ...COLLECTION, id: 0, handle: 'all', title: 'Products', url: '/collections/all', description: '' };
+ALL_COLLECTIONS.all = { ...COLLECTION, id: 0, handle: 'all', title: 'Products', url: '/collections/all', description: '', products: [...P, ...GROUPED], products_count: P.length + GROUPED.length, all_products_count: P.length + GROUPED.length };
 // EMPTY_STORE=1: a freshly installed store (no products, no images) to check the built-in placeholders.
 const EMPTY = !!process.env.EMPTY_STORE;
 if (EMPTY) Object.assign(ALL_COLLECTIONS.all, { products: [], products_count: 0, all_products_count: 0 });
@@ -280,7 +290,7 @@ function baseContext(req, extra = {}) {
     localization: { available_countries: [{ iso_code: 'US', name: 'United States', currency: { iso_code: 'USD', symbol: '$' } }, { iso_code: 'GB', name: 'United Kingdom', currency: { iso_code: 'GBP', symbol: '£' } }, { iso_code: 'CA', name: 'Canada', currency: { iso_code: 'CAD', symbol: '$' } }, { iso_code: 'AU', name: 'Australia', currency: { iso_code: 'AUD', symbol: '$' } }], available_languages: [{ iso_code: 'en', endonym_name: 'English' }], country: { iso_code: 'US' }, language: { iso_code: 'en' } },
     cart: cartDrop(), customer: null, canonical_url: `http://localhost:${PORT}${url.pathname}`, page_title: extra.page_title || 'EDEN', page_description: 'Faith over fear.', current_page: 1, current_tags: null,
     template: new TemplateDrop(extra.template || 'index'), content_for_header: '', powered_by_link: '<a href="https://shopify.com">Shopify</a>',
-    recommendations: { performed: false, products_count: 0, products: [] }, collections: ALL_COLLECTIONS, additional_checkout_buttons: false,
+    recommendations: { performed: false, products_count: 0, products: [] }, collections: ALL_COLLECTIONS, all_products: byHandle, additional_checkout_buttons: false,
     ...extra,
   };
 }

@@ -672,14 +672,15 @@
     connectedCallback() {
       if (this._bound) return;
       this._bound = true;
-      this.section = this.closest('[data-gallery]') || this.parentElement;
-      this.track = this.querySelector('.gallery__track');
+      this.section = this.closest('[data-gallery], [data-carousel]') || this.parentElement;
+      this.track = this.querySelector('[data-track], .gallery__track');
       this.prev = this.section.querySelector('[data-gallery-prev]');
       this.next = this.section.querySelector('[data-gallery-next]');
       const smooth = motionOK ? 'smooth' : 'auto';
       const step = () => {
         const item = this.track && this.track.querySelector('li');
-        return item ? item.getBoundingClientRect().width + 24 : this.clientWidth * 0.8;
+        const gap = this.track ? parseFloat(getComputedStyle(this.track).columnGap) || 24 : 24;
+        return item ? item.getBoundingClientRect().width + gap : this.clientWidth * 0.8;
       };
       const go = (dir) => this.scrollBy({ left: dir * step(), behavior: smooth });
       if (this.prev) this.prev.addEventListener('click', () => go(-1));

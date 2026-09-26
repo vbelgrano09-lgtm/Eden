@@ -1,0 +1,93 @@
+{%- doc -%}
+  Colour switcher for products sold as one product per colour. Products that share a tag
+  `group:<name>` are siblings; each one's colour comes from its `color:<Name>` tag. Renders a
+  row of swatch links (ordered like Theme settings → Color swatches), or nothing when the
+  product has no group tag. Siblings are looked up in the first 50 products of the store.
+
+  @param {product} product - The current product.
+{%- enddoc -%}
+{%- liquid
+  assign group_tag = ''
+  assign own_color = ''
+  for tag in product.tags
+    assign prefix = tag | slice: 0, 6 | downcase
+    if prefix == 'group:'
+      assign group_tag = tag
+    elsif prefix == 'color:'
+      assign own_color = tag | slice: 6, 60 | strip
+    endif
+  endfor
+-%}
+{%- if group_tag != blank -%}
+  {%- liquid
+    # Collect "handle|color" for every sibling (current product included).
+    assign entries = ''
+    for p in collections.all.products
+      if p.tags contains group_tag
+        assign p_color = ''
+        for tag in p.tags
+          assign prefix = tag | slice: 0, 6 | downcase
+          if prefix == 'color:'
+            assign p_color = tag | slice: 6, 60 | strip
+          endif
+        endfor
+        assign entries = entries | append: p.handle | append: '|' | append: p_color | append: '^'
+      endif
+    endfor
+    assign entries = entries | split: '^'
+
+    # Order by the Color swatches list, then anything not in it.
+    assign ordered = ''
+    assign lines = settings.swatch_map | newline_to_br | split: '<br />'
+    for line in lines
+      assign wanted = line | split: ':' | first | strip | downcase
+      for entry in entries
+        assign entry_color = entry | split: '|' | last | strip | downcase
+        if entry_color == wanted and wanted != blank
+          assign ordered = ordered | append: entry | append: '^'
+        endif
+      endfor
+    endfor
+    for entry in entries
+      unless ordered contains entry
+        assign ordered = ordered | append: entry | append: '^'
+      endunless
+    endfor
+    assign ordered = ordered | split: '^'
+  -%}
+  {%- if ordered.size > 1 -%}
+    <div class="picker picker--color picker--links">
+      <div class="picker__head">
+        <p class="label">
+          {{- 'products.product.color' | t -}}
+          {%- if own_color != blank %}: <span class="muted">{{ own_color }}</span>{% endif -%}
+        </p>
+      </div>
+      <ul class="picker__values" role="list">
+        {%- for entry in ordered -%}
+          {%- liquid
+            assign handle = entry | split: '|' | first
+            assign sibling = all_products[handle]
+            assign color = entry | split: '|' | last | default: sibling.title
+          -%}
+          {%- if sibling != blank -%}
+            {%- capture swatch_bg -%}{%- render 'swatch-value', value: color -%}{%- endcapture -%}
+            <li>
+              <a
+                class="picker__swatch"
+                href="{{ sibling.url }}"
+                title="{{ color | escape }}"
+                {% if sibling.handle == product.handle %}
+                  aria-current="true"
+                {% endif %}
+              >
+                <span class="picker__swatch-dot" style="{% if swatch_bg != blank %}--swatch: {{ swatch_bg | strip }};{% endif %}"></span>
+                <span class="visually-hidden">{{ color }}</span>
+              </a>
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+  {%- endif -%}
+{%- endif -%}

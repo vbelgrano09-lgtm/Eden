@@ -1399,6 +1399,11 @@ body:has(.main > .shopify-section:first-child [data-header-overlay]) .section-he
   text-transform: uppercase;
   line-height: 1.35;
 }
+.card__title-link {
+  display: inline-block;
+  padding-block: 5px;
+  margin-block: -5px;
+}
 .card__price {
   font-size: 13px;
   text-align: right;
@@ -2196,6 +2201,55 @@ body:has(.main > .shopify-section:first-child [data-header-overlay]) .section-he
 .gallery__nav {
   display: flex;
   gap: 4px;
+}
+
+/* Catalog carousel: native scroll-snap row of product cards, aligned to the page grid. */
+.catalog__viewport {
+  display: block;
+  container-type: inline-size;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.catalog__viewport::-webkit-scrollbar {
+  display: none;
+}
+.catalog__track {
+  --cat-gap: clamp(12px, 1.6vw, 24px);
+  --cat-pad: max(var(--gutter), calc((100cqw - var(--page-max)) / 2 + var(--gutter)));
+  display: flex;
+  gap: var(--cat-gap);
+  width: max-content;
+  padding-inline: var(--cat-pad);
+}
+.catalog__viewport {
+  scroll-padding-inline: max(var(--gutter), calc((100% - var(--page-max)) / 2 + var(--gutter)));
+}
+.catalog__item {
+  flex: none;
+  width: 72cqw;
+  scroll-snap-align: start;
+}
+.catalog__item > .card {
+  height: 100%;
+}
+.catalog__foot {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: clamp(24px, 3vw, 40px);
+}
+@media (min-width: 750px) {
+  .catalog__item {
+    width: 42cqw;
+  }
+}
+@media (min-width: 990px) {
+  .catalog__item {
+    width: calc((min(100cqw, var(--page-max)) - 2 * var(--gutter) - (var(--per-view, 4) - 1) * var(--cat-gap)) / var(--per-view, 4));
+  }
 }
 @media (min-width: 990px) {
   .gallery__item {
