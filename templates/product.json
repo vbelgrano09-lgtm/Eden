@@ -42,7 +42,7 @@
         "buy": {
           "type": "buy_buttons",
           "settings": {
-            "show_quantity": false,
+            "show_quantity": true,
             "show_dynamic_checkout": true,
             "notify_button": "Notify me"
           }
