@@ -16,7 +16,7 @@
 layout/theme.liquid       head bootstrap, deferred scripts, loader, groups, cart drawer, cursor, grain
 layout/password.liquid    coming-soon layout (no motion.js)
 sections/                 39 sections + header-group.json / footer-group.json
-snippets/                 head-bootstrap, css-variables, meta-tags, seo-title, logo-eden (SVG wordmark),
+snippets/                 head-bootstrap, css-variables, meta-tags, seo-title, logo-eden (<img> of the real EDEN logo, assets/eden-logo-*.webp),
                           loader, icon, product-card, price, cart-line-item, countdown(+ -iso),
                           newsletter-form, localization-form, facets, pagination, size-guide,
                           product-media-item, json-ld-*, media-placeholder, swatch-value, address-fields
@@ -31,6 +31,7 @@ src/webgl/eden-webgl.js   OGL hover shader source → npm run build:webgl
 tools/preview/            server.mjs (liquidjs mock of Shopify) + test.mjs (Playwright + axe)
 scripts/                  build-zip.sh, copy-vendor.mjs
 dist/                     eden-theme.zip (manual upload), eden-theme.skill
+catalog/                  eden-products.csv (Shopify product import) + images/ (raw GitHub URLs in the CSV)
 ```
 
 ## 2. Page boot order
@@ -94,7 +95,8 @@ Headline sizes are clamps sized so the longest default line fits its column (Arc
 
 ## 7. Merchant conventions
 
-- Collection handle `chapter-001` is pre-wired in `templates/index.json`.
+- Gallery/grid: chosen collection → `collections.all` if blank/empty → built-in colourway photos (`media-placeholder`, `assets/theme-hoodie-*.jpg`) if the store has no products. Hero/story fall back to `theme-hero-*.jpg` / `theme-story-back.jpg`.
+- JSON files saved by the Shopify editor (GitHub sync) start with a `/* … */` header; keep it, the preview harness strips it.
 - Menus `main-menu`, `footer`. Pages use templates `page.story`, `page.faq`, `page.contact`.
 - Metafields: `custom.ships_in_days` (text), `custom.complete_the_set` (product reference).
 - Tag `coming-soon` → badge, no add to bag, notify form. Sold out is automatic.

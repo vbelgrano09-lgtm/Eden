@@ -154,8 +154,14 @@
         "id": "loader_scope",
         "label": "Show loader on",
         "options": [
-          { "value": "all", "label": "Any first page of a visit" },
-          { "value": "index", "label": "Home page only" }
+          {
+            "value": "all",
+            "label": "Any first page of a visit"
+          },
+          {
+            "value": "index",
+            "label": "Home page only"
+          }
         ],
         "default": "all"
       },
@@ -277,9 +283,18 @@
         "id": "card_ratio",
         "label": "Product image ratio",
         "options": [
-          { "value": "portrait", "label": "Portrait 4:5" },
-          { "value": "tall", "label": "Tall 3:4" },
-          { "value": "square", "label": "Square 1:1" }
+          {
+            "value": "portrait",
+            "label": "Portrait 4:5"
+          },
+          {
+            "value": "tall",
+            "label": "Tall 3:4"
+          },
+          {
+            "value": "square",
+            "label": "Square 1:1"
+          }
         ],
         "default": "portrait"
       },
@@ -313,7 +328,7 @@
         "id": "swatch_map",
         "label": "Color swatches",
         "info": "One per line: Name: #hex. Used when a color has no native Shopify swatch.",
-        "default": "Black: #0A0A0A\nBone: #F4F1EA\nWashed Black: #2A2826\nStone: #B9B2A5\nBlood: #5C121A\nOlive: #4B4A36\nGrey: #8C8C88\nWhite: #FFFFFF"
+        "default": "Black: #1C1C1C\nOlive: #47432C\nCharcoal: #46484D\nTeal: #1F5758\nBlue: #1F4B69\nStone: #6F6862\nBone: #F4F1EA\nWhite: #FFFFFF"
       }
     ]
   },
@@ -325,8 +340,14 @@
         "id": "cart_type",
         "label": "After adding to bag",
         "options": [
-          { "value": "drawer", "label": "Open slide-out bag" },
-          { "value": "page", "label": "Go to the cart page" }
+          {
+            "value": "drawer",
+            "label": "Open slide-out bag"
+          },
+          {
+            "value": "page",
+            "label": "Go to the cart page"
+          }
         ],
         "default": "drawer"
       },

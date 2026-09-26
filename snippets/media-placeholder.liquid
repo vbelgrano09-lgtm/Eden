@@ -1,20 +1,46 @@
 {%- doc -%}
-  On-brand placeholder shown until real photography is uploaded: dark gradient, soft light,
-  the crossed nails. Stock religious imagery is never used.
+  Shown until real photography or products exist: the EDEN hoodie shots that ship with
+  the theme (assets/theme-*.jpg, dark studio backdrop).
 
   @param {string} [type] - product | lifestyle | hero
+  @param {number} [index] - Which colour to show for products (cycles through 6).
+  @param {string} [side] - front | back (products).
 {%- enddoc -%}
 {%- liquid
-  case type
-    when 'hero'
-      assign svg_name = 'hero-apparel-1'
-    when 'lifestyle'
-      assign svg_name = 'lifestyle-1'
-    else
-      assign svg_name = 'product-apparel-1'
-  endcase
+  assign colors = 'black,olive,charcoal,teal,blue,stone' | split: ','
+  assign i = index | default: 0 | modulo: 6
+  assign color = colors[i]
+  assign view = side | default: 'front'
 -%}
-<div class="placeholder-art" aria-hidden="true">
-  {{ svg_name | placeholder_svg_tag: 'placeholder-svg' }}
-  {%- render 'icon', icon: 'nails' -%}
+<div class="placeholder-art placeholder-art--{{ type | default: 'product' }}">
+  {%- case type -%}
+    {%- when 'hero' -%}
+      <img
+        src="{{ 'theme-hero-2400.jpg' | asset_url }}"
+        srcset="{{ 'theme-hero-1400.jpg' | asset_url }} 1400w, {{ 'theme-hero-2400.jpg' | asset_url }} 2400w"
+        sizes="100vw"
+        width="2400"
+        height="1500"
+        alt="{{ 'general.placeholder.hero_alt' | t }}"
+        loading="eager"
+        fetchpriority="high"
+      >
+    {%- when 'lifestyle' -%}
+      <img
+        src="{{ 'theme-story-back.jpg' | asset_url }}"
+        width="1200"
+        height="1500"
+        alt="{{ 'general.placeholder.story_alt' | t }}"
+        loading="lazy"
+      >
+    {%- else -%}
+      {%- capture file -%}theme-hoodie-{{ color }}-{{ view }}.jpg{%- endcapture -%}
+      <img
+        src="{{ file | asset_url }}"
+        width="1000"
+        height="1250"
+        alt=""
+        loading="lazy"
+      >
+  {%- endcase -%}
 </div>

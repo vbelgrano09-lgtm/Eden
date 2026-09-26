@@ -822,22 +822,10 @@ body:has(.main > .shopify-section:first-child [data-header-overlay]) .section-he
   }
 }
 
-/* Built-in logo */
+/* Logo (assets/eden-logo-*.webp, white on transparent) */
 .logo-eden {
-  overflow: visible;
-  color: currentColor;
-}
-.logo-eden__halo {
-  fill: var(--logo-halo, var(--c-black));
-  stroke: var(--logo-halo, var(--c-black));
-  stroke-width: 6;
-  stroke-linejoin: round;
-}
-.logo-eden__shape {
-  fill: currentColor;
-}
-.header .logo-eden__halo {
-  --logo-halo: var(--c-black);
+  display: block;
+  height: auto;
 }
 
 /* ---------- Menu drawer (mobile) ---------- */
@@ -1271,22 +1259,17 @@ body:has(.main > .shopify-section:first-child [data-header-overlay]) .section-he
   display: grid;
   place-items: center;
   overflow: hidden;
-  background:
-    radial-gradient(60% 50% at 50% 38%, rgba(var(--c-bone-rgb), 0.14), transparent 70%),
-    linear-gradient(180deg, #151515, #070707);
-  color: rgba(var(--c-bone-rgb), 0.18);
+  background: #0c0c0c;
 }
-.placeholder-art .icon--nails {
-  width: 42%;
-  max-width: 320px;
-  height: auto;
-}
-.placeholder-art svg.placeholder-svg {
+.placeholder-art img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  fill: rgba(var(--c-bone-rgb), 0.06);
+  object-fit: cover;
+}
+.placeholder-art--hero img {
+  object-position: 72% 50%;
 }
 
 /* Slow dramatic lighting on images */
@@ -3055,72 +3038,28 @@ html.has-loader .loader {
   width: 100%;
   height: auto;
 }
-.logo-eden--animated .logo-eden__l {
-  opacity: 0;
-  animation: loader-letter 0.45s var(--ease-out) forwards;
+/* The logo is revealed by a diagonal sweep (as if drawn), coming into focus. */
+.logo-eden--animated {
+  -webkit-mask-image: linear-gradient(110deg, #000 40%, rgba(0, 0, 0, 0.2) 50%, transparent 60%);
+  mask-image: linear-gradient(110deg, #000 40%, rgba(0, 0, 0, 0.2) 50%, transparent 60%);
+  -webkit-mask-size: 260% 100%;
+  mask-size: 260% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  animation: logo-reveal 0.95s var(--ease-in-out) 0.08s both;
 }
-.logo-eden--animated .logo-eden__l--1 {
-  animation-delay: 0.7s;
-}
-.logo-eden--animated .logo-eden__l--2 {
-  animation-delay: 0.78s;
-}
-.logo-eden--animated .logo-eden__l--3 {
-  animation-delay: 0.86s;
-}
-.logo-eden--animated .logo-eden__l--4 {
-  animation-delay: 0.94s;
-}
-.logo-eden--animated .logo-eden__nail {
-  transform-box: view-box;
-  transform-origin: 0 0;
-}
-.logo-eden--animated .logo-eden__nail--a {
-  animation: nail-a-cross 0.42s cubic-bezier(0.34, 1.45, 0.64, 1) 0.56s both;
-}
-.logo-eden--animated .logo-eden__nail--b {
-  animation: nail-b-cross 0.42s cubic-bezier(0.34, 1.45, 0.64, 1) 0.62s both;
-}
-.logo-eden--animated .logo-eden__shape {
-  fill-opacity: 0;
-  stroke: currentColor;
-  stroke-width: 1.4;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: nail-draw 0.56s var(--ease-in-out) forwards, nail-fill 0.3s ease 0.52s forwards;
-}
-.logo-eden--animated .logo-eden__nail--b .logo-eden__shape {
-  animation-delay: 0.1s, 0.6s;
-}
-.logo-eden--animated .logo-eden__halo {
-  opacity: 0;
-  animation: fade-to-1 0.25s ease 0.82s forwards;
-}
-@keyframes nail-draw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-@keyframes nail-fill {
-  to {
-    fill-opacity: 1;
-    stroke-opacity: 0;
-  }
-}
-@keyframes nail-a-cross {
+@keyframes logo-reveal {
   from {
-    transform: translate(121px, 70px) rotate(0deg);
+    -webkit-mask-position: 100% 0;
+    mask-position: 100% 0;
+    filter: blur(6px);
+    transform: scale(1.05);
   }
   to {
-    transform: translate(135px, 70px) rotate(-28deg);
-  }
-}
-@keyframes nail-b-cross {
-  from {
-    transform: translate(149px, 70px) rotate(0deg);
-  }
-  to {
-    transform: translate(135px, 70px) rotate(28deg);
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+    filter: none;
+    transform: none;
   }
 }
 @keyframes loader-letter {

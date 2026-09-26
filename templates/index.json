@@ -5,11 +5,11 @@
       "settings": {
         "eyebrow": "EDEN — Faith over fear",
         "heading": "Chapter 001\nIs live",
-        "subheading": "Oversized heavyweight sets. Made to order. Shipped worldwide.",
+        "subheading": "Oversized washed hoodies. 440 g/m² combed cotton. Made to order, shipped worldwide.",
         "button_label": "Shop now",
-        "button_link": "shopify://collections/chapter-001",
-        "button2_label": "The meaning",
-        "button2_link": "shopify://pages/our-story",
+        "button_link": "shopify://collections/all",
+        "button2_label": "",
+        "button2_link": "",
         "layout": "bottom",
         "height": "full",
         "header_overlay": true,
@@ -25,11 +25,33 @@
     "marquee": {
       "type": "marquee",
       "blocks": {
-        "m1": { "type": "text", "settings": { "text": "Faith over fear", "outline": false } },
-        "m2": { "type": "text", "settings": { "text": "He is risen", "outline": true } },
-        "m3": { "type": "text", "settings": { "text": "Be still", "outline": false } }
+        "m1": {
+          "type": "text",
+          "settings": {
+            "text": "Faith over fear",
+            "outline": false
+          }
+        },
+        "m2": {
+          "type": "text",
+          "settings": {
+            "text": "He is risen",
+            "outline": true
+          }
+        },
+        "m3": {
+          "type": "text",
+          "settings": {
+            "text": "Be still",
+            "outline": false
+          }
+        }
       },
-      "block_order": ["m1", "m2", "m3"],
+      "block_order": [
+        "m1",
+        "m2",
+        "m3"
+      ],
       "settings": {
         "separator": "cross",
         "speed": 36,
@@ -45,7 +67,7 @@
       "settings": {
         "eyebrow": "The drop",
         "title": "Chapter 001",
-        "text": "Heavyweight hoodies and joggers, built as sets. Cut oversized, made to order, shipped worldwide.",
+        "text": "One hoodie, six colourways. Oversized, washed, heavyweight cotton. Made to order.",
         "collection": "chapter-001",
         "limit": 8,
         "pin": true,
@@ -91,10 +113,10 @@
         "eyebrow": "Our story",
         "title": "We fall.\nWe rise.",
         "signoff": "The founders",
-        "button_label": "Read our story",
-        "button_link": "shopify://pages/our-story",
+        "button_label": "Shop the hoodie",
+        "button_link": "shopify://collections/all",
         "parallax": true,
-        "scheme": "bone",
+        "scheme": "dark",
         "grain": false
       }
     },
@@ -134,10 +156,20 @@
         "placeholder": "Your email",
         "button": "Join",
         "success": "You're in. See you at the next drop.",
-        "scheme": "bone",
+        "scheme": "dark",
         "grain": false
       }
     }
   },
-  "order": ["hero", "marquee", "gallery", "fof", "grid", "story", "verse", "countdown", "newsletter"]
+  "order": [
+    "hero",
+    "marquee",
+    "gallery",
+    "fof",
+    "grid",
+    "story",
+    "verse",
+    "countdown",
+    "newsletter"
+  ]
 }

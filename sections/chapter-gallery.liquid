@@ -57,7 +57,7 @@
                     draggable: 'false'
                 }}
               {%- else -%}
-                {%- render 'media-placeholder', type: 'product' -%}
+                {%- render 'media-placeholder', type: 'product', index: forloop.index0 -%}
               {%- endif -%}
             </div>
             <div class="gallery__item-info">
@@ -69,15 +69,17 @@
           </li>
         {%- endfor -%}
       {%- else -%}
+        {%- comment -%} No products in the store yet: show the six hoodie colourways that ship with the theme. {%- endcomment -%}
+        {%- assign color_names = 'sections.gallery.placeholder_colors' | t | split: ',' -%}
         {%- for i in (1..6) -%}
           <li class="gallery__item">
-            <div class="gallery__item-media">
+            <div class="gallery__item-media media-lit">
               <span class="gallery__index label" aria-hidden="true">0{{ i }} / 06</span>
-              {%- render 'media-placeholder', type: 'product' -%}
+              {%- render 'media-placeholder', type: 'product', index: forloop.index0 -%}
             </div>
             <div class="gallery__item-info">
               <h3 class="gallery__item-title">{{ 'sections.gallery.placeholder_title' | t }}</h3>
-              <span class="price">—</span>
+              <span class="label muted">{{ color_names[forloop.index0] }}</span>
             </div>
           </li>
         {%- endfor -%}

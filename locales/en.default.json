@@ -27,6 +27,10 @@
       "next": "Next page",
       "previous": "Previous page",
       "page": "Page"
+    },
+    "placeholder": {
+      "hero_alt": "EDEN Faith Over Fear hoodies in black, stone and olive",
+      "story_alt": "Back of the black EDEN hoodie: FAITH OVER FEAR"
     }
   },
   "header": {
@@ -71,7 +75,8 @@
     },
     "gallery": {
       "list_label": "{{ title }} products. Use arrow keys or Tab to move through them.",
-      "placeholder_title": "Chapter 001 piece"
+      "placeholder_title": "Faith Over Fear Hoodie",
+      "placeholder_colors": "Black,Olive,Charcoal,Teal,Blue,Stone"
     },
     "countdown": {
       "days": "Days",

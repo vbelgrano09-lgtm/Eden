@@ -201,8 +201,8 @@ if (suite === 'all' || suite === 'product') {
   await page.click('[data-modal-open^="SizeGuide"]');
   await sleep(500);
   await page.click('.size-guide__unit[data-unit="in"]');
-  const inch = await page.evaluate(() => document.querySelector('.size-guide__table td').textContent);
-  log(inch === '49' || inch === '49.0' || inch === '48.5', 'size guide switches to inches', inch);
+  const inch = await page.evaluate(() => { const td = document.querySelector('.size-guide__table td[data-cm]'); return { v: td.textContent, cm: +td.dataset.cm }; });
+  log(inch.cm > 0 && +inch.v === Math.round((inch.cm / 2.54) * 2) / 2, 'size guide switches to inches', JSON.stringify(inch));
   await shot(page, 'pdp-size-guide');
   await page.keyboard.press('Escape');
   await sleep(400);

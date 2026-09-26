@@ -10,6 +10,9 @@
     {%- if settings.favicon != blank -%}
       <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 64, height: 64 }}">
       <link rel="apple-touch-icon" href="{{ settings.favicon | image_url: width: 180, height: 180 }}">
+    {%- else -%}
+      <link rel="icon" type="image/png" href="{{ 'eden-favicon.png' | asset_url }}">
+      <link rel="apple-touch-icon" href="{{ 'eden-favicon.png' | asset_url }}">
     {%- endif -%}
 
     {%- render 'seo-title' -%}

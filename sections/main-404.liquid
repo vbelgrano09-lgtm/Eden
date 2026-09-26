@@ -1,26 +1,39 @@
-{%- assign lines = section.settings.title | newline_to_br | split: '<br />' -%}
+{%- liquid
+  assign s = section.settings
+  assign lines = s.title | newline_to_br | split: '<br />'
+  assign link_1 = s.button_link | default: routes.root_url
+  assign link_2 = s.button_2_link | default: routes.all_products_collection_url
+-%}
 <section class="not-found section-grain">
-  <span class="not-found__code" aria-hidden="true">404</span>
+  {%- if s.show_code -%}
+    <span class="not-found__code" aria-hidden="true">404</span>
+  {%- endif -%}
   <div class="not-found__inner">
-    <p class="label muted">{{ 'general.404.label' | t }}</p>
+    {%- if s.label != blank -%}
+      <p class="label muted">{{ s.label }}</p>
+    {%- endif -%}
     <h1 class="not-found__title">
       {%- for line in lines -%}
         {{ line | strip }}
         {%- unless forloop.last %}<br>{% endunless -%}
       {%- endfor -%}
     </h1>
-    {%- if section.settings.text != blank -%}
-      <p class="body-lg muted">{{ section.settings.text }}</p>
+    {%- if s.text != blank -%}
+      <p class="body-lg muted">{{ s.text }}</p>
     {%- endif -%}
     <div class="hero__ctas">
-      <span class="magnetic" data-magnetic>
-        <a class="btn btn--bone btn--lg" href="{{ routes.root_url }}">
-          <span class="btn__label">{{ section.settings.button }} {% render 'icon', icon: 'arrow' %}</span>
+      {%- if s.button != blank -%}
+        <span class="magnetic" data-magnetic>
+          <a class="btn btn--bone btn--lg" href="{{ link_1 }}">
+            <span class="btn__label">{{ s.button }} {% render 'icon', icon: 'arrow' %}</span>
+          </a>
+        </span>
+      {%- endif -%}
+      {%- if s.button_2 != blank -%}
+        <a class="btn btn--lg" href="{{ link_2 }}">
+          <span class="btn__label">{{ s.button_2 }}</span>
         </a>
-      </span>
-      <a class="btn btn--lg" href="{{ routes.all_products_collection_url }}">
-        <span class="btn__label">{{ section.settings.button_2 }}</span>
-      </a>
+      {%- endif -%}
     </div>
   </div>
 </section>
@@ -31,6 +44,18 @@
   "tag": "section",
   "class": "section-404",
   "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Small label above the title",
+      "info": "Leave empty to hide (e.g. \"Error 404 — page not found\")."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_code",
+      "label": "Show the giant \"404\" in the background",
+      "default": false
+    },
     {
       "type": "textarea",
       "id": "title",
@@ -50,10 +75,22 @@
       "default": "Come home"
     },
     {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link",
+      "info": "Empty: home page."
+    },
+    {
       "type": "text",
       "id": "button_2",
       "label": "Second button",
       "default": "Shop the chapter"
+    },
+    {
+      "type": "url",
+      "id": "button_2_link",
+      "label": "Second button link",
+      "info": "Empty: the full catalog (all products)."
     }
   ]
 }

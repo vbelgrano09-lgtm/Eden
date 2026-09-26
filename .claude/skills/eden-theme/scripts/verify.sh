@@ -20,11 +20,16 @@ PORT="${PORT:-4321}"
 node tools/preview/server.mjs > /tmp/eden-preview.log 2>&1 &
 SERVER=$!
 trap 'kill $SERVER 2>/dev/null' EXIT
-for _ in $(seq 1 30); do curl -sf "http://localhost:$PORT/__reset" >/dev/null && break; sleep 0.3; done
+UP=0
+for _ in $(seq 1 30); do curl -sf "http://localhost:$PORT/__reset" >/dev/null && UP=1 && break; sleep 0.3; done
+if [ "$UP" -ne 1 ]; then
+  echo "Preview server did not start:" >&2; cat /tmp/eden-preview.log >&2; exit 1
+fi
 
 echo "== Browser checks ($SUITE)"
 node tools/preview/test.mjs "$SUITE" | tee /tmp/eden-browser.log
 FAILS=$(grep -c '^FAIL' /tmp/eden-browser.log || true)
+[ -s /tmp/eden-browser.log ] || { echo "Browser checks produced no output." >&2; FAILS=1; }
 echo "Screenshots: tools/preview/shots/ — look at the ones your change affects."
 
 echo "== Zip"

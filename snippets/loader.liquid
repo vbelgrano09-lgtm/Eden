@@ -2,9 +2,7 @@
   Intro loader. Only visible when <html> has .has-loader, which the <head> script sets
   once per browser session (never with reduced motion, never in the theme editor).
   The timeline is pure CSS so it never waits on deferred JS:
-    0.00–0.70s  two nails draw themselves, side by side
-    0.55–0.95s  they swing and cross over the D
-    0.70–1.15s  E · D · E · N fade in
+    0.08–1.03s  the EDEN logo (nails over the D) is drawn in by a diagonal sweep, into focus
     1.10–1.30s  a seam of light opens across the middle
     1.30–1.80s  the screen splits open
   Skip: button, Escape, click, wheel or touch.
@@ -14,7 +12,7 @@
   <div class="loader__panel loader__panel--bottom"></div>
   <span class="loader__seam"></span>
   <div class="loader__mark">
-    {%- render 'logo-eden', animated: true, decorative: true -%}
+    {%- render 'logo-eden', animated: true, decorative: true, eager: true, sizes: 'min(62vw, 440px)' -%}
   </div>
   <button type="button" class="loader__skip label" data-loader-skip>
     {{- 'general.loader.skip' | t -}}

@@ -10,19 +10,22 @@ Faith that is worn, not preached. A cinematic, dark Online Store 2.0 theme for E
 
 ## First-time setup (15 minutes)
 
-1. **Logo & wordmark.** Theme settings → *Identity* → upload `eden-logo-white.png` (Logo) and `faith-over-fear.png` (FAITH OVER FEAR wordmark). Without them the theme uses a built-in EDEN wordmark with the crossed nails, and live type for FAITH OVER FEAR.
-2. **Collection.** Create a collection with the handle `chapter-001`. The home gallery, product grid and hero button are already pointed at it.
-3. **Menus.** Navigation → `main-menu` (header + mobile menu) and `footer` (footer column).
-4. **Pages.** Create `Our story` (template `page.story`), `FAQ` (`page.faq`), `Contact` (`page.contact`).
-5. **Product metafields** (Settings → Custom data → Products):
+1. **Products — import the catalog.** Shopify admin → **Products → Import** → `catalog/eden-products.csv`. It creates the *Faith Over Fear Hoodie*: 6 colours (Black, Olive, Charcoal, Teal, Blue, Stone) × 5 sizes (S–2XL) = 30 variants, the 12 photos (front + back per colour, pulled from `catalog/images/` on GitHub), the specs, SKUs, **cost per item** (S/M/L 43.26, XL/2XL 45.23) and the tag `chapter-001`. **Set your real selling price** after importing (the CSV uses 95.00 as a placeholder) and update the size table (Theme editor → Product → *Size & fit*) with your supplier's measurements.
+2. **Logo.** The real EDEN logo (crossed nails over the D) ships with the theme (`assets/eden-logo-*.webp`, favicon `eden-favicon.png`) and is used in the header, intro loader, password page and gift card. Theme settings → *Identity* → *Logo* only overrides the header logo; the FAITH OVER FEAR wordmark image is optional (live type otherwise).
+3. **Collection (optional).** Create a collection `Chapter 001` (handle `chapter-001`, condition *tag = chapter-001*) and pick it in the Chapter gallery / Product grid sections. Until a section has a collection with products, it shows **all products**; with no products at all it shows the six colourways from the built-in photos.
+4. **Menus.** Navigation → `main-menu` (header + mobile menu) and `footer` (footer column).
+5. **Pages.** Create `Our story` (template `page.story`), `FAQ` (`page.faq`), `Contact` (`page.contact`).
+6. **Product metafields** (Settings → Custom data → Products):
    - `custom.ships_in_days` (single line text, e.g. `7–10`): the "Made to order · ships in X days" note. Falls back to Theme settings → *Products*.
    - `custom.complete_the_set` (product reference): link each hoodie to its matching jogger for **Complete the set**.
-6. **Badges.** Tag a product `coming-soon` → **COMING SOON** badge, no add to bag, "Notify me" signup. **SOLD OUT** is automatic.
-7. **Filters.** Install *Search & Discovery* and add Color, Size and Price filters.
-8. **Markets.** Add the US, UK, Canada and Australia. The footer and mobile menu get a country/currency selector automatically.
-9. **Drop date.** Header → *Announcement bar* and Home → *Drop countdown* → set the date `YYYY-MM-DD HH:MM` and time zone. At zero both switch to **LIVE NOW**.
+7. **Badges.** Tag a product `coming-soon` → **COMING SOON** badge, no add to bag, "Notify me" signup. **SOLD OUT** is automatic.
+8. **Filters.** Install *Search & Discovery* and add Color, Size and Price filters.
+9. **Markets.** Add the US, UK, Canada and Australia. The footer and mobile menu get a country/currency selector automatically.
+10. **Drop date.** Header → *Announcement bar* and Home → *Drop countdown* → set the date `YYYY-MM-DD HH:MM` and time zone. At zero both switch to **LIVE NOW**.
 
-Colour option names `Color`/`Colour` become swatches. Shopify's native swatches are used when set; otherwise the *Color swatches* list in Theme settings → *Products* (`Name: #hex`).
+Built-in photography: until you upload images, the hero, brand story and product cards use the hoodie shots in `assets/theme-*.jpg` (dark studio backdrop).
+
+Colour option names (`Color`, `Colour`, `Colores`, `Couleur`, `Farbe`…) become swatches; size names (`Size`, `Talla`, `Talle`, `Taille`…) get the size guide. Shopify's native swatches are used when set; otherwise the *Color swatches* list in Theme settings → *Products* (`Name: #hex`).
 
 ---
 
@@ -31,7 +34,7 @@ Colour option names `Color`/`Colour` become swatches. Shopify's native swatches 
 | Setting | What it does | Phones | Reduced motion |
 |---|---|---|---|
 | **Enable motion** (master) | Turns every effect below on/off and ships a static site when off. | — | always off |
-| **Show intro loader** + *Show loader on* | Nails draw and cross over the D, EDEN fades in, the screen splits open. ≤1.8s, skippable (button, Esc, click, scroll), once per session. | yes | off |
+| **Show intro loader** + *Show loader on* | The EDEN logo sweeps in out of a blur, then the screen splits open. ≤1.8s, skippable (button, Esc, click, scroll), once per session. | yes | off |
 | **Smooth scroll (Lenis)** + *weight* | Weighted wheel/trackpad scrolling. | native touch scroll | off |
 | **Page transitions** | View Transitions API (the product image morphs from card to product page); curtain wipe fallback in other browsers. | yes | off |
 | **Split-text reveals** | Headlines reveal letter by letter or line by line as they enter (GSAP SplitText). | yes | text shown static |
@@ -86,7 +89,7 @@ Per-section switches live in each section (below). Visitors whose device asks fo
 | Related products | Title, count, columns. Lazy-loaded. |
 | Collection | Filters drawer (Search & Discovery), sorting, AJAX updates with URL history, columns, per page. |
 | Collections list · Search results · Cart · Page · Blog · Article | Standard templates in EDEN style (search has filters + predictive search). |
-| 404 | "Lost? So were we. Come home." |
+| 404 | "Lost? So were we. Come home." Optional small label and big background code (both off by default), two buttons with editable links (home, all products). |
 | Coming soon (password page) | Countdown, "No discounts. Just drops." signup, password dialog. |
 | Customer pages | Login (+ password reset), register, account, order, addresses, activate, reset. |
 
@@ -113,7 +116,8 @@ Known trade-off: Theme Check's optional `theme-check:all` config adds `AssetSize
 npm install
 npm run check          # Shopify Theme Check
 npm run preview        # local preview with a mock catalog → http://localhost:4321
-npm run test:browser   # 56 browser checks: effects, cart, a11y (axe), overflow (needs Chromium)
+                       # EMPTY_STORE=1 npm run preview → a fresh store (no products/images)
+npm run test:browser   # 58 browser checks: effects, cart, a11y (axe), overflow (needs Chromium)
 npm run build          # rebuild the OGL/WebGL bundle + dist/eden-theme.zip
 npm run vendor         # recopy GSAP, Lenis and fonts from node_modules after an upgrade
 ```
@@ -124,6 +128,7 @@ npm run vendor         # recopy GSAP, Lenis and fonts from node_modules after an
 | `assets/motion.js` | Everything that moves: Lenis, ScrollTrigger scenes, SplitText, parallax, cursor, magnetic, tilt, WebGL loader. Exits early for reduced motion. |
 | `assets/product.js` / `facets.js` | Variant picker, gallery/zoom, sticky bar, size guide / AJAX filtering. |
 | `src/webgl/eden-webgl.js` | Source of the WebGL hover (OGL); built into `assets/eden-webgl.js`. |
+| `catalog/` | `eden-products.csv` (Shopify product import) + `images/` it links to. Not part of the theme. |
 | `tools/preview/` | The local preview harness (liquidjs + mocked Shopify objects) and browser tests. Not part of the theme. |
 
 Libraries (self-hosted in `assets/`): GSAP 3.15 + ScrollTrigger + SplitText (GSAP standard license, free), Lenis 1.3 (MIT), OGL 1.0 (Unlicense), Archivo / Archivo Black (SIL OFL).

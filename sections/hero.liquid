@@ -5,7 +5,7 @@
     assign heading_tag = 'h1'
   endif
   assign lines = s.heading | newline_to_br | split: '<br />'
-  assign focal = s.image.presentation.focal_point | default: '50% 50%'
+  assign focal = s.image.presentation.focal_point | default: '72% 50%'
 
   assign video_desktop = blank
   assign video_mobile = blank

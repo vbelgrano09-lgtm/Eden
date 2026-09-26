@@ -43,13 +43,17 @@
           -%}
         {%- endfor -%}
       {%- else -%}
+        {%- comment -%} No products in the store yet: show the six hoodie colourways that ship with the theme. {%- endcomment -%}
+        {%- assign color_names = 'sections.gallery.placeholder_colors' | t | split: ',' -%}
         {%- for i in (1..6) -%}
           <div class="card">
-            <div class="card__media">{% render 'media-placeholder', type: 'product' %}</div>
+            <div class="card__media media-lit">
+              {%- render 'media-placeholder', type: 'product', index: forloop.index0 -%}
+            </div>
             <div class="card__info">
               <h3 class="card__title">{{ 'sections.gallery.placeholder_title' | t }}</h3>
-              <span class="card__price">—</span>
-              <p class="card__meta label">{{ 'products.card.colors' | t: count: 5 }}</p>
+              <span class="card__price label muted">{{ color_names[forloop.index0] }}</span>
+              <p class="card__meta label">{{ 'products.card.colors' | t: count: 6 }}</p>
             </div>
           </div>
         {%- endfor -%}

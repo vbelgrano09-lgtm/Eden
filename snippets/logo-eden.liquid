@@ -1,37 +1,33 @@
 {%- doc -%}
-  Built-in EDEN wordmark: a tall, high-contrast serif with two crossed nails over the D.
-  Used when no logo image is uploaded, and always by the intro loader (the nails draw themselves).
+  The EDEN logo (EDEN with the crossed nails over the D), white on transparent,
+  self-hosted in assets/. Used when no logo image is uploaded in Theme settings,
+  and always by the intro loader.
 
-  @param {boolean} [animated] - Adds the loader timeline hooks (nails draw, then cross).
-  @param {string} [class] - Extra classes for the <svg>.
-  @param {boolean} [decorative] - Hide from assistive tech (when the name is announced elsewhere).
+  @param {boolean} [animated] - Adds the loader reveal hooks.
+  @param {string} [class] - Extra classes for the <img>.
+  @param {boolean} [decorative] - Empty alt (when the name is announced elsewhere).
+  @param {string} [sizes] - `sizes` attribute, default 140px.
+  @param {boolean} [eager] - Load eagerly (header, loader).
 {%- enddoc -%}
-{%- assign nail_path = 'M-9 -69.5Q0 -76 9 -69.5L9 -66L3.4 -64L2.3 50L0 75L-2.3 50L-3.4 -64L-9 -66Z' -%}
-<svg
+{%- liquid
+  assign logo_alt = shop.name | escape
+  if decorative
+    assign logo_alt = ''
+  endif
+  assign logo_sizes = sizes | default: '140px'
+  assign logo_loading = 'lazy'
+  if eager
+    assign logo_loading = 'eager'
+  endif
+-%}
+<img
   class="logo-eden{% if animated %} logo-eden--animated{% endif %}{% if class != blank %} {{ class }}{% endif %}"
-  viewBox="0 0 380 140"
-  xmlns="http://www.w3.org/2000/svg"
-  focusable="false"
-  {% if decorative %}
-    aria-hidden="true"
-  {% else %}
-    role="img" aria-label="{{ shop.name | escape }}"
-  {% endif %}
+  src="{{ 'eden-logo-480.webp' | asset_url }}"
+  srcset="{{ 'eden-logo-480.webp' | asset_url }} 480w, {{ 'eden-logo-1000.webp' | asset_url }} 1000w"
+  sizes="{{ logo_sizes }}"
+  width="480"
+  height="224"
+  alt="{{ logo_alt }}"
+  loading="{{ logo_loading }}"
+  decoding="async"
 >
-  <g class="logo-eden__letters" fill="currentColor">
-    <path class="logo-eden__l logo-eden__l--1" d="M8 10H26V130H8ZM0 10H70V13H0ZM67 10H70V34H67ZM26 67H56V70H26ZM53 57H56V80H53ZM0 127H72V130H0ZM69 102H72V130H69Z"/>
-    <path class="logo-eden__l logo-eden__l--2" d="M102 10H120V130H102ZM94 10H124V13H94ZM94 127H124V130H94ZM120 10H132C160 10 176 34 176 70C176 106 160 130 132 130H120V127H130C148 127 157 104 157 70C157 36 148 13 130 13H120Z"/>
-    <path class="logo-eden__l logo-eden__l--3" d="M204 10H222V130H204ZM196 10H266V13H196ZM263 10H266V34H263ZM222 67H252V70H222ZM249 57H252V80H249ZM196 127H268V130H196ZM265 102H268V130H265Z"/>
-    <path class="logo-eden__l logo-eden__l--4" d="M288 10H312V13H288ZM294 10H297V130H294ZM286 127H306V130H286ZM294 10H312L370 130H352ZM367 10H370V130H367ZM357 10H380V13H357Z"/>
-  </g>
-  <g class="logo-eden__nails">
-    <g class="logo-eden__nail logo-eden__nail--a" transform="translate(135 70) rotate(-28)">
-      <path class="logo-eden__halo" d="{{ nail_path }}"/>
-      <path class="logo-eden__shape" d="{{ nail_path }}" pathLength="1"/>
-    </g>
-    <g class="logo-eden__nail logo-eden__nail--b" transform="translate(135 70) rotate(28)">
-      <path class="logo-eden__halo" d="{{ nail_path }}"/>
-      <path class="logo-eden__shape" d="{{ nail_path }}" pathLength="1"/>
-    </g>
-  </g>
-</svg>

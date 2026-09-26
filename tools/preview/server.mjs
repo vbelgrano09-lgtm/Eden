@@ -9,7 +9,8 @@ import { Liquid, Drop, Tag, Hash } from 'liquidjs';
 
 const THEME = process.env.THEME || new URL('../..', import.meta.url).pathname.replace(/\/$/, '');
 const PORT = +(process.env.PORT || 4321);
-const readJSON = (p) => JSON.parse(fs.readFileSync(p, 'utf8').replace(/^﻿/, ''));
+// Files saved by the Shopify editor start with an auto-generated /* … */ header.
+const readJSON = (p) => JSON.parse(fs.readFileSync(p, 'utf8').replace(/^﻿/, '').replace(/^\s*\/\*[\s\S]*?\*\/\s*/, ''));
 const locale = readJSON(path.join(THEME, 'locales/en.default.json'));
 const settingsData = readJSON(path.join(THEME, 'config/settings_data.json'));
 const SETTINGS = { ...settingsData.presets.Default, ...(process.env.SETTINGS ? JSON.parse(process.env.SETTINGS) : {}) };
@@ -109,6 +110,9 @@ const COLLECTION = {
 // Shopify's `collections` is iterable and also exposes collections.all (every product).
 const ALL_COLLECTIONS = [COLLECTION];
 ALL_COLLECTIONS.all = { ...COLLECTION, id: 0, handle: 'all', title: 'Products', url: '/collections/all', description: '' };
+// EMPTY_STORE=1: a freshly installed store (no products, no images) to check the built-in placeholders.
+const EMPTY = !!process.env.EMPTY_STORE;
+if (EMPTY) Object.assign(ALL_COLLECTIONS.all, { products: [], products_count: 0, all_products_count: 0 });
 const LINKLISTS = {
   'main-menu': { links: [{ title: 'Chapter 001', url: '/collections/chapter-001', links: [] }, { title: 'Hoodies', url: '/collections/chapter-001', links: [] }, { title: 'Joggers', url: '/collections/chapter-001', links: [] }, { title: 'Our story', url: '/pages/our-story', links: [] }] },
   footer: { links: [{ title: 'FAQ', url: '/pages/faq', links: [] }, { title: 'Contact', url: '/pages/contact', links: [] }, { title: 'Shipping', url: '/policies/shipping-policy', links: [] }, { title: 'Terms', url: '/policies/terms-of-service', links: [] }] },
@@ -226,9 +230,9 @@ function sectionDrop(id, data, index) {
   for (const s of schema.settings || []) if ('default' in s) defaults[s.id] = s.default;
   const settings = { ...defaults, ...(data.settings || {}) };
   for (const s of schema.settings || []) {
-    if (s.type === 'collection' && typeof settings[s.id] === 'string') settings[s.id] = settings[s.id] === 'chapter-001' && !process.env.NO_CHAPTER ? COLLECTION : null;
+    if (s.type === 'collection' && typeof settings[s.id] === 'string') settings[s.id] = settings[s.id] === 'chapter-001' && !process.env.NO_CHAPTER && !EMPTY ? COLLECTION : null;
     if (s.type === 'image_picker' && settings[s.id] === undefined) settings[s.id] = null;
-    if (s.type === 'image_picker' && s.id === 'image' && data.type === 'hero') settings.image = makeImage('hero', heroSvg(), 2400, 1500, 'Model in the Faith Over Fear hoodie');
+    if (s.type === 'image_picker' && s.id === 'image' && data.type === 'hero' && !EMPTY) settings.image = makeImage('hero', heroSvg(), 2400, 1500, 'Model in the Faith Over Fear hoodie');
     if (s.type === 'link_list' && typeof settings[s.id] === 'string') settings[s.id] = LINKLISTS[settings[s.id]] || { links: [] };
     if (s.type === 'url' && typeof settings[s.id] === 'string' && settings[s.id].startsWith('shopify://')) settings[s.id] = '/' + settings[s.id].replace('shopify://', '');
   }

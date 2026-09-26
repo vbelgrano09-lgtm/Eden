@@ -50,7 +50,7 @@
             class: 'header__logo-img'
         }}
       {%- else -%}
-        {%- render 'logo-eden', decorative: true -%}
+        {%- render 'logo-eden', decorative: true, eager: true, sizes: '(min-width: 990px) 140px, 100px' -%}
       {%- endif -%}
     </a>
   </div>
