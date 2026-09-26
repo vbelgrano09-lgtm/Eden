@@ -67,7 +67,9 @@ This file can be re-written at any time.
     {%- endif -%}
 
     {{ content_for_header }}
-  </head>
+  
+  {% render 'shogun-head' %}
+</head>
   <body class="template-{{ template | replace: '/', '-' | replace: '.', '--' }}{% if settings.image_lighting %} has-lighting{% endif %}">
     {% include 'shogun-content-handler' %}
 
