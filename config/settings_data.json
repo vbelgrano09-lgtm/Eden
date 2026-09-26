@@ -42,7 +42,7 @@
     "quick_add": true,
     "coming_soon_tag": "coming-soon",
     "swatch_map": "Black: #1C1C1C\nOlive: #47432C\nCharcoal: #46484D\nTeal: #1F5758\nBlue: #1F4B69\nStone: #6F6862\nBone: #F4F1EA\nWhite: #FFFFFF",
-    "cart_type": "drawer",
+    "cart_type": "page",
     "cart_note": false,
     "cart_message": "Every piece is made to order for you. Shipped worldwide.",
     "predictive_search": true,
