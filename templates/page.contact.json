@@ -1,13 +1,45 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
-    "main": { "type": "main-page", "settings": { "show_title": true, "eyebrow": "Contact", "width": "narrow" } },
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "show_title": false,
+        "eyebrow": "Contac",
+        "width": "narrow"
+      }
+    },
     "form": {
       "type": "contact-form",
       "blocks": {
-        "email": { "type": "detail", "settings": { "heading": "Email", "text": "<p>Use the form, or write to the address on your order confirmation.</p>" } },
-        "hours": { "type": "detail", "settings": { "heading": "Replies", "text": "<p>Within two working days. Two founders read every message.</p>" } }
+        "email": {
+          "type": "detail",
+          "settings": {
+            "heading": "Email",
+            "text": "<p>Use the form, or write to the address on your order confirmation.</p>"
+          }
+        },
+        "hours": {
+          "type": "detail",
+          "settings": {
+            "heading": "Replies",
+            "text": "<p>Within two working days. Two founders read every message.</p>"
+          }
+        }
       },
-      "block_order": ["email", "hours"],
+      "block_order": [
+        "email",
+        "hours"
+      ],
       "settings": {
         "title": "Talk to us",
         "text": "<p>Sizing, orders, collabs, or just to say hi.</p>",
@@ -16,5 +48,8 @@
       }
     }
   },
-  "order": ["main", "form"]
+  "order": [
+    "main",
+    "form"
+  ]
 }
