@@ -1,14 +1,59 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
       "type": "main-404",
       "settings": {
-        "title": "Lost?\nSo were we.",
+        "title": "WELCOME to\nparadise",
         "text": "Come home.",
         "button": "Come home",
         "button_2": "Shop the chapter"
       }
+    },
+    "verse_pTELfk": {
+      "type": "verse",
+      "name": "Verse",
+      "settings": {
+        "label": "Chapter 001 — The line",
+        "text": "Be still,\nand know.",
+        "reference": "Psalm 46:10",
+        "note": "Not a slogan. A reminder we wear when everything is loud.",
+        "split": "chars",
+        "image_opacity": 35,
+        "parallax": true,
+        "scheme": "dark",
+        "grain": true
+      }
+    },
+    "image_banner_Eefk3R": {
+      "type": "image-banner",
+      "name": "Image banner",
+      "settings": {
+        "eyebrow": "Our story",
+        "title": "Worn,\nnot preached.",
+        "text": "",
+        "button_label": "",
+        "button_link": "",
+        "height": "full",
+        "align": "center",
+        "overlay": 55,
+        "header_overlay": true,
+        "parallax": true,
+        "grain": true
+      }
     }
   },
-  "order": ["main"]
+  "order": [
+    "main",
+    "verse_pTELfk",
+    "image_banner_Eefk3R"
+  ]
 }
