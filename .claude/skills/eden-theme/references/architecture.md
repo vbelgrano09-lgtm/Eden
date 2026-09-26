@@ -12,24 +12,25 @@
 ## 1. Repo layout
 
 ```
-theme/                    ← the uploadable theme (only this goes in the zip)
-  layout/theme.liquid     head bootstrap, deferred scripts, loader, groups, cart drawer, cursor, grain
-  layout/password.liquid  coming-soon layout (no motion.js)
-  sections/               39 sections + header-group.json / footer-group.json
-  snippets/               head-bootstrap, css-variables, meta-tags, seo-title, logo-eden (SVG wordmark),
+(repo root = the theme; Shopify's GitHub integration requires this and ignores other folders)
+layout/theme.liquid       head bootstrap, deferred scripts, loader, groups, cart drawer, cursor, grain
+layout/password.liquid    coming-soon layout (no motion.js)
+sections/                 39 sections + header-group.json / footer-group.json
+snippets/                 head-bootstrap, css-variables, meta-tags, seo-title, logo-eden (SVG wordmark),
                           loader, icon, product-card, price, cart-line-item, countdown(+ -iso),
                           newsletter-form, localization-form, facets, pagination, size-guide,
                           product-media-item, json-ld-*, media-placeholder, swatch-value, address-fields
-  assets/                 base.css (global + marketing sections), product.css, collection.css, cart.css,
+assets/                   base.css (global + marketing sections), product.css, collection.css, cart.css,
                           customer.css, theme.js, motion.js, product.js, facets.js, eden-webgl.js (built),
                           gsap.min.js, ScrollTrigger.min.js, SplitText.min.js, lenis.min.js, fonts (woff2)
-  config/                 settings_schema.json, settings_data.json
-  locales/en.default.json storefront strings (schemas use plain English labels)
-  templates/              JSON templates + gift_card.liquid + customers/*
+config/                   settings_schema.json, settings_data.json
+locales/en.default.json   storefront strings (schemas use plain English labels)
+templates/                JSON templates + gift_card.liquid + customers/*
+--- not part of the theme (ignored by Shopify) ---
 src/webgl/eden-webgl.js   OGL hover shader source → npm run build:webgl
 tools/preview/            server.mjs (liquidjs mock of Shopify) + test.mjs (Playwright + axe)
 scripts/                  build-zip.sh, copy-vendor.mjs
-dist/eden-theme.zip       upload artifact
+dist/                     eden-theme.zip (manual upload), eden-theme.skill
 ```
 
 ## 2. Page boot order

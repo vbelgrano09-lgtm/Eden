@@ -1,0 +1,11 @@
+# Theme Check config. The theme lives at the repo root (required by Shopify's
+# GitHub integration); dev tooling next to it is not part of the theme.
+extends: theme-check:recommended
+ignore:
+  - node_modules/**
+  - tools/**
+  - src/**
+  - scripts/**
+  - dist/**
+  - package.json
+  - package-lock.json

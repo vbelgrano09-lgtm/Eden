@@ -1,5 +1,10 @@
 {%- liquid
   assign s = section.settings
+  # No collection picked (or it's empty / doesn't exist yet): show the whole catalog.
+  assign source = s.collection
+  if source == blank or source.products_count == 0
+    assign source = collections.all
+  endif
   assign cols_d = s.columns_desktop
   assign cols_m = s.columns_mobile
   assign vw_d = 92 | divided_by: cols_d
@@ -20,17 +25,16 @@
         {%- endif -%}
         <h2 class="h2 section-head__title" id="GridTitle-{{ section.id }}" data-split="chars">{{ s.title }}</h2>
       </div>
-      {%- if s.show_view_all and s.collection != blank -%}
-        <a class="label link link--static" href="{{ s.collection.url }}">
-          {{- s.view_all_label -}}
-          {%- if s.collection.products_count > 0 %} ({{ s.collection.products_count }}){% endif -%}
+      {%- if s.show_view_all and source.products_count > 0 -%}
+        <a class="label link link--static" href="{{ source.url }}">
+          {{- s.view_all_label }} ({{ source.products_count }})
         </a>
       {%- endif -%}
     </div>
 
     <div class="product-grid" style="--cols-desktop: {{ cols_d }}; --cols-mobile: {{ cols_m }};">
-      {%- if s.collection != blank and s.collection.products.size > 0 -%}
-        {%- for product in s.collection.products limit: s.limit -%}
+      {%- if source.products.size > 0 -%}
+        {%- for product in source.products limit: s.limit -%}
           {%- render 'product-card',
             product: product,
             sizes: sizes,
@@ -75,7 +79,8 @@
     {
       "type": "collection",
       "id": "collection",
-      "label": "Collection"
+      "label": "Collection",
+      "info": "Empty or not chosen: shows all products."
     },
     {
       "type": "range",

@@ -1,4 +1,4 @@
-// Copies the self-hosted libraries and fonts from node_modules into theme/assets.
+// Copies the self-hosted libraries and fonts from node_modules into assets/.
 // Run after `npm install` when bumping GSAP, Lenis or the Archivo fonts.
 import { copyFileSync, readFileSync, writeFileSync } from 'node:fs';
 
@@ -12,7 +12,7 @@ const map = [
 ];
 
 for (const [from, to] of map) {
-  const dest = `theme/assets/${to}`;
+  const dest = `assets/${to}`;
   copyFileSync(from, dest);
   if (to.endsWith('.js')) {
     // Source maps are not shipped, so drop the dangling reference.

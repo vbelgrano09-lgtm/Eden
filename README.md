@@ -2,8 +2,8 @@
 
 Faith that is worn, not preached. A cinematic, dark Online Store 2.0 theme for EDEN: heavy on motion, fast on phones, built to sell.
 
-- **Upload:** `dist/eden-theme.zip` → Shopify admin → **Online Store → Themes → Add theme → Upload zip file**.
-- **Source:** the uploadable theme is the `theme/` folder (zip its *contents*, or run `npm run zip`).
+- **Connect from GitHub:** Shopify admin → **Online Store → Themes → Add theme → Connect from GitHub** → this repository and branch. The theme folders (`assets/ config/ layout/ locales/ sections/ snippets/ templates/`) live at the repo root, as Shopify's GitHub integration requires. Everything else here (README, `tools/`, `src/`, `dist/`) is ignored by Shopify.
+- **Or upload a zip:** `dist/eden-theme.zip` → **Online Store → Themes → Add theme → Upload zip file** (rebuild it with `npm run zip`).
 - **Theme Check:** `shopify theme check` → **0 errors, 0 warnings** (92 files).
 
 ---
@@ -120,10 +120,10 @@ npm run vendor         # recopy GSAP, Lenis and fonts from node_modules after an
 
 | Path | What |
 |---|---|
-| `theme/assets/theme.js` | Core: cart API + drawer, quick add, header, menus, search, countdown, marquee, modals, page-transition fallback. No dependencies. |
-| `theme/assets/motion.js` | Everything that moves: Lenis, ScrollTrigger scenes, SplitText, parallax, cursor, magnetic, tilt, WebGL loader. Exits early for reduced motion. |
-| `theme/assets/product.js` / `facets.js` | Variant picker, gallery/zoom, sticky bar, size guide / AJAX filtering. |
-| `src/webgl/eden-webgl.js` | Source of the WebGL hover (OGL); built into `theme/assets/eden-webgl.js`. |
+| `assets/theme.js` | Core: cart API + drawer, quick add, header, menus, search, countdown, marquee, modals, page-transition fallback. No dependencies. |
+| `assets/motion.js` | Everything that moves: Lenis, ScrollTrigger scenes, SplitText, parallax, cursor, magnetic, tilt, WebGL loader. Exits early for reduced motion. |
+| `assets/product.js` / `facets.js` | Variant picker, gallery/zoom, sticky bar, size guide / AJAX filtering. |
+| `src/webgl/eden-webgl.js` | Source of the WebGL hover (OGL); built into `assets/eden-webgl.js`. |
 | `tools/preview/` | The local preview harness (liquidjs + mocked Shopify objects) and browser tests. Not part of the theme. |
 
-Libraries (self-hosted in `theme/assets`): GSAP 3.15 + ScrollTrigger + SplitText (GSAP standard license, free), Lenis 1.3 (MIT), OGL 1.0 (Unlicense), Archivo / Archivo Black (SIL OFL).
+Libraries (self-hosted in `assets/`): GSAP 3.15 + ScrollTrigger + SplitText (GSAP standard license, free), Lenis 1.3 (MIT), OGL 1.0 (Unlicense), Archivo / Archivo Black (SIL OFL).

@@ -11,7 +11,15 @@
     assign coming_soon = true
   endif
 
-  assign size_option = product.options_by_name['Size']
+  assign color_names = 'color,colour,colors,colours,colores,couleur,couleurs,farbe' | split: ','
+  assign size_names = 'size,sizes,talla,tallas,talle,talles,tamaño,taille,größe' | split: ','
+  assign size_option = nil
+  for option in product.options_with_values
+    assign option_key = option.name | downcase | strip
+    if size_names contains option_key
+      assign size_option = option
+    endif
+  endfor
   assign require_size = false
   if section.settings.require_size and size_option and product.selected_variant == blank and product.has_only_default_variant == false
     assign require_size = true
@@ -134,13 +142,13 @@
                   {%- for option in product.options_with_values -%}
                     {%- liquid
                       assign option_index = forloop.index0
-                      assign option_name = option.name | downcase
+                      assign option_name = option.name | downcase | strip
                       assign is_color = false
-                      if option_name == 'color' or option_name == 'colour'
+                      if color_names contains option_name
                         assign is_color = true
                       endif
                       assign is_size = false
-                      if option_name == 'size'
+                      if size_names contains option_name
                         assign is_size = true
                       endif
                     -%}

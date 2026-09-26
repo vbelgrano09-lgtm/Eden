@@ -10,7 +10,7 @@ export PATH="$ROOT/node_modules/.bin:$PATH"
 [ -d node_modules ] || npm install --no-audit --no-fund
 
 echo "== Theme Check"
-if ! shopify theme check --path theme --fail-level error; then
+if ! shopify theme check --path . --fail-level error; then
   echo "Theme Check failed — fix before continuing." >&2
   exit 1
 fi

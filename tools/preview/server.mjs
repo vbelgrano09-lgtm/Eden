@@ -7,7 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { Liquid, Drop, Tag, Hash } from 'liquidjs';
 
-const THEME = process.env.THEME || new URL('../../theme', import.meta.url).pathname;
+const THEME = process.env.THEME || new URL('../..', import.meta.url).pathname.replace(/\/$/, '');
 const PORT = +(process.env.PORT || 4321);
 const readJSON = (p) => JSON.parse(fs.readFileSync(p, 'utf8').replace(/^﻿/, ''));
 const locale = readJSON(path.join(THEME, 'locales/en.default.json'));
@@ -57,7 +57,7 @@ class OptionValue extends Drop {
   constructor(name, selected, swatchHex) { super(); this.name = name; this.selected = selected; this.available = true; this.swatch = swatchHex ? { color: swatchHex } : null; }
   valueOf() { return this.name; } toString() { return this.name; }
 }
-function makeProduct({ title, handle, kind, colors, sizes, price, tags = [], allSoldOut = false, compare = 0 }) {
+function makeProduct({ title, handle, kind, colors, sizes, price, tags = [], allSoldOut = false, compare = 0, sizeName = 'Size' }) {
   const media = [];
   colors.forEach((c, i) => {
     media.push(makeImage(`${handle}-${i}-1`, productSvg(c, 1, kind), 1200, 1500, `${title} in ${c}, front`));
@@ -72,13 +72,13 @@ function makeProduct({ title, handle, kind, colors, sizes, price, tags = [], all
   const first = variants.find((v) => v.available) || variants[0];
   const opt = (name, values, pos, sel) => ({ name, position: pos, values: values.map((v) => new OptionValue(v, v === sel, name === 'Color' ? COLORS[v] : null)), selected_value: sel });
   const colorOpt = opt('Color', colors, 1, first.options[0]);
-  const sizeOpt = opt('Size', sizes, 2, first.options[1]);
+  const sizeOpt = opt(sizeName, sizes, 2, first.options[1]);
   return {
     id: Math.floor(Math.random() * 1e9), title, handle, url: `/products/${handle}`, vendor: 'EDEN', type: kind === 'jogger' ? 'Joggers' : 'Hoodies', tags,
     price, price_min: price, price_varies: false, compare_at_price: compare || null, available: variants.some((v) => v.available),
     description: `<p>Heavyweight 480 GSM brushed-back fleece. Oversized fit, dropped shoulders, double-layer hood. FAITH OVER FEAR on the chest, the crossed nails on the back.</p><ul><li>100% organic cotton</li><li>Made to order</li></ul>`,
     featured_media: media[0], featured_image: media[0], images: media, media,
-    options: ['Color', 'Size'], options_with_values: [colorOpt, sizeOpt], options_by_name: { Color: colorOpt, color: colorOpt, Size: sizeOpt, size: sizeOpt },
+    options: ['Color', sizeName], options_with_values: [colorOpt, sizeOpt], options_by_name: { Color: colorOpt, color: colorOpt, [sizeName]: sizeOpt, [sizeName.toLowerCase()]: sizeOpt },
     has_only_default_variant: false, variants, selected_variant: null, selected_or_first_available_variant: first, first_available_variant: first,
     metafields: { custom: {} },
   };
@@ -86,7 +86,7 @@ function makeProduct({ title, handle, kind, colors, sizes, price, tags = [], all
 const P = [
   makeProduct({ title: 'Faith Over Fear Hoodie', handle: 'faith-over-fear-hoodie', kind: 'hoodie', colors: ['Black', 'Bone', 'Washed Black', 'Stone', 'Blood'], sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'], price: 11000 }),
   makeProduct({ title: 'Faith Over Fear Jogger', handle: 'faith-over-fear-jogger', kind: 'jogger', colors: ['Black', 'Bone', 'Washed Black', 'Stone', 'Blood'], sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'], price: 9000 }),
-  makeProduct({ title: 'He Is Risen Hoodie', handle: 'he-is-risen-hoodie', kind: 'hoodie', colors: ['Bone', 'Black'], sizes: ['S', 'M', 'L', 'XL'], price: 11000 }),
+  makeProduct({ title: 'He Is Risen Hoodie', handle: 'he-is-risen-hoodie', kind: 'hoodie', colors: ['Bone', 'Black'], sizes: ['S', 'M', 'L', 'XL'], price: 11000, sizeName: 'Talla' }),
   makeProduct({ title: 'He Is Risen Jogger', handle: 'he-is-risen-jogger', kind: 'jogger', colors: ['Bone', 'Black'], sizes: ['S', 'M', 'L', 'XL'], price: 9000 }),
   makeProduct({ title: 'Be Still Hoodie', handle: 'be-still-hoodie', kind: 'hoodie', colors: ['Olive', 'Black', 'Stone'], sizes: ['S', 'M', 'L', 'XL'], price: 11500, tags: ['coming-soon'] }),
   makeProduct({ title: 'Be Still Jogger', handle: 'be-still-jogger', kind: 'jogger', colors: ['Olive', 'Black'], sizes: ['S', 'M', 'L', 'XL'], price: 9500, allSoldOut: true }),
@@ -106,6 +106,9 @@ const COLLECTION = {
   featured_image: P[0].featured_media, image: null,
 };
 
+// Shopify's `collections` is iterable and also exposes collections.all (every product).
+const ALL_COLLECTIONS = [COLLECTION];
+ALL_COLLECTIONS.all = { ...COLLECTION, id: 0, handle: 'all', title: 'Products', url: '/collections/all', description: '' };
 const LINKLISTS = {
   'main-menu': { links: [{ title: 'Chapter 001', url: '/collections/chapter-001', links: [] }, { title: 'Hoodies', url: '/collections/chapter-001', links: [] }, { title: 'Joggers', url: '/collections/chapter-001', links: [] }, { title: 'Our story', url: '/pages/our-story', links: [] }] },
   footer: { links: [{ title: 'FAQ', url: '/pages/faq', links: [] }, { title: 'Contact', url: '/pages/contact', links: [] }, { title: 'Shipping', url: '/policies/shipping-policy', links: [] }, { title: 'Terms', url: '/policies/terms-of-service', links: [] }] },
@@ -223,7 +226,7 @@ function sectionDrop(id, data, index) {
   for (const s of schema.settings || []) if ('default' in s) defaults[s.id] = s.default;
   const settings = { ...defaults, ...(data.settings || {}) };
   for (const s of schema.settings || []) {
-    if (s.type === 'collection' && typeof settings[s.id] === 'string') settings[s.id] = settings[s.id] === 'chapter-001' ? COLLECTION : null;
+    if (s.type === 'collection' && typeof settings[s.id] === 'string') settings[s.id] = settings[s.id] === 'chapter-001' && !process.env.NO_CHAPTER ? COLLECTION : null;
     if (s.type === 'image_picker' && settings[s.id] === undefined) settings[s.id] = null;
     if (s.type === 'image_picker' && s.id === 'image' && data.type === 'hero') settings.image = makeImage('hero', heroSvg(), 2400, 1500, 'Model in the Faith Over Fear hoodie');
     if (s.type === 'link_list' && typeof settings[s.id] === 'string') settings[s.id] = LINKLISTS[settings[s.id]] || { links: [] };
@@ -273,7 +276,7 @@ function baseContext(req, extra = {}) {
     localization: { available_countries: [{ iso_code: 'US', name: 'United States', currency: { iso_code: 'USD', symbol: '$' } }, { iso_code: 'GB', name: 'United Kingdom', currency: { iso_code: 'GBP', symbol: '£' } }, { iso_code: 'CA', name: 'Canada', currency: { iso_code: 'CAD', symbol: '$' } }, { iso_code: 'AU', name: 'Australia', currency: { iso_code: 'AUD', symbol: '$' } }], available_languages: [{ iso_code: 'en', endonym_name: 'English' }], country: { iso_code: 'US' }, language: { iso_code: 'en' } },
     cart: cartDrop(), customer: null, canonical_url: `http://localhost:${PORT}${url.pathname}`, page_title: extra.page_title || 'EDEN', page_description: 'Faith over fear.', current_page: 1, current_tags: null,
     template: new TemplateDrop(extra.template || 'index'), content_for_header: '', powered_by_link: '<a href="https://shopify.com">Shopify</a>',
-    recommendations: { performed: false, products_count: 0, products: [] }, collections: [COLLECTION], additional_checkout_buttons: false,
+    recommendations: { performed: false, products_count: 0, products: [] }, collections: ALL_COLLECTIONS, additional_checkout_buttons: false,
     ...extra,
   };
 }

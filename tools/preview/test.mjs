@@ -234,6 +234,18 @@ if (suite === 'all' || suite === 'product') {
   log(m._errors.length === 0, 'PDP mobile: no console errors', m._errors.join(' | '));
   await axe(m, 'product (mobile)');
   await m.context().close();
+
+  // A product whose size option is called "Talla" still gets size pills, the size guide and required size.
+  const es = await newPage();
+  await es.goto(BASE + '/products/he-is-risen-hoodie', { waitUntil: 'domcontentloaded' });
+  await sleep(1500);
+  const talla = await es.evaluate(() => ({ size: !!document.querySelector('.picker--size'), guide: !!document.querySelector('.picker--size [data-modal-open^="SizeGuide"]'), required: document.querySelector('[data-variant-id-input]').value === '' }));
+  log(talla.size && talla.guide && talla.required, 'size option named "Talla" is treated as size', JSON.stringify(talla));
+  await es.goto(BASE + '/collections/chapter-001', { waitUntil: 'domcontentloaded' });
+  await sleep(800);
+  const labels = await es.evaluate(() => Array.from(document.querySelectorAll('[data-product-handle="he-is-risen-hoodie"] .card__size')).map((b) => b.textContent.trim()));
+  log(labels.length > 0 && labels.every((l) => l.length <= 3), 'quick add shows size labels for "Talla"', labels.join(' '));
+  await es.context().close();
 }
 
 /* ---------------- Collection, quick add, search, 404, password ---------------- */

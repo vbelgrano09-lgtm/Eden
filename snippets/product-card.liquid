@@ -19,8 +19,19 @@
     assign sold_out = true
   endunless
 
-  assign color_option = product.options_by_name['Color'] | default: product.options_by_name['Colour']
-  assign size_option = product.options_by_name['Size']
+  # Option names vary by store language ("Size", "Talla"…): match them from a list.
+  assign color_names = 'color,colour,colors,colours,colores,couleur,couleurs,farbe' | split: ','
+  assign size_names = 'size,sizes,talla,tallas,talle,talles,tamaño,taille,größe' | split: ','
+  assign color_option = nil
+  assign size_option = nil
+  for option in product.options_with_values
+    assign option_key = option.name | downcase | strip
+    if color_names contains option_key
+      assign color_option = option
+    elsif size_names contains option_key
+      assign size_option = option
+    endif
+  endfor
   assign first_variant = product.selected_or_first_available_variant
   assign current_color = blank
   if color_option
