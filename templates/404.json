@@ -12,10 +12,14 @@
     "main": {
       "type": "main-404",
       "settings": {
+        "label": "",
+        "show_code": false,
         "title": "WELCOME to\nparadise",
         "text": "Come home.",
         "button": "Come home",
-        "button_2": "Shop the chapter"
+        "button_link": "",
+        "button_2": "Shop the chapter",
+        "button_2_link": ""
       }
     },
     "verse_pTELfk": {
@@ -37,15 +41,15 @@
       "type": "image-banner",
       "name": "Image banner",
       "settings": {
-        "eyebrow": "Our story",
+        "eyebrow": "",
         "title": "Worn,\nnot preached.",
         "text": "",
         "button_label": "",
         "button_link": "",
         "height": "full",
-        "align": "center",
-        "overlay": 55,
-        "header_overlay": true,
+        "align": "bottom",
+        "overlay": 25,
+        "header_overlay": false,
         "parallax": true,
         "grain": true
       }
