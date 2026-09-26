@@ -14,19 +14,19 @@
       "name": "Hero",
       "settings": {
         "video_mobile": false,
-        "overlay": 60,
+        "overlay": 35,
         "eyebrow": "EDEN — Faith over fear",
         "heading": "Chapter 001\nIs live",
         "subheading": "Oversized heavyweight sets. Made to order. Shipped worldwide.",
         "button_label": "Shop now",
-        "button_link": "",
+        "button_link": "shopify://pages/catalog",
         "button2_label": "The meaning",
         "button2_link": "",
         "layout": "bottom",
         "height": "full",
         "header_overlay": true,
         "zoom": true,
-        "zoom_duration": 14,
+        "zoom_duration": 9,
         "parallax": true,
         "magnetic": true,
         "scroll_hint": true
@@ -89,21 +89,6 @@
         "scheme": "bone",
         "grain": false
       }
-    },
-    "verse_NFrrNp": {
-      "type": "verse",
-      "name": "Verse",
-      "settings": {
-        "label": "Chapter 001 — The line",
-        "text": "Philippians 4:13",
-        "reference": "I can do all things through him who strengthens me.",
-        "note": "",
-        "split": "lines",
-        "image_opacity": 35,
-        "parallax": true,
-        "scheme": "dark",
-        "grain": true
-      }
     }
   },
   "order": [
@@ -111,7 +96,6 @@
     "main",
     "faith_over_fear_73ELEp",
     "verse_pTELfk",
-    "brand_story_94kUFj",
-    "verse_NFrrNp"
+    "brand_story_94kUFj"
   ]
 }
