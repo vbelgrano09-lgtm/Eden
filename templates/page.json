@@ -30,7 +30,7 @@
         "show_view_all": false,
         "view_all_label": "View all",
         "scheme": "dark",
-        "grain": false
+        "grain": true
       }
     }
   },
