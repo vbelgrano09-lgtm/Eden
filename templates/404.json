@@ -9,6 +9,29 @@
  */
 {
   "sections": {
+    "hero_jXDWBf": {
+      "type": "hero",
+      "name": "Hero",
+      "settings": {
+        "video_mobile": false,
+        "overlay": 60,
+        "eyebrow": "EDEN — Faith over fear",
+        "heading": "Chapter 001\nIs live",
+        "subheading": "Oversized heavyweight sets. Made to order. Shipped worldwide.",
+        "button_label": "Shop now",
+        "button_link": "",
+        "button2_label": "The meaning",
+        "button2_link": "",
+        "layout": "bottom",
+        "height": "full",
+        "header_overlay": true,
+        "zoom": true,
+        "zoom_duration": 14,
+        "parallax": true,
+        "magnetic": true,
+        "scroll_hint": true
+      }
+    },
     "main": {
       "type": "main-404",
       "settings": {
@@ -20,6 +43,20 @@
         "button_link": "shopify://collections/all",
         "button_2": "Shop the chapter",
         "button_2_link": "shopify://pages/catalog"
+      }
+    },
+    "faith_over_fear_73ELEp": {
+      "type": "faith-over-fear",
+      "name": "Faith over fear scene",
+      "settings": {
+        "word_1": "Faith",
+        "word_2": "over",
+        "word_3": "Fear",
+        "subline": "When we fall, we rise.",
+        "subline_label": "EDEN — Chapter 001",
+        "scene": true,
+        "show_wordmark": false,
+        "grain": true
       }
     },
     "verse_pTELfk": {
@@ -36,10 +73,45 @@
         "scheme": "dark",
         "grain": true
       }
+    },
+    "brand_story_94kUFj": {
+      "type": "brand-story",
+      "name": "Brand story",
+      "settings": {
+        "image_position": "left",
+        "eyebrow": "Our story",
+        "title": "We fall.\nWe rise.",
+        "text": "<p>EDEN started with two of us and a question we couldn't shake: what does faith look like when nobody's watching? Not a sermon. Not a slogan. Something you put on when the day is heavy and you choose to get up anyway.</p><p>We make it heavy on purpose. Thick fleece, oversized cuts, built to last longer than the moment. Every piece is made to order, for you, then shipped wherever you are.</p>",
+        "signoff": "The founders",
+        "button_label": "Read our story",
+        "button_link": "",
+        "parallax": true,
+        "scheme": "bone",
+        "grain": false
+      }
+    },
+    "verse_NFrrNp": {
+      "type": "verse",
+      "name": "Verse",
+      "settings": {
+        "label": "Chapter 001 — The line",
+        "text": "Philippians 4:13",
+        "reference": "I can do all things through him who strengthens me.",
+        "note": "",
+        "split": "lines",
+        "image_opacity": 35,
+        "parallax": true,
+        "scheme": "dark",
+        "grain": true
+      }
     }
   },
   "order": [
+    "hero_jXDWBf",
     "main",
-    "verse_pTELfk"
+    "faith_over_fear_73ELEp",
+    "verse_pTELfk",
+    "brand_story_94kUFj",
+    "verse_NFrrNp"
   ]
 }

@@ -41,6 +41,7 @@
         "help",
         "made"
       ],
+      "disabled": true,
       "settings": {
         "heading": "Get the next Chapter first.",
         "text": "<p>Faith that is worn, not preached. Get the next Chapter before anyone else.</p>",
