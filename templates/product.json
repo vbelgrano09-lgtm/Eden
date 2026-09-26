@@ -35,7 +35,8 @@
             "size_guide_title": "Size guide",
             "size_table": "Size | Chest | Length | Sleeve\nS | 128 | 72 | 59\nM | 132 | 74 | 60\nL | 136 | 76 | 61\nXL | 140 | 78 | 62\n2XL | 144 | 80 | 63",
             "size_note": "<p>Oversized fit with drop shoulders. Measurements are the garment laid flat (chest is doubled). Pre-shrunk. Want it closer to the body? Size down.</p>",
-            "model_note": "Model is 185 cm / 6'1\" and wears L."
+            "model_note": "Model is 185 cm / 6'1\" and wears L.",
+            "size_page": ""
           }
         },
         "buy": {
@@ -56,8 +57,9 @@
           "type": "collapsible_tab",
           "settings": {
             "heading": "Details",
-            "use_description": true,
             "content": "<p><strong>Features</strong></p><ul><li>Snug collar for wind protection</li><li>Kangaroo pocket</li><li>Drop shoulders</li><li>Oversized fit</li><li>Washed effect</li></ul><p><strong>Fabric</strong></p><ul><li>100% combed cotton</li><li>32-count plain weave</li><li>Pre-shrunk</li><li>Washed finish that fades beautifully over time</li><li>Fabric weight: 440 g/m²</li></ul><p><strong>Construction</strong></p><ul><li>Side-seamed</li><li>Taped neck and shoulders</li><li>Double-stitched ribbed cuffs and hem</li></ul>",
+            "use_description": true,
+            "page": "",
             "open": true
           }
         },
@@ -65,8 +67,9 @@
           "type": "collapsible_tab",
           "settings": {
             "heading": "Size & fit",
-            "use_description": false,
             "content": "<p>Oversized with drop shoulders and a relaxed body. Sizes S to 2XL.</p><p>True to size for the intended fit. Size down if you want it closer to the body. Full measurements are in the size guide.</p>",
+            "use_description": false,
+            "page": "",
             "open": false
           }
         },
@@ -74,8 +77,9 @@
           "type": "collapsible_tab",
           "settings": {
             "heading": "The meaning",
-            "use_description": false,
             "content": "<p>Two nails. That's the whole symbol. They mark the moment everything broke, and the reason nothing has to stay broken.</p><p>We put them over the D because that's where the story turns. <strong>When we fall, we rise.</strong> Faith isn't the absence of fear. It's what you do with it.</p>",
+            "use_description": false,
+            "page": "",
             "open": false
           }
         },
@@ -83,8 +87,9 @@
           "type": "collapsible_tab",
           "settings": {
             "heading": "Care",
-            "use_description": false,
             "content": "<p>Wash cold, inside out, with similar colours. The washed finish is meant to fade and soften over time — that's the point.</p><p>Pre-shrunk. Lay flat to dry, no tumble dryer. Cool iron, never on the print.</p>",
+            "use_description": false,
+            "page": "",
             "open": false
           }
         },
@@ -92,8 +97,9 @@
           "type": "collapsible_tab",
           "settings": {
             "heading": "Shipping",
-            "use_description": false,
             "content": "<p>Every piece is made to order after you check out. Production takes the time shown above, then your order ships with tracking to the US, UK, Canada, Australia and worldwide.</p><p>Delivery times and any duties for your country are shown at checkout.</p>",
+            "use_description": false,
+            "page": "",
             "open": false
           }
         }
@@ -119,6 +125,7 @@
     "set": {
       "type": "complete-the-set",
       "settings": {
+        "product": "",
         "eyebrow": "The set",
         "title": "Complete\nthe set",
         "text": "Sold as a set. Worn as one. Same fleece, same weight, same colour.",
@@ -167,11 +174,11 @@
       ],
       "settings": {
         "separator": "nails",
-        "speed": 40,
+        "speed": 14,
         "size": 70,
         "direction": "left",
         "reactive": true,
-        "boost": 4,
+        "boost": 5,
         "style": "default"
       }
     }
