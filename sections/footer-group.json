@@ -11,20 +11,6 @@
   "type": "footer",
   "name": "Footer group",
   "sections": {
-    "catalog": {
-      "type": "catalog-carousel",
-      "settings": {
-        "eyebrow": "",
-        "title": "Catálogo",
-        "collection": "ropa",
-        "limit": 12,
-        "per_view": 4,
-        "show_view_all": true,
-        "view_all_label": "Ver todo",
-        "scheme": "dark",
-        "grain": false
-      }
-    },
     "footer": {
       "type": "footer",
       "blocks": {
@@ -71,7 +57,6 @@
     }
   },
   "order": [
-    "catalog",
     "footer"
   ]
 }
