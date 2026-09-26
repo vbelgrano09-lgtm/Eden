@@ -17,7 +17,7 @@
         "title": "WELCOME to\nparadise",
         "text": "Come home.",
         "button": "Come home",
-        "button_link": "",
+        "button_link": "shopify://collections/all",
         "button_2": "Shop the chapter",
         "button_2_link": ""
       }
@@ -27,37 +27,19 @@
       "name": "Verse",
       "settings": {
         "label": "Chapter 001 — The line",
-        "text": "Be still,\nand know.",
-        "reference": "Psalm 46:10",
+        "text": "Philippians 4:13",
+        "reference": "I can do all things through him who strengthens me.",
         "note": "Not a slogan. A reminder we wear when everything is loud.",
-        "split": "chars",
+        "split": "lines",
         "image_opacity": 35,
         "parallax": true,
         "scheme": "dark",
-        "grain": true
-      }
-    },
-    "image_banner_Eefk3R": {
-      "type": "image-banner",
-      "name": "Image banner",
-      "settings": {
-        "eyebrow": "",
-        "title": "Worn,\nnot preached.",
-        "text": "",
-        "button_label": "",
-        "button_link": "",
-        "height": "full",
-        "align": "bottom",
-        "overlay": 25,
-        "header_overlay": false,
-        "parallax": true,
         "grain": true
       }
     }
   },
   "order": [
     "main",
-    "verse_pTELfk",
-    "image_banner_Eefk3R"
+    "verse_pTELfk"
   ]
 }
