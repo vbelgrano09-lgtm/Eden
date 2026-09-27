@@ -87,7 +87,7 @@
         "button_link": "",
         "parallax": true,
         "scheme": "dark",
-        "grain": false
+        "grain": true
       }
     }
   },

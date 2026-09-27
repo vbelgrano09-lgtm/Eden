@@ -41,10 +41,9 @@
         "help",
         "made"
       ],
-      "disabled": true,
       "settings": {
         "heading": "Get the next Chapter first.",
-        "text": "<p>Faith that is worn, not preached. Get the next Chapter before anyone else.</p>",
+        "text": "<p><strong>Faith you can wear.<br/>Get the next Chapter before anyone else.</strong></p>",
         "show_newsletter": true,
         "newsletter_button": "Join",
         "show_wordmark": true,
