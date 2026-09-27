@@ -83,10 +83,10 @@
         "title": "We fall.\nWe rise.",
         "text": "<p>EDEN started with two of us and a question we couldn't shake: what does faith look like when nobody's watching? Not a sermon. Not a slogan. Something you put on when the day is heavy and you choose to get up anyway.</p><p>We make it heavy on purpose. Thick fleece, oversized cuts, built to last longer than the moment. Every piece is made to order, for you, then shipped wherever you are.</p>",
         "signoff": "The founders",
-        "button_label": "Read our story",
+        "button_label": "",
         "button_link": "",
         "parallax": true,
-        "scheme": "bone",
+        "scheme": "dark",
         "grain": false
       }
     }
